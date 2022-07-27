@@ -1,0 +1,74 @@
+import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
+import { LineRenderInstruction, PointRenderInstruction } from "../GameObjects/RenderInstruction";
+import { Point } from "../Primitives";
+
+const MAIN_ZOOM_RANGE = 0.1; // points per pixel
+const ZOOM_MAGNIFICATION_PER_VALUE = 0.1;
+
+export class Camera {
+    constructor(private ctx: CanvasRenderingContext2D, private width: number, private height: number, public center: Point) {}
+
+    private zoom: number = 1;
+
+    getSizePerPixel() {
+        return (MAIN_ZOOM_RANGE + ZOOM_MAGNIFICATION_PER_VALUE) / this.zoom;
+    }
+
+    private getBoundingBox(): [number, number, number, number] {
+        const sizePerPixel = this.getSizePerPixel();
+        console.log(sizePerPixel);
+        return [
+            this.center.x - (this.width / 2) * sizePerPixel,
+            this.center.y - (this.height / 2) * sizePerPixel,
+            this.center.x + (this.width / 2) * sizePerPixel,
+            this.center.y + (this.width / 2) * sizePerPixel, 
+        ]
+    }
+
+    getPositionOnScreen(p: Point): [number, number] {
+        return [
+            this.width / 2 - (this.center.x - p.x) / this.getSizePerPixel(),
+            this.height / 2 - (this.center.y - p.y) / this.getSizePerPixel()
+        ];
+    }
+
+    renderLine(line: LineRenderInstruction) {
+        console.log("Rendering line", line);
+        const p1 = this.getPositionOnScreen(line.p1);
+        const p2 = this.getPositionOnScreen(line.p2);
+        this.ctx.beginPath();
+        this.ctx.lineWidth = line.width;
+        this.ctx.strokeStyle = line.color;
+        this.ctx.moveTo(...p1);
+        this.ctx.lineTo(...p2);
+        this.ctx.stroke();
+    }
+
+    renderPoint(point: PointRenderInstruction) {
+        console.log("Rendering Point", point);
+        const r = point.radius / this.getSizePerPixel();
+        const p = this.getPositionOnScreen(point.p);
+        this.ctx.beginPath();
+        this.ctx.fillStyle = point.color;
+        this.ctx.arc(p[0], p[1], r, 0, 2 * Math.PI);
+        this.ctx.fill();
+    }
+
+    render(gameObjects: GameObjectsContainer) {
+        this.ctx.clearRect(0, 0, this.width, this.height)
+        const boundingBox = this.getBoundingBox()
+        console.log(`Camera::render(${boundingBox.join(', ')})`);
+        for (const object of gameObjects.getObjectsInArea(...boundingBox)) {
+            for (const instruction of object.getRenderInstructions()) {
+                switch (instruction.type) {
+                    case 'line':
+                        this.renderLine(instruction);
+                        break;
+                    case 'point':
+                        this.renderPoint(instruction);
+                        break;
+                }
+            }
+        }
+    }
+}
