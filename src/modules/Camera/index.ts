@@ -8,7 +8,8 @@ const ZOOM_MAGNIFICATION_PER_VALUE = 0.1;
 export class Camera {
     constructor(private ctx: CanvasRenderingContext2D, private width: number, private height: number, public center: Point) {}
 
-    private zoom: number = 1;
+    public zoom: number = 5;
+    private gridEnabled: boolean = true;
 
     getSizePerPixel() {
         return (MAIN_ZOOM_RANGE + ZOOM_MAGNIFICATION_PER_VALUE) / this.zoom;
@@ -54,10 +55,29 @@ export class Camera {
         this.ctx.fill();
     }
 
+    renderGrid() {
+        console.log('Rendering Grid');
+        this.ctx.fillStyle = '#000';
+        this.ctx.fillRect(0, 0, this.width, this.height);
+        const [x1, y1, x2, y2] = this.getBoundingBox();
+        for(let i = Math.ceil(x1); i <= x2; i++) {
+            for(let j = Math.ceil(y1); j <= y2; j++) {
+                this.ctx.beginPath();
+                const [x, y] = this.getPositionOnScreen(new Point(i, j));
+                this.ctx.fillStyle = '#555';
+                this.ctx.arc(x, y, 2, 0, 2 * Math.PI);
+                this.ctx.fill();
+            }
+        }
+    }
+
     render(gameObjects: GameObjectsContainer) {
         this.ctx.clearRect(0, 0, this.width, this.height)
         const boundingBox = this.getBoundingBox()
         console.log(`Camera::render(${boundingBox.join(', ')})`);
+        if (this.gridEnabled) {
+            this.renderGrid();
+        }
         for (const object of gameObjects.getObjectsInArea(...boundingBox)) {
             for (const instruction of object.getRenderInstructions()) {
                 switch (instruction.type) {
