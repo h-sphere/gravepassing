@@ -9,6 +9,7 @@ export class KeyboardController {
     private _y: AxisDirection = 0;
 
     private _wheel: number = 0;
+    private _rotation: number = 0;
 
     public get x() {
         return this._x;
@@ -20,6 +21,10 @@ export class KeyboardController {
     
     public get wheel() {
         return this._wheel;
+    }
+    
+    public get rotation() {
+        return this._rotation;
     }
 
     constructor() {
@@ -42,6 +47,12 @@ export class KeyboardController {
                 case 'ArrowRight':
                     this._x = 1;
                     break;
+                case 'q':
+                    this._rotation = 1;
+                    break;
+                case 'w':
+                    this._rotation = -1;
+                    break;
             }
         });
 
@@ -54,6 +65,10 @@ export class KeyboardController {
                 case 'ArrowLeft':
                 case 'ArrowRight':
                     this._x = 0;
+                    break;
+                case 'q':
+                case 'w':
+                    this._rotation = 0;
                     break;
             }
         });
