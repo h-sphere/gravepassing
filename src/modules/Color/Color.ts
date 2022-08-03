@@ -40,9 +40,13 @@ export class Color {
         const y = (1 - amount) * y1 + amount * y2;
         const z = (1 - amount) * z1 + amount * z2;
 
+        console.log('AFTER MIXING', Math.atan2(y, x) * 180 / Math.PI,
+        Math.sqrt(x*x + y * y),
+        z);
+
         return new Color(
             Math.atan2(y, x) * 180 / Math.PI,
-            Math.sqrt(x*x + y * y),
+            Math.sqrt(x*x + y * y) * 100,
             z
         );
     }

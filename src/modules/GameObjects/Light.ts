@@ -13,7 +13,7 @@ export class Light extends withTags(EmptyClass) implements GameObject, WithCente
     }
     getRenderInstructions(): RenderInstruction[] {
         // FIXME: reneder circle with gradient.
-        return [pointInstruction(this.center, this.distance, Color.WHITE.withAlpha(0.5))];
+        return [pointInstruction(this.center, this.distance, Color.RED.mixWithColor(Color.BLUE, 0.5))];
     }
 
     getIntensityAtPoint(p: Point): number {

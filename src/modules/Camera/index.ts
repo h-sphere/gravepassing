@@ -38,7 +38,6 @@ export class Camera {
     }
 
     renderLine(line: LineRenderInstruction) {
-        console.log("Rendering line", line);
         const p1 = this.getPositionOnScreen(line.p1);
         const p2 = this.getPositionOnScreen(line.p2);
         this.ctx.beginPath();
@@ -50,7 +49,6 @@ export class Camera {
     }
 
     renderPoint(point: PointRenderInstruction) {
-        console.log("Rendering Point", point);
         const r = point.radius / this.getSizePerPixel();
         const p = this.getPositionOnScreen(point.p);
         this.ctx.beginPath();
@@ -60,7 +58,6 @@ export class Camera {
     }
 
     renderGrid() {
-        console.log('Rendering Grid');
         this.ctx.fillStyle = '#000';
         this.ctx.fillRect(0, 0, this.width, this.height);
         const [x1, y1, x2, y2] = this.getBoundingBox();
