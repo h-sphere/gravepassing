@@ -43,7 +43,7 @@ export class Camera {
         const p2 = this.getPositionOnScreen(line.p2);
         this.ctx.beginPath();
         this.ctx.lineWidth = line.width;
-        this.ctx.strokeStyle = line.color;
+        this.ctx.strokeStyle = line.color.toString();
         this.ctx.moveTo(...p1);
         this.ctx.lineTo(...p2);
         this.ctx.stroke();
@@ -54,7 +54,7 @@ export class Camera {
         const r = point.radius / this.getSizePerPixel();
         const p = this.getPositionOnScreen(point.p);
         this.ctx.beginPath();
-        this.ctx.fillStyle = point.color;
+        this.ctx.fillStyle = point.color.toString();
         this.ctx.arc(p[0], p[1], r, 0, 2 * Math.PI);
         this.ctx.fill();
     }

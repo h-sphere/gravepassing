@@ -1,9 +1,11 @@
 import { Camera } from "../Camera";
+import { Color } from "../Color/Color";
 import { TAG } from "../constants/tags";
 import { KeyboardController } from "../Controller/KeyboardController";
 import { ArrayGameObjectsContainer } from "../GameObjects/ArrayContainer";
 import { RenderableLine, RenderablePoint, WallGameObject } from "../GameObjects/GameObject";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
+import { Light } from "../GameObjects/Light";
 import { Player } from "../GameObjects/Player";
 import { Point } from "../Primitives";
 
@@ -22,8 +24,9 @@ export class Game {
         this.ctx = canvas.getContext('2d')!;
         this.camera = new Camera(this.ctx, canvas.width, canvas.height, new Point(50, 50));
         this.gameObjects = new ArrayGameObjectsContainer();
-        this.gameObjects.add(new RenderablePoint(50, 50, 10, 'red'));
-        this.gameObjects.add(new RenderableLine(new Point(50, 40), new Point(50, 60), 5, 'yellow'));
+        this.gameObjects.add(new Light(Point.ORIGIN, 0.5, 10));
+        this.gameObjects.add(new RenderablePoint(50, 50, 10, Color.RED));
+        this.gameObjects.add(new RenderableLine(new Point(50, 40), new Point(50, 60), 5, new Color(54, 100, 50)));
         this.gameObjects.add(new WallGameObject(new Point(-20, -5), new Point(20, -10)));
         this.gameObjects.add(new WallGameObject(new Point(-30, -10), new Point(30, 0)));
         this.player = new Player();

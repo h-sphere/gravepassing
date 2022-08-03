@@ -3,6 +3,10 @@ export class Point {
     copy() {
         return new Point(this.x, this.y);
     }
+
+    static get ORIGIN() {
+        return new Point(0, 0);
+    }
 }
 
 export class Line {

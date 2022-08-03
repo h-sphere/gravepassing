@@ -1,7 +1,8 @@
+import { Color } from "../Color/Color";
 import { TAG } from "../constants/tags";
 import { Line, Point } from "../Primitives";
 import { withTags } from "./mixins";
-import { gradientLineInstruction, LineRenderInstruction, RenderInstruction } from "./RenderInstruction";
+import { gradientLineInstruction, LineRenderInstruction, pointInstruction, RenderInstruction } from "./RenderInstruction";
 
 export interface GameObject {
     getRenderInstructions(): RenderInstruction[];
@@ -11,7 +12,7 @@ export interface GameObject {
 
 
 export class RenderableLine extends withTags(Line) implements GameObject {
-    constructor(p1: Point, p2: Point, public width: number = 3, public color: string = "red") {
+    constructor(p1: Point, p2: Point, public width: number = 3, public color: Color = Color.RED) {
         super(p1, p2);
     }
     getRenderInstructions(): RenderInstruction[] {
@@ -37,22 +38,17 @@ export class RenderableGradientLine extends RenderableLine {
 
 
 export class WallGameObject extends RenderableLine {
-    constructor(p1: Point, p2: Point, width: number = 3, color: string = "red") {
+    constructor(p1: Point, p2: Point, width: number = 3, color: Color = Color.RED) {
         super(p1, p2, width, color);
         this._tags.push(TAG.OBSTACLE);
     }
 }
 
 export class RenderablePoint extends withTags(Point) implements GameObject {
-    constructor(x: number, y: number, public radius: number = 0.1, public color: string = 'red') {
+    constructor(x: number, y: number, public radius: number = 0.1, public color: Color = Color.RED) {
         super(x, y);
     }
     getRenderInstructions(): RenderInstruction[] {
-        return [{
-            type: "point",
-            p: this,
-            color: this.color,
-            radius: this.radius,
-        }];
+        return [pointInstruction(this, this.radius, this.color)];
     }
 }

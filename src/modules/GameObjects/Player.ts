@@ -1,4 +1,5 @@
 import { getLinesIntersection } from "../../utils/math";
+import { Color } from "../Color/Color";
 import { Line, Point } from "../Primitives";
 import { GameObject } from "./GameObject";
 import { EmptyClass, Rotation, withRotation, withTags } from "./mixins";
@@ -22,7 +23,7 @@ class SimplePlayer extends withTags(EmptyClass) implements GameObject {
 
     getRenderInstructions(): RenderInstruction[] {
         return [
-            pointInstruction(this.center, 0.2, "white")
+            pointInstruction(this.center, 0.2, Color.GREEN)
         ]
     }
     

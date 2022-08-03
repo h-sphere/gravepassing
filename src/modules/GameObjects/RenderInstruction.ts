@@ -1,17 +1,18 @@
+import { Color } from "../Color/Color";
 import { Point } from "../Primitives";
 
 export interface LineRenderInstruction {
     type: 'line';
     p1: Point;
     p2: Point;
-    color: string;
+    color: Color;
     width: number;
 }
 
 export interface PointRenderInstruction {
     type: 'point';
     p: Point;
-    color: string;
+    color: Color;
     radius: number;
 }
 
@@ -24,14 +25,14 @@ export interface GradientLineInstruction {
     gradient: (ctx: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number) => CanvasGradient;
 }
 
-export const pointInstruction = (p: Point, radius: number, color = "white"): PointRenderInstruction => ({
+export const pointInstruction = (p: Point, radius: number, color: Color = Color.WHITE): PointRenderInstruction => ({
     type: 'point',
     p,
     radius,
     color,
 });
 
-export const lineInstruction = (p1: Point, p2: Point, width: number, color: string = "white"): LineRenderInstruction => ({
+export const lineInstruction = (p1: Point, p2: Point, width: number, color: Color = Color.WHITE): LineRenderInstruction => ({
     type: "line",
     p1,
     p2,
