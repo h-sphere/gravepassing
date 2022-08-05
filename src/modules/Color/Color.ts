@@ -1,6 +1,11 @@
-export class Color {
+import { Texture } from "./Texture";
+
+export class Color implements Texture {
     constructor(public h: number, public s: number, public l: number) {
 
+    }
+    render(): string | CanvasGradient | CanvasPattern {
+        return this.toString();
     }
 
     toString() {
@@ -25,6 +30,10 @@ export class Color {
 
     withAlpha(a: number) {
         return new ColorWithAlpha(this.h, this.s, this.l, a);
+    }
+
+    withL(l: number) {
+        return new Color(this.h, this.s, l);
     }
 
     mixWithColor(color: Color, amount: number = 0.5): Color {

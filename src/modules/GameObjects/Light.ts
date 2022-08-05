@@ -2,18 +2,17 @@ import { distance } from "../../utils/math";
 import { Color } from "../Color/Color";
 import { TAG } from "../constants/tags";
 import { Point } from "../Primitives";
-import { GameObject } from "./GameObject";
+import { GameObject, Renderable, RenderablePoint } from "./GameObject";
 import { EmptyClass, WithCenter, withTags } from "./mixins";
-import { pointInstruction, RenderInstruction } from "./RenderInstruction";
 
-export class Light extends withTags(EmptyClass) implements GameObject, WithCenter {
-    constructor(public center: Point, public intensity: number, public distance: number) {
+export class Light extends withTags(EmptyClass) implements GameObject, WithCenter, Renderable {
+    constructor(public center: Point, public intensity: number, public distance: number, public color: Color = Color.WHITE) {
         super();
         this._tags.push(TAG.LIGHT);
     }
-    getRenderInstructions(): RenderInstruction[] {
+    getRenderInstructions(): Renderable[] {
         // FIXME: reneder circle with gradient.
-        return [pointInstruction(this.center, this.distance, Color.RED.mixWithColor(Color.BLUE, 0.5))];
+        return [RenderablePoint.fromPoint(this.center, this.distance, this.color)];
     }
 
     getIntensityAtPoint(p: Point): number {
@@ -21,8 +20,10 @@ export class Light extends withTags(EmptyClass) implements GameObject, WithCente
         if (d > this.distance) {
             return 0;
         }
-        return 1 - (d / this.distance);
+        return this.intensity * (1 - (d / this.distance));
     }
+
+    update() {}
 }
 
 export class AmbientLight extends Light {
@@ -34,7 +35,7 @@ export class AmbientLight extends Light {
         return this.intensity;
     }
 
-    getRenderInstructions(): RenderInstruction[] {
+    getRenderInstructions(): Renderable[] {
         return [];
     }
 }

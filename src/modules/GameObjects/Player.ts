@@ -1,9 +1,8 @@
 import { getLinesIntersection } from "../../utils/math";
 import { Color } from "../Color/Color";
 import { Line, Point } from "../Primitives";
-import { GameObject } from "./GameObject";
+import { GameObject, Renderable, RenderableLine, RenderablePoint } from "./GameObject";
 import { EmptyClass, Rotation, withRotation, withTags } from "./mixins";
-import { gradientLineInstruction, lineInstruction, pointInstruction, RenderInstruction } from "./RenderInstruction";
 
 class SimplePlayer extends withTags(EmptyClass) implements GameObject {
     center: Point;
@@ -21,19 +20,23 @@ class SimplePlayer extends withTags(EmptyClass) implements GameObject {
     }
 
 
-    getRenderInstructions(): RenderInstruction[] {
+    getRenderInstructions(): Renderable[] {
         return [
-            pointInstruction(this.center, 0.2, Color.GREEN)
+            RenderablePoint.fromPoint(this.center, 0.2, Color.GREEN)
         ]
+    }
+
+    update() {
+        // Move movement functions here.
     }
     
 }
 
 export class Player extends withRotation(SimplePlayer) implements Rotation {
-    getRenderInstructions(): RenderInstruction[] {
+    getRenderInstructions() {
         return [
             ...super.getRenderInstructions(),
-            ...this.getVisionRays(Math.PI / 3).map(r => gradientLineInstruction(r.p1, r.p2, 0.5, 'yellow', 'black'))
+            ...this.getVisionRays(Math.PI / 3).map(r => RenderableLine.fromLine(r, 0.2, Color.BLUE))
         ]
     }
 }

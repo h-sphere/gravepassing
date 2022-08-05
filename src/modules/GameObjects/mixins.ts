@@ -7,7 +7,7 @@ export class EmptyClass {}
 type Constructable<T = {}> = new (...args: any[]) => T;
 
 export function withTags<T extends Constructable>(constructor: T) {
-    return class extends constructor implements Omit<GameObject, 'getRenderInstructions'> {
+    return class extends constructor implements Omit<GameObject, 'getRenderInstructions' | 'update'> {
         protected _tags: string[] = [];
         getTags(): string[] {
             return this._tags;
@@ -35,7 +35,7 @@ export function withRotation<T extends Constructable<WithCenter & WithObstacles>
     return class extends constructor implements Rotation {
         protected numberOfRays = 100;
         protected RAY_LENGTH: number = 100;
-        public rotation: number = Math.PI / 2;
+        public rotation: number = Math.PI;
         getVisionRays(fov: number = Math.PI / 2): Line[] {
             const lines: Line[] = [];
             for(let i=0;i<this.numberOfRays;i++) {

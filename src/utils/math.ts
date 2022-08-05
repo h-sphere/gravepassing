@@ -1,6 +1,6 @@
 import { Line, Point } from "../modules/Primitives"
 
-const ELIPSON = 0.0001;
+export const ELIPSON = 0.0001;
 
 export const distance = (p1: Point, p2: Point): number => {
     return Math.sqrt(Math.pow(Math.abs(p1.x - p2.x), 2) + Math.pow(Math.abs(p1.y - p2.y), 2));

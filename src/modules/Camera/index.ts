@@ -1,6 +1,10 @@
+import { lightIntensityAtPoint } from "../../utils/lightIntesity";
+import { Color } from "../Color/Color";
+import { RenderableLine, RenderablePoint } from "../GameObjects/GameObject";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
+import { Light } from "../GameObjects/Light";
 import { GradientLineInstruction, LineRenderInstruction, PointRenderInstruction } from "../GameObjects/RenderInstruction";
-import { Point } from "../Primitives";
+import { Line, Point } from "../Primitives";
 
 const MAIN_ZOOM_RANGE = 0.1; // points per pixel
 const ZOOM_MAGNIFICATION_PER_VALUE = 0.1;
@@ -8,7 +12,7 @@ const ZOOM_MAGNIFICATION_PER_VALUE = 0.1;
 export class Camera {
     constructor(private ctx: CanvasRenderingContext2D, private width: number, private height: number, public center: Point) {}
 
-    public zoom: number = 5;
+    public zoom: number = 3;
     private gridEnabled: boolean = true;
 
     getSizePerPixel() {
@@ -37,20 +41,38 @@ export class Camera {
         ];
     }
 
-    renderLine(line: LineRenderInstruction) {
+    renderLine(line: RenderableLine, lights: Light[]) {
         const p1 = this.getPositionOnScreen(line.p1);
         const p2 = this.getPositionOnScreen(line.p2);
+        let grd;
+
+        if (line.color instanceof Color) {
+        // Compute lights
+        const l = line.color.l;
+
+        grd = this.ctx.createLinearGradient(p1[0], p1[1], p2[0], p2[1]);
+        grd.addColorStop(0, line.color
+            .withL(l * lightIntensityAtPoint(line.p1, lights)).toString());
+        grd.addColorStop(0.5, line.color
+            .withL(l * lightIntensityAtPoint(line.getMidpoint(0.5), lights)).toString())
+        grd.addColorStop(1, line.color
+            .withL(l * lightIntensityAtPoint(line.p2, lights)).toString());
+        } else {
+            grd = line.color.render(this.ctx, p1[0], p1[1], p2[0], p2[1]);
+            // FIXME: add lighting?
+        }
+
         this.ctx.beginPath();
         this.ctx.lineWidth = line.width;
-        this.ctx.strokeStyle = line.color.toString();
+        this.ctx.strokeStyle = grd;
         this.ctx.moveTo(...p1);
         this.ctx.lineTo(...p2);
         this.ctx.stroke();
     }
 
-    renderPoint(point: PointRenderInstruction) {
+    renderPoint(point: RenderablePoint) {
         const r = point.radius / this.getSizePerPixel();
-        const p = this.getPositionOnScreen(point.p);
+        const p = this.getPositionOnScreen(point);
         this.ctx.beginPath();
         this.ctx.fillStyle = point.color.toString();
         this.ctx.arc(p[0], p[1], r, 0, 2 * Math.PI);
@@ -91,17 +113,14 @@ export class Camera {
         if (this.gridEnabled) {
             this.renderGrid();
         }
-        for (const object of gameObjects.getObjectsInArea(...boundingBox)) {
-            for (const instruction of object.getRenderInstructions()) {
-                switch (instruction.type) {
-                    case 'line':
-                        this.renderLine(instruction);
-                        break;
-                    case 'point':
-                        this.renderPoint(instruction);
-                        break;
-                    case 'gradient-line':
-                        this.renderGradientLine(instruction);
+        const objects = gameObjects.getObjectsInArea(...boundingBox);
+        const lights = objects.filter(o => o instanceof Light);
+        for (const object of objects) {
+            for (const obj of object.getRenderInstructions()) {
+                if (obj instanceof RenderableLine) {
+                    this.renderLine(obj, lights as unknown as Light[]);
+                } else if (obj instanceof RenderablePoint) {
+                    this.renderPoint(obj);
                 }
             }
         }
