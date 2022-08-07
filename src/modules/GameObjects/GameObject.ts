@@ -41,21 +41,21 @@ export class RenderableLine extends withTags(Line) implements GameObject, Render
 
 
 export class WallGameObject extends RenderableLine {
-    constructor(p1: Point, p2: Point, width: number = 3, color: Color = Color.RED) {
+    constructor(p1: Point, p2: Point, width: number = 3, color: Texture = Color.RED) {
         super(p1, p2, width, color);
         this._tags.push(TAG.OBSTACLE);
     }
 }
 
 export class RenderablePoint extends withTags(Point) implements GameObject, Renderable {
-    constructor(x: number, y: number, public radius: number = 0.1, public color: Color = Color.RED) {
+    constructor(x: number, y: number, public radius: number = 0.1, public color: Texture = Color.RED) {
         super(x, y);
     }
     getRenderInstructions(): Renderable[] {
         return [this];
     }
 
-    static fromPoint(p: Point, radius: number = 0.1, color: Color = Color.RED) {
+    static fromPoint(p: Point, radius: number = 0.1, color: Texture = Color.RED) {
         return new this(p.x, p.y, radius, color);
     }
 

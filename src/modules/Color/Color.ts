@@ -28,6 +28,10 @@ export class Color implements Texture {
         return new Color(360, 100, 100);
     }
 
+    static get YELLOW() {
+        return new Color(60, 100, 50);
+    }
+
     withAlpha(a: number) {
         return new ColorWithAlpha(this.h, this.s, this.l, a);
     }
@@ -49,10 +53,6 @@ export class Color implements Texture {
         const y = (1 - amount) * y1 + amount * y2;
         const z = (1 - amount) * z1 + amount * z2;
 
-        console.log('AFTER MIXING', Math.atan2(y, x) * 180 / Math.PI,
-        Math.sqrt(x*x + y * y),
-        z);
-
         return new Color(
             Math.atan2(y, x) * 180 / Math.PI,
             Math.sqrt(x*x + y * y) * 100,
@@ -67,7 +67,7 @@ export class ColorWithAlpha extends Color {
     }
 
     toString(): string {
-        return `hsla(${this.h}, ${this.s}, ${this.l}, ${this.a})`;
+        return `hsla(${this.h}, ${this.s}%, ${this.l}%, ${this.a})`;
     }
 
     discardAlpha() {

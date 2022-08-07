@@ -33,7 +33,6 @@ export class KeyboardController {
 
     private attach() {
         document.addEventListener('keydown', e => {
-            console.log(e);
             switch (e.key) {
                 case 'ArrowUp':
                     this._y = -1;
@@ -73,9 +72,19 @@ export class KeyboardController {
             }
         });
 
+        let handler: number | null = null;
+
         document.addEventListener('wheel', e => {
             this._wheel = e.deltaY;
             console.log(this._wheel);
+            if (handler) {
+                clearTimeout(handler);
+                handler = null;
+            }
+            handler = setTimeout(() => {
+                this._wheel = 0;
+                handler = null;
+            }, 100);
         })
     }
 }

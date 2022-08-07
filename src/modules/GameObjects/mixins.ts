@@ -4,7 +4,7 @@ import { GameObject } from "./GameObject";
 
 export class EmptyClass {}
 
-type Constructable<T = {}> = new (...args: any[]) => T;
+export type Constructable<T = {}> = new (...args: any[]) => T;
 
 export function withTags<T extends Constructable>(constructor: T) {
     return class extends constructor implements Omit<GameObject, 'getRenderInstructions' | 'update'> {
@@ -35,7 +35,15 @@ export function withRotation<T extends Constructable<WithCenter & WithObstacles>
     return class extends constructor implements Rotation {
         protected numberOfRays = 100;
         protected RAY_LENGTH: number = 100;
-        public rotation: number = Math.PI;
+        protected _rotation: number = 0;
+
+        get rotation() {
+            return this._rotation;
+        }
+
+        set rotation(v: number) {
+            this._rotation = v;
+        }
         getVisionRays(fov: number = Math.PI / 2): Line[] {
             const lines: Line[] = [];
             for(let i=0;i<this.numberOfRays;i++) {
