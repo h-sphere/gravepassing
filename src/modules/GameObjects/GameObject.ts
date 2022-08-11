@@ -1,17 +1,24 @@
 import { Color } from "../Color/Color";
 import { Texture } from "../Color/Texture";
 import { TAG } from "../constants/tags";
-import { Line, Point } from "../Primitives";
+import { Line, Point, Rectangle } from "../Primitives";
+import { GameObjectsContainer } from "./GameObjectsContainer";
 import { withTags } from "./mixins";
 
 export interface GameObject {
     getRenderInstructions(): Renderable[];
     getTags(): string[];
     hasTag(t: string): boolean;
-    update(dt: number): void;
+    update(dt: number, container: GameObjectsContainer): void;
+
+    getBoundingBox(): Rectangle;
+
+    isGlobal: boolean;
 }
 
-export interface Renderable { }
+export interface Renderable {
+    getBoundingBox(): Rectangle;
+}
 
 
 export class RenderableLine extends withTags(Line) implements GameObject, Renderable {
@@ -27,6 +34,12 @@ export class RenderableLine extends withTags(Line) implements GameObject, Render
     static fromLine(l: Line, width: number = 3, color: Texture = Color.RED) {
         return new this(l.p1, l.p2, width, color);
     }
+
+    getBoundingBox() {
+        return new Rectangle(this.p1, this.p2);
+    }
+    
+    isGlobal = false;
 }
 
 // export class RenderableGradientLine extends RenderableLine {
@@ -59,5 +72,11 @@ export class RenderablePoint extends withTags(Point) implements GameObject, Rend
         return new this(p.x, p.y, radius, color);
     }
 
+    getBoundingBox() {
+        return Rectangle.fromPoint(this);
+    }
+
     update() {}
+
+    isGlobal = false;
 }

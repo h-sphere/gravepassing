@@ -6,8 +6,10 @@ export class EmptyClass {}
 
 export type Constructable<T = {}> = new (...args: any[]) => T;
 
+type MethodsToOmit = 'getRenderInstructions' | 'update' | 'getBoundingBox' | 'isGlobal';
+
 export function withTags<T extends Constructable>(constructor: T) {
-    return class extends constructor implements Omit<GameObject, 'getRenderInstructions' | 'update'> {
+    return class extends constructor implements Omit<GameObject, MethodsToOmit> {
         protected _tags: string[] = [];
         getTags(): string[] {
             return this._tags;

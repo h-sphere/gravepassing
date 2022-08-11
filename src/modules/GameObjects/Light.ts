@@ -1,7 +1,7 @@
 import { distance } from "../../utils/math";
 import { Color } from "../Color/Color";
 import { TAG } from "../constants/tags";
-import { Point } from "../Primitives";
+import { Point, Rectangle } from "../Primitives";
 import { GameObject, Renderable, RenderablePoint } from "./GameObject";
 import { EmptyClass, WithCenter, withTags } from "./mixins";
 import { ColorGradient } from "../Color/Gradient";
@@ -22,6 +22,12 @@ export class Light extends withTags(EmptyClass) implements GameObject, WithCente
         this._center = center;
         this._tags.push(TAG.LIGHT);
     }
+    getBoundingBox(): Rectangle {
+        return new Rectangle(
+            this.center.add(-this.distance, -this.distance),
+            this.center.add(this.distance, this.distance),
+        );
+    }
     getRenderInstructions(): Renderable[] {
         const grd = new ColorGradient();
         grd.addStop(0, this.color.withAlpha(this.intensity));
@@ -31,6 +37,7 @@ export class Light extends withTags(EmptyClass) implements GameObject, WithCente
 
     getIntensityAtPoint(p: Point): number {
         const d = distance(this.center, p);
+        // console.log(this.distance);
         if (d > this.distance) {
             return 0;
         }
@@ -38,6 +45,8 @@ export class Light extends withTags(EmptyClass) implements GameObject, WithCente
     }
 
     update(t: number) {}
+
+    isGlobal = false;
 }
 
 export class TargetLight extends Light {
@@ -51,6 +60,16 @@ export class TargetLight extends Light {
             ConicRenderableSquaredPoint.fromPoint(this.center, this.distance, grd, this.angle, this.direction)
         ]
     }
+
+    getBoundingBox(): Rectangle {
+        return new Rectangle(
+            this.center.add(-this.distance, -this.distance),
+            this.center.add(this.distance, this.distance),
+        );
+    }
+
+
+    isGlobal = false;
 }
 
 export class AmbientLight extends Light {
@@ -65,4 +84,10 @@ export class AmbientLight extends Light {
     getRenderInstructions(): Renderable[] {
         return [];
     }
+
+    isGlobal = true;
+
+    // getBoundingBox(): Rectangle {
+    //     return new Rectangle(new Point(-10000, -10000), new Point(10000, 10000));
+    // }
 }

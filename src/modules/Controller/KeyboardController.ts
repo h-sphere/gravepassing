@@ -33,6 +33,7 @@ export class KeyboardController {
 
     private attach() {
         document.addEventListener('keydown', e => {
+            e.preventDefault();
             switch (e.key) {
                 case 'ArrowUp':
                     this._y = -1;
@@ -56,6 +57,7 @@ export class KeyboardController {
         });
 
         document.addEventListener('keyup', e => {
+            e.preventDefault();
             switch (e.key) {
                 case 'ArrowUp':
                 case 'ArrowDown':
@@ -76,7 +78,7 @@ export class KeyboardController {
 
         document.addEventListener('wheel', e => {
             this._wheel = e.deltaY;
-            console.log(this._wheel);
+            // console.log(this._wheel);
             if (handler) {
                 clearTimeout(handler);
                 handler = null;

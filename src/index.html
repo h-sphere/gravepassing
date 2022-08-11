@@ -2,16 +2,51 @@
 <html>
     <head>
         <style>
-            canvas {
+            body {
+                background: black;
+            }
+            #game {
                 position: absolute;
                 top: 50%; left: 50%;
                 transform: translate(-50%, -50%);
-                border: 1px solid #AAA;
             }
+
+            #quadtreevis {
+                position: absolute;
+                bottom: 0; right: 0;
+                border: 1px solid black;
+            }
+
+            #perlin {
+                display: none;
+                position: absolute;
+                top: 0; right: 0;
+                border: 5px solid red;
+            }
+
+            #sidebar {
+                display: none;
+                background: #333;
+                color: #FFF;
+                width: 300px;
+                height: 100vh;
+                position: absolute;
+                top: 0; right: 0;
+                padding: 10px;
+                box-sizing: border-box;
+            }
+
         </style>
     </head>
     <body>
         <canvas id="game" width="800" height="600"></canvas>
+        <canvas id="quadtreevis" width="300" height="300"></canvas>
+        <canvas id="perlin" width="500" height="500"></canvas>
+        <div id="sidebar">
+            <section>
+                <h3>Scenes</h3>
+            </section>
+        </div>
         <script src="game.ts" type="module"></script>
     </body>
 </html>
