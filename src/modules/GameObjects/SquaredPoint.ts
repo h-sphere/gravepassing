@@ -1,7 +1,7 @@
 import { getLinesIntersection } from "../../utils/math";
 import { Color } from "../Color/Color";
 import { Texture } from "../Color/Texture";
-import { Line, Point } from "../Primitives";
+import { Line, Point, Rectangle } from "../Primitives";
 import { RenderablePoint } from "./GameObject";
 
 const POINTS_AMOUNT = 360;
@@ -14,7 +14,7 @@ export class RenderableSquaredPoint extends RenderablePoint {
     protected _getPolygonPoints(gameObjects: Line[], angle: number, direction: number) {
         const points: Point[] = []
         for(let i=0;i<POINTS_AMOUNT;i++) {
-            const ang = direction + i * angle / (POINTS_AMOUNT);
+            const ang = direction + i * angle / (POINTS_AMOUNT) - angle / 2;
             const p = new Point(
                 this.x + this.radius * Math.sin(ang),
                 this.y + this.radius * Math.cos(ang),

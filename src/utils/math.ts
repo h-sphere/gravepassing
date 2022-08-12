@@ -30,3 +30,18 @@ export const getLinesIntersection = (l1: Line, l2: Line): Point | null => {
 export const isPointOnLine = (p: Point, l: Line): boolean => {
     return distance(l.p1, p) + distance(l.p2, p) - distance(l.p1, l.p2) < ELIPSON;
 }
+
+const normaliseAngle = (a: number) => {
+    return (a + 2 * Math.PI) % (2 * Math.PI);
+}
+
+export const getAngularDistance = (target: number, compare: number) => {
+    return ((target - compare) + 2 * Math.PI) % (2 * Math.PI);
+}
+
+export const isAngleInRange = (angle: number, minAngle: number, maxAngle: number) => {
+    const a = normaliseAngle(angle);
+    const a1 = normaliseAngle(minAngle);
+    const a2 = normaliseAngle(maxAngle);
+    return a >= Math.min(a1, a2) && a <= Math.max(a1, a2);
+}

@@ -45,7 +45,7 @@ export class Player extends withRotation(SimplePlayer) implements Rotation {
 
         this.light = new TargetLight(
             this.center,
-            0.2,
+            0.8,
             5,
             Color.WHITE,
             Math.PI/ 3,
@@ -69,7 +69,7 @@ export class Player extends withRotation(SimplePlayer) implements Rotation {
     getRenderInstructions() {
         return [
             ...super.getRenderInstructions(),
-            ...this.light.getRenderInstructions(),
+            // ...this.light.getRenderInstructions(),
             // ...this.getVisionRays(Math.PI / 3).map(r => RenderableLine.fromLine(r, 0.2, Color.BLUE))
         ]
     }

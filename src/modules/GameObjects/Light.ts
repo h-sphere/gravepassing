@@ -1,4 +1,4 @@
-import { distance } from "../../utils/math";
+import { distance, getAngularDistance, isAngleInRange } from "../../utils/math";
 import { Color } from "../Color/Color";
 import { TAG } from "../constants/tags";
 import { Point, Rectangle } from "../Primitives";
@@ -67,6 +67,14 @@ export class TargetLight extends Light {
             this.center.add(this.distance, this.distance),
         );
     }
+
+    // getIntensityAtPoint(p: Point) {
+    //     const angle = Math.atan2(p.y - this.center.y, p.x - this.center.x);
+    //     if (Math.abs(getAngularDistance(this.direction, angle)) < this.angle / 2) {
+    //         return super.getIntensityAtPoint(p);
+    //     }
+    //     return 0;
+    // }
 
 
     isGlobal = false;

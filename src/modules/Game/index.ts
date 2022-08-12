@@ -68,7 +68,7 @@ export class Game {
         this.gameObjects.add(this.player.light);
         this.camera.setCenter(this.player.center);
 
-        this.qtRender = new QuadTreeRenderer(document.querySelector<HTMLCanvasElement>('#quadtreevis')!);
+        // this.qtRender = new QuadTreeRenderer(document.querySelector<HTMLCanvasElement>('#quadtreevis')!);
     }
 
     render() {
@@ -87,7 +87,7 @@ export class Game {
         this.renderer.render(this.camera, this.gameObjects, tDiff);
         this.lastRenderTime = Date.now();
 
-        this.qtRender.renderQuadtree((this.gameObjects as unknown as QuadTreeContainer).tree);
+        // this.qtRender.renderQuadtree((this.gameObjects as unknown as QuadTreeContainer).tree);
 
         requestAnimationFrame(() => this.render());
     }

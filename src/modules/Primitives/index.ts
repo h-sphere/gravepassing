@@ -24,8 +24,8 @@ export class Line {
 
     getMidpoint(location: number = 0.5) {
         return new Point(
-            (this.p1.x * (1-location) + this.p2.x * location) / 2,
-            (this.p1.y * (1-location) + this.p2.y * location) / 2,
+            (this.p1.x * (1-location) + this.p2.x * location),
+            (this.p1.y * (1-location) + this.p2.y * location),
         );
     }
 
@@ -45,6 +45,14 @@ export class Rectangle extends Line {
 
     static fromPoint(p: Point) {
         return new Rectangle(p.copy(), p.copy());
+    }
+    
+    static withPointCenter(p: Point, width: number, height: number): Rectangle {
+        return new Rectangle(
+            new Point(p.x - width / 2,
+            p.y - height / 2),
+            new Point(p.x + width / 2, p.y + height / 2)
+        )
     }
 
     get width() {

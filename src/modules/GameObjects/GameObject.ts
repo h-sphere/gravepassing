@@ -73,7 +73,7 @@ export class RenderablePoint extends withTags(Point) implements GameObject, Rend
     }
 
     getBoundingBox() {
-        return Rectangle.fromPoint(this);
+        return Rectangle.withPointCenter(this, this.radius*2, this.radius*2);
     }
 
     update() {}

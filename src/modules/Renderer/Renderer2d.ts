@@ -60,6 +60,7 @@ export class Renderer2d implements Renderer {
     }
 
     renderLine(line: RenderableLine, lights: Light[]) {
+        let debugPoints = true;
         const p1 = this.getPositionOnScreen(line.p1);
         const p2 = this.getPositionOnScreen(line.p2);
         let grd;
@@ -69,10 +70,29 @@ export class Renderer2d implements Renderer {
             // Compute lights
             const l = line.color.l;
 
+            if (debugPoints) {
+                const onScreen = this.getPositionOnScreen(line.p1);
+                this.ctx.beginPath();
+                this.ctx.arc(onScreen[0], onScreen[1], 1, 0, 2 * Math.PI);
+                this.ctx.fill();
+                const onScreen2 = this.getPositionOnScreen(line.p2);
+                this.ctx.beginPath();
+                this.ctx.arc(onScreen2[0], onScreen2[1], 1, 0, 2 * Math.PI);
+                this.ctx.fill();
+            }
+
             grd = this.ctx.createLinearGradient(p1[0], p1[1], p2[0], p2[1]);
             for(let i=0;i<=1;i+=0.02) {
+                const point = line.getMidpoint(i);
+                if (debugPoints) {
+                    this.ctx.fillStyle = "white";
+                    const onScreen = this.getPositionOnScreen(point);
+                    this.ctx.beginPath();
+                    this.ctx.arc(onScreen[0], onScreen[1], 1, 0, 2 * Math.PI);
+                    this.ctx.fill();
+                }
                 grd.addColorStop(i, line.color
-                    .withL(l * lightIntensityAtPoint(line.getMidpoint(i), lights)).toString())
+                    .withL(l * lightIntensityAtPoint(point, lights)).toString())
             }
             // grd.addColorStop(0, line.color
             //     .withL(l * lightIntensityAtPoint(line.p1, lights)).toString());
@@ -117,7 +137,9 @@ export class Renderer2d implements Renderer {
         // this.ctx.fillStyle = "red";
 
         // FIXME: filter properly.
-        const points = point.getPolygonPoints(gameObjects.getObjectsInArea(point.getBoundingBox(), TAG.OBSTACLE) as unknown[] as Line[]);
+        const obstacles = gameObjects.getObjectsInArea(point.getBoundingBox(), TAG.OBSTACLE) as unknown[] as Line[];
+        console.log('obstac', obstacles);
+        const points = point.getPolygonPoints(obstacles);
         this.ctx.beginPath();
         const initial = this.getPositionOnScreen(points[0]);
         this.ctx.moveTo(...initial);
@@ -172,7 +194,7 @@ export class Renderer2d implements Renderer {
 
 
                 if (this.boundingBoxEnable) {
-                    this.ctx.strokeStyle = "white";
+                    this.ctx.strokeStyle = "rgba(255,255,255,0.6)";
                     this.ctx.lineWidth = 1;
                     const bb = obj.getBoundingBox();
                     const p = this.getPositionOnScreen(bb.p1);
