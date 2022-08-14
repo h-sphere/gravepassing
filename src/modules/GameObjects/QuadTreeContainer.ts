@@ -36,7 +36,6 @@ export class QuadTreeContainer implements GameObjectsContainer {
     getObjectsInArea(rectangle: Rectangle, t: string | undefined = undefined): GameObject[] {
         const obj = [...this.globalObjects, ...this.quadTree.getInArea(rectangle)];
         if (t) {
-            console.log('SELECTED FOLLOWING', obj);
             return obj.filter(o => o.hasTag(t));
         }
         return obj;

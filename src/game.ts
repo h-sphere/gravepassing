@@ -1,9 +1,27 @@
+import { PerlinTexture } from "./modules/Color/PerlinTexture";
 import { Game } from "./modules/Game";
+import { Point, Rectangle } from "./modules/Primitives";
 
 import {perlin2, seed } from "./utils/perlin";
+import { renderNoise } from "./experiments/perlinNoiseCanvas";
 
-const game = new Game(document.querySelector('#game')!);
+const gameObject = document.querySelector<HTMLCanvasElement>('#game')!;
+
+const game = new Game(gameObject);
 game.start();
+
+// renderNoise(gameObject, gameObject.getContext('2d')!);
+
+// const perlin = new PerlinTexture(
+//     new Rectangle(
+//         Point.ORIGIN,
+//         Point.ORIGIN.add(5, 5)
+//     )
+// )
+
+// const ctx = gameObject.getContext('2d')!;
+
+// perlin.render(ctx, 0, 0, 20, 20);
 
 // seed(0);
 

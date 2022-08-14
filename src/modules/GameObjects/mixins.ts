@@ -1,10 +1,22 @@
 import { getLinesIntersection } from "../../utils/math";
-import { Line, Point } from "../Primitives";
+import { TAG } from "../constants/tags";
+import { Line, Point, Rectangle } from "../Primitives";
 import { GameObject } from "./GameObject";
+import { GameObjectsContainer } from "./GameObjectsContainer";
 
 export class EmptyClass {}
 
 export type Constructable<T = {}> = new (...args: any[]) => T;
+
+type Mixin<T> = (constructor: Constructable<T>) => new (...args: any[]) => T;
+
+// export const applyMixins = <T, J>(...mixins: readonly Mixin<J>[]) => (F: Constructable<T>) => {
+//     let Cl = F;
+//     for (let mx of mixins) {
+//         Cl = mx(Cl);
+//     }
+//     return Cl;
+// }
 
 type MethodsToOmit = 'getRenderInstructions' | 'update' | 'getBoundingBox' | 'isGlobal';
 
@@ -67,5 +79,30 @@ export function withRotation<T extends Constructable<WithCenter & WithObstacles>
             }
             return lines;
         }
+    }
+}
+
+interface Movable {
+    move(dt: number, direction: Point, speed: number, container: GameObjectsContainer);
+}
+
+export function withMovement<T extends Constructable<WithCenter>>(constructor: T) {
+    return class extends constructor implements Movable {
+        move(dt: number, direction: Point, speed: number, container: GameObjectsContainer) {
+            let distance = direction.mul(dt * speed);
+            let line = new Line(this.center, this.center.addVec(distance));
+            let shortened = false;
+            const obstacles = container.getObjectsInArea(new Rectangle(this.center, this.center.addVec(distance)), TAG.OBSTACLE) as unknown[] as Line[]; // FIXME
+            for (let ob of obstacles) {
+                const i = getLinesIntersection(line, ob);
+                if (i) {
+                    line.p2 = i;
+                    shortened = true;
+                }
+            }
+            // move slightly from the end
+            this.center = this.center.addVec(line.getMidpoint(shortened ? 0.4 : 1).diffVec(line.p1));
+        }
+
     }
 }

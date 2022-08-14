@@ -1,12 +1,17 @@
 import { getLinesIntersection } from "../../utils/math";
 import { Color } from "../Color/Color";
 import { ColorGradient } from "../Color/Gradient";
+import { KeyboardController } from "../Controller/KeyboardController";
 import { Line, Point, Rectangle } from "../Primitives";
 import { GameObject, Renderable, RenderableLine, RenderablePoint } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { Light, TargetLight } from "./Light";
-import { EmptyClass, Rotation, withRotation, withTags } from "./mixins";
+import { EmptyClass, Rotation, withMovement, withRotation, withTags } from "./mixins";
 import { ConicRenderableSquaredPoint } from "./SquaredPoint";
+
+
+const MOVEMENT_VELOCITY = 0.01;
+const ROTATION_VELOCITY = Math.PI;
 
 class SimplePlayer extends withTags(EmptyClass) implements GameObject {
     center: Point;
@@ -38,10 +43,12 @@ class SimplePlayer extends withTags(EmptyClass) implements GameObject {
     
 }
 
-export class Player extends withRotation(SimplePlayer) implements Rotation {
+export class Player extends withRotation(withMovement(SimplePlayer)) implements Rotation {
     public light: TargetLight;
+    private controller: KeyboardController;
     constructor() {
         super();
+        this.controller = new KeyboardController();
 
         this.light = new TargetLight(
             this.center,
@@ -60,6 +67,17 @@ export class Player extends withRotation(SimplePlayer) implements Rotation {
 
     get rotation() {
         return this._rotation;
+    }
+
+
+    update(dt: number, container: GameObjectsContainer) {
+        const p = new Point(
+            this.controller.x,
+            this.controller.y,
+        )
+        this.rotation += dt * ROTATION_VELOCITY * this.controller.rotation / 1000;
+        this.move(dt, p, MOVEMENT_VELOCITY, container);
+        this.light.center = this.center;
     }
     
     isGlobal = false;

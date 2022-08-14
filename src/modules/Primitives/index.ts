@@ -9,6 +9,18 @@ export class Point {
     add(x: number, y: number) {
         return new Point(this.x + x, this.y + y);
     }
+    
+    addVec(p: Point) {
+        return new Point(this.x + p.x, this.y + p.y);
+    }
+
+    diffVec(p: Point) {
+        return new Point(this.x - p.x, this.y - p.y);
+    }
+
+    mul(n: number) {
+        return new Point(this.x * n, this.y * n);
+    }
 
     static get ORIGIN() {
         return new Point(0, 0);

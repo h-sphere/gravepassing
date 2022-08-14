@@ -18,9 +18,8 @@ import { QuadTreeContainer } from "../GameObjects/QuadTreeContainer";
 import { FirstScene } from "../Scene/FirstScene";
 import { LightingScene } from "../Scene/LightingScene";
 import { RoomScene } from "../Scene/RoomScene";
+import { Scene } from "../Scene/Scene";
 
-const MOVEMENT_VELOCITY = 5;
-const ROTATION_VELOCITY = Math.PI;
 const ZOOM_SPEED = 1;
 
 export class Game {
@@ -60,22 +59,19 @@ export class Game {
         //     ));
         // }
 
-        const scene = new RoomScene();
+        const scene = new FirstScene();
         scene.register(this.gameObjects);
 
         this.player = new Player();
         this.gameObjects.add(this.player);
         this.gameObjects.add(this.player.light);
-        this.camera.setCenter(this.player.center);
+        this.camera.follow(this.player);
 
         // this.qtRender = new QuadTreeRenderer(document.querySelector<HTMLCanvasElement>('#quadtreevis')!);
     }
 
     render() {
         const tDiff = Date.now() - this.lastRenderTime;
-        this.player.center.x += tDiff * MOVEMENT_VELOCITY * this.controller.x / 1000;
-        this.player.center.y += tDiff * MOVEMENT_VELOCITY * this.controller.y / 1000;
-        this.player.rotation += tDiff * ROTATION_VELOCITY * this.controller.rotation / 1000;
         
         this.gameObjects.getAll().forEach(g => {
             g.update(tDiff, this.gameObjects);

@@ -17,8 +17,9 @@ const ZOOM_MAGNIFICATION_PER_VALUE = 0.1;
 export class Renderer2d implements Renderer {
 
     private gridEnabled: boolean = false;
-    private fpsEnable: boolean = true;
+    private fpsEnable: boolean = false;
     private boundingBoxEnable: boolean  = false;
+    private debugLinePoints: boolean = false;
 
     private zoom: number;
 
@@ -60,7 +61,6 @@ export class Renderer2d implements Renderer {
     }
 
     renderLine(line: RenderableLine, lights: Light[]) {
-        let debugPoints = true;
         const p1 = this.getPositionOnScreen(line.p1);
         const p2 = this.getPositionOnScreen(line.p2);
         let grd;
@@ -70,7 +70,7 @@ export class Renderer2d implements Renderer {
             // Compute lights
             const l = line.color.l;
 
-            if (debugPoints) {
+            if (this.debugLinePoints) {
                 const onScreen = this.getPositionOnScreen(line.p1);
                 this.ctx.beginPath();
                 this.ctx.arc(onScreen[0], onScreen[1], 1, 0, 2 * Math.PI);
@@ -84,7 +84,7 @@ export class Renderer2d implements Renderer {
             grd = this.ctx.createLinearGradient(p1[0], p1[1], p2[0], p2[1]);
             for(let i=0;i<=1;i+=0.02) {
                 const point = line.getMidpoint(i);
-                if (debugPoints) {
+                if (this.debugLinePoints) {
                     this.ctx.fillStyle = "white";
                     const onScreen = this.getPositionOnScreen(point);
                     this.ctx.beginPath();
@@ -138,7 +138,6 @@ export class Renderer2d implements Renderer {
 
         // FIXME: filter properly.
         const obstacles = gameObjects.getObjectsInArea(point.getBoundingBox(), TAG.OBSTACLE) as unknown[] as Line[];
-        console.log('obstac', obstacles);
         const points = point.getPolygonPoints(obstacles);
         this.ctx.beginPath();
         const initial = this.getPositionOnScreen(points[0]);
@@ -180,7 +179,6 @@ export class Renderer2d implements Renderer {
             this.renderGrid();
         }
         const objects = gameObjects.getObjectsInArea(boundingBox);
-        console.log('objects in bounding box', objects);
         const lights = objects.filter(o => o instanceof Light);
         for (const object of objects) {
             for (const obj of object.getRenderInstructions()) {

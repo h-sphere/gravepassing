@@ -20,16 +20,16 @@ export class LightingScene extends Scene {
             this.gameObjects.add(line);
         }
 
-        // for(let i=0;i<100;i++) {
-        //     const light = new MovingLight(
-        //         new Point(Math.random() * 1000 - 500, Math.random() * 1000 - 500),
-        //         Math.random() * 0.5 + 0.2,
-        //         Math.random() * 100 + 20,
-        //         Math.random() > 0.3 ? Color.WHITE : Color.YELLOW,
-        //         new Point(Math.random() * 100, Math.random() * 300),
-        //         Math.random() * 40,
-        //     );
-        //     this.gameObjects.add(light);
-        // }
+        for(let i=0;i<100;i++) {
+            const light = new MovingLight(
+                new Point(Math.random() * 1000 - 500, Math.random() * 1000 - 500),
+                Math.random() * 0.5 + 0.2,
+                Math.random() * 100 + 20,
+                Math.random() > 0.3 ? Color.WHITE : Color.YELLOW,
+                new Point(Math.random() * 100, Math.random() * 300),
+                Math.random() * 40,
+            );
+            this.gameObjects.add(light);
+        }
     }
 }
