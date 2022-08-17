@@ -12,7 +12,7 @@ import { Line, Point } from "../Primitives";
 
 export class Camera {
     constructor(private ctx: CanvasRenderingContext2D, private width: number, private height: number) {}
-    public zoom: number = 3;
+    public zoom: number = 15;
     private following: WithCenter;
 
     get center() {

@@ -42,7 +42,7 @@ export class Game {
         this.canvas.height = h;
         this.camera = new Camera(this.ctx, w, h);
         this.gameObjects = new QuadTreeContainer();
-        this.renderer = new IsometricRenderer(this.ctx, canvas.width, canvas.height);
+        this.renderer = new Renderer2d(this.ctx, canvas.width, canvas.height);
 
         // const light = new MovingLight(Point.ORIGIN.add(5, 5), 0.2, 15, Color.YELLOW, new Point(50, 0), 10);
         // this.gameObjects.add(light);

@@ -2,11 +2,13 @@ import { lightIntensityAtPoint } from "../../utils/lightIntesity";
 import { Camera } from "../Camera";
 import { Color } from "../Color/Color";
 import { ColorGradient } from "../Color/Gradient";
+import { Ground } from "../Color/Image";
 import { Texture } from "../Color/Texture";
 import { TAG } from "../constants/tags";
 import { RenderableLine, RenderablePoint } from "../GameObjects/GameObject";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
 import { Light } from "../GameObjects/Light";
+import { RectangleObject } from "../GameObjects/Rectangle";
 import { RenderableSquaredPoint } from "../GameObjects/SquaredPoint";
 import { Line, Point, Rectangle } from "../Primitives";
 import { Renderer } from "./Renderer";
@@ -69,8 +71,17 @@ export class Renderer2d implements Renderer {
     }
 
     private renderBackground() {
-        this.ctx.clearRect(0, 0, this.width, this.height)
-        this.ctx.fillStyle = '#000';
+
+        const ground = new Ground(150, 150);
+
+        this.ctx.clearRect(0, 0, this.width, this.height);
+
+        const point = this.getPositionOnScreen(new Point(Math.floor(this.bb.p1.x), Math.floor(this.bb.p1.y)));
+        const unitSize = 1 / this.getSizePerPixel();
+        this.ctx.fillStyle = ground.render(this.ctx, point[0], point[1], point[0] + unitSize
+        , point[1] + unitSize);
+
+        // this.ctx.fillStyle = 'rgb(20,20,20)'
         this.ctx.fillRect(0, 0, this.width, this.height);
     }
 
@@ -125,6 +136,22 @@ export class Renderer2d implements Renderer {
         this.ctx.moveTo(...p1);
         this.ctx.lineTo(...p2);
         this.ctx.stroke();
+    }
+
+    private renderRectangle(rect: RectangleObject) {
+        const r = rect.rectangle;
+        this.ctx.beginPath();
+        // const pattern = this.ctx.createPattern(image, repetition)
+
+        const p1 = this.getPositionOnScreen(r.p1);
+        const p2 = this.getPositionOnScreen(r.p2);
+
+        this.ctx.fillStyle = rect.texture.render(this.ctx, ...p1, ...p2);
+        this.ctx.moveTo(...this.getPositionOnScreen(r.p1));
+        this.ctx.lineTo(...this.getPositionOnScreen(r.p1.add(r.width, 0)));
+        this.ctx.lineTo(...this.getPositionOnScreen(r.p2));
+        this.ctx.lineTo(...this.getPositionOnScreen(r.p1.add(0, r.height)));
+        this.ctx.fill();
     }
 
     private resolveCircularColor(color: Texture, ctx, p: [number, number], r) {
@@ -203,6 +230,8 @@ export class Renderer2d implements Renderer {
                     this.renderSquarePoint(obj, gameObjects);
                 } else if (obj instanceof RenderablePoint) {
                     this.renderPoint(obj);
+                } else if (obj instanceof RectangleObject) {
+                    this.renderRectangle(obj);
                 }
 
 

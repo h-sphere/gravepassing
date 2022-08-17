@@ -1,12 +1,14 @@
 import { getLinesIntersection } from "../../utils/math";
 import { Color } from "../Color/Color";
 import { ColorGradient } from "../Color/Gradient";
+import { PlayerTexture } from "../Color/Image";
 import { KeyboardController } from "../Controller/KeyboardController";
 import { Line, Point, Rectangle } from "../Primitives";
 import { GameObject, Renderable, RenderableLine, RenderablePoint } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { Light, TargetLight } from "./Light";
 import { EmptyClass, Rotation, withMovement, withRotation, withTags } from "./mixins";
+import { RectangleObject } from "./Rectangle";
 import { ConicRenderableSquaredPoint } from "./SquaredPoint";
 
 
@@ -20,7 +22,7 @@ class SimplePlayer extends withTags(EmptyClass) implements GameObject {
         this.center = new Point(0, 0);
     }
     getBoundingBox(): Rectangle {
-        return Rectangle.fromPoint(this.center);
+        return new Rectangle(this.center, this.center.add(1, 1));
     }
 
     private _obstacles: GameObject[] = [];
@@ -31,7 +33,7 @@ class SimplePlayer extends withTags(EmptyClass) implements GameObject {
 
     getRenderInstructions(): Renderable[] {
         return [
-            RenderablePoint.fromPoint(this.center, 0.2, Color.GREEN)
+            new RectangleObject(this.getBoundingBox(), new PlayerTexture(100, 100))
         ]
     }
 
@@ -77,7 +79,7 @@ export class Player extends withRotation(withMovement(SimplePlayer)) implements 
         )
         this.rotation += dt * ROTATION_VELOCITY * this.controller.rotation / 1000;
         this.move(dt, p, MOVEMENT_VELOCITY, container);
-        this.light.center = this.center;
+        // this.light.center = this.center;
     }
     
     isGlobal = false;
