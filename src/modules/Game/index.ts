@@ -19,6 +19,7 @@ import { FirstScene } from "../Scene/FirstScene";
 import { LightingScene } from "../Scene/LightingScene";
 import { RoomScene } from "../Scene/RoomScene";
 import { Scene } from "../Scene/Scene";
+import { IsometricRenderer } from "../Renderer/IsometricRenderer";
 
 const ZOOM_SPEED = 1;
 
@@ -39,9 +40,9 @@ export class Game {
         this.ctx = canvas.getContext('2d')!;
         this.canvas.width = w;
         this.canvas.height = h;
-        this.camera = new Camera(this.ctx, w, h, new Point(50, 50));
+        this.camera = new Camera(this.ctx, w, h);
         this.gameObjects = new QuadTreeContainer();
-        this.renderer = new Renderer2d(this.ctx, canvas.width, canvas.height);
+        this.renderer = new IsometricRenderer(this.ctx, canvas.width, canvas.height);
 
         // const light = new MovingLight(Point.ORIGIN.add(5, 5), 0.2, 15, Color.YELLOW, new Point(50, 0), 10);
         // this.gameObjects.add(light);
@@ -59,7 +60,7 @@ export class Game {
         //     ));
         // }
 
-        const scene = new FirstScene();
+        const scene = new RoomScene();
         scene.register(this.gameObjects);
 
         this.player = new Player();

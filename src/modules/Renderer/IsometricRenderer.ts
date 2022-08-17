@@ -14,9 +14,9 @@ import { Renderer } from "./Renderer";
 const MAIN_ZOOM_RANGE = 0.02; // points per pixel
 const ZOOM_MAGNIFICATION_PER_VALUE = 0.1;
 
-export class Renderer2d implements Renderer {
+export class IsometricRenderer implements Renderer {
 
-    private gridEnabled: boolean = false;
+    private gridEnabled: boolean = true;
     private fpsEnable: boolean = false;
     private boundingBoxEnable: boolean  = false;
     private debugLinePoints: boolean = false;
@@ -62,10 +62,22 @@ export class Renderer2d implements Renderer {
         const ySizePerPixel = this.getSizePerPixel();
         const xSizePerPixel = this.getSizePerPixel();
 
+        const width = 1 / this.getSizePerPixel();
+        const height = 2 / this.getSizePerPixel();
+
+        const screenX = this.width / 2 - x * width / 2 + y * width / 2;
+        const screenY = this.height / 2 - y * height / 2 - x * height / 2;
+
+
         return [
-            this.width / 2 - x / xSizePerPixel,
-            this.height / 2 - y / ySizePerPixel,
-        ];
+            screenX,
+            screenY,
+        ]
+
+        // return [
+        //     x / xSizePerPixel,
+        //     y / ySizePerPixel,
+        // ];
     }
 
     private renderBackground() {
@@ -122,9 +134,12 @@ export class Renderer2d implements Renderer {
         this.ctx.beginPath()
         this.ctx.lineWidth = line.width / this.getSizePerPixel() / 20;
         this.ctx.strokeStyle = grd;
+        this.ctx.fillStyle = grd;
         this.ctx.moveTo(...p1);
         this.ctx.lineTo(...p2);
-        this.ctx.stroke();
+        this.ctx.lineTo(p2[0], p2[1] - 5 / this.getSizePerPixel());
+        this.ctx.lineTo(p1[0], p1[1] - 5 / this.getSizePerPixel());
+        this.ctx.fill();
     }
 
     private resolveCircularColor(color: Texture, ctx, p: [number, number], r) {
