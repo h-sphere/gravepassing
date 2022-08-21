@@ -4,7 +4,7 @@ import { Texture } from "../Color/Texture";
 import { Line, Point, Rectangle } from "../Primitives";
 import { RenderablePoint } from "./GameObject";
 
-const POINTS_AMOUNT = 360;
+const POINTS_AMOUNT = 64;
 
 export class RenderableSquaredPoint extends RenderablePoint {
     static fromPoint(p: Point, radius: number = 0.1, color: Texture = Color.RED) {

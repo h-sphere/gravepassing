@@ -1,4 +1,6 @@
 import { getLinesIntersection } from "../../utils/math";
+import { Image, SIZE } from "../Color/Image";
+import { Dither } from "../Color/Sprite";
 import { TAG } from "../constants/tags";
 import { Line, Point, Rectangle } from "../Primitives";
 import { GameObject } from "./GameObject";
@@ -18,7 +20,7 @@ type Mixin<T> = (constructor: Constructable<T>) => new (...args: any[]) => T;
 //     return Cl;
 // }
 
-type MethodsToOmit = 'getRenderInstructions' | 'update' | 'getBoundingBox' | 'isGlobal';
+type MethodsToOmit = 'getRenderInstructions' | 'update' | 'getBoundingBox' | 'isGlobal' | 'toLines';
 
 export function withTags<T extends Constructable>(constructor: T) {
     return class extends constructor implements Omit<GameObject, MethodsToOmit> {
@@ -92,7 +94,7 @@ export function withMovement<T extends Constructable<WithCenter>>(constructor: T
             let distance = direction.mul(dt * speed);
             let line = new Line(this.center, this.center.addVec(distance));
             let shortened = false;
-            const obstacles = container.getObjectsInArea(new Rectangle(this.center, this.center.addVec(distance)), TAG.OBSTACLE) as unknown[] as Line[]; // FIXME
+            const obstacles = container.getObjectsInArea(new Rectangle(this.center, this.center.addVec(distance)), TAG.OBSTACLE).map(o => o.toLines()).flat();
             for (let ob of obstacles) {
                 const i = getLinesIntersection(line, ob);
                 if (i) {
@@ -104,5 +106,42 @@ export function withMovement<T extends Constructable<WithCenter>>(constructor: T
             this.center = this.center.addVec(line.getMidpoint(shortened ? 0.4 : 1).diffVec(line.p1));
         }
 
+    }
+}
+
+
+export interface WithLightIface {
+    setLight(lef: number, right: number): void;
+}
+
+export function withLight<T extends Constructable<Image>>(constructor: T) {
+    return class extends constructor implements WithLightIface {
+        private bmpCopy;
+        setLight(left: number, right: number) {
+            if (!this.bmp) {
+                return 'yellow';
+            }
+            if (!this.bmpCopy) {
+                this.bmpCopy = this.bmp;
+            }
+            // We could probably tan it later
+            this.ctx.clearRect(this.pos[0], this.pos[1], this.w, this.h);
+            this.ctx.drawImage(this.bmpCopy, this.pos[0], this.pos[1]);
+            // this.ctx.drawImage(Sprite.getImage(), -this.x * SIZE, -this.y * SIZE);
+            // const dither = Dither.getDither(left);
+            // this.ctx.fillStyle = dither.render(this.ctx, this.pos[0], this.pos[1], this.w, this.h);
+            const grd = this.ctx.createLinearGradient(0, 0, this.w, 0);
+            grd.addColorStop(0, 'rgba(0, 0, 0,' + (1 - left) + ')');
+            grd.addColorStop(1, 'rgba(0, 0, 0,' + (1 - left) + ')'); // right to have continous but this way it looks more natural.
+            this.ctx.fillStyle = grd;
+
+
+            // this.ctx.drawImage(Sprite.getImage(), -this.x * SIZE, -this.y * SIZE);
+            // this.ctx.fillStyle = this.d.render(this.ctx, 0, 0, SIZE, SIZE);
+            this.ctx.globalCompositeOperation = 'source-atop';
+            this.ctx.fillRect(this.pos[0], this.pos[1], this.w, this.h);
+            this.generateBmp()
+            this.ctx.globalCompositeOperation = 'source-over';
+        }
     }
 }

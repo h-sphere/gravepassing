@@ -20,6 +20,9 @@ export const getLinesIntersectionInternal = (l1: Line, l2: Line): Point => {
 }
 
 export const getLinesIntersection = (l1: Line, l2: Line): Point | null => {
+    if (!l1 || !l2) {
+        return null;
+    }
     const p = getLinesIntersectionInternal(l1, l2);
     if (isPointOnLine(p, l1) && isPointOnLine(p, l2)) {
         return p;

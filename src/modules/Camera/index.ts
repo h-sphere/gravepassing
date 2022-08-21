@@ -11,12 +11,14 @@ import { RenderableSquaredPoint } from "../GameObjects/SquaredPoint";
 import { Line, Point } from "../Primitives";
 
 export class Camera {
-    constructor(private ctx: CanvasRenderingContext2D, private width: number, private height: number) {}
-    public zoom: number = 15;
+    constructor(private ctx: CanvasRenderingContext2D) {}
     private following: WithCenter;
 
     get center() {
-        return this.following.center;
+        if (!this.following) {
+            return Point.ORIGIN;
+        }
+        return this.following.center.mul(1/10, 1/7).round().mul(10, 7).add(0, 2);
     }
 
     follow(go: WithCenter) {

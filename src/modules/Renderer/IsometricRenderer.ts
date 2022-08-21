@@ -17,7 +17,7 @@ const ZOOM_MAGNIFICATION_PER_VALUE = 0.1;
 export class IsometricRenderer implements Renderer {
 
     private gridEnabled: boolean = true;
-    private fpsEnable: boolean = false;
+    private fpsEnable: boolean = true;
     private boundingBoxEnable: boolean  = false;
     private debugLinePoints: boolean = false;
 

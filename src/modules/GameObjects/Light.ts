@@ -1,13 +1,14 @@
 import { distance, getAngularDistance, isAngleInRange } from "../../utils/math";
 import { Color } from "../Color/Color";
 import { TAG } from "../constants/tags";
-import { Point, Rectangle } from "../Primitives";
+import { Line, Point, Rectangle } from "../Primitives";
 import { GameObject, Renderable, RenderablePoint } from "./GameObject";
 import { EmptyClass, WithCenter, withTags } from "./mixins";
 import { ColorGradient } from "../Color/Gradient";
 import { ConicRenderableSquaredPoint, RenderableSquaredPoint } from "./SquaredPoint";
 
 export class Light extends withTags(EmptyClass) implements GameObject, WithCenter, Renderable {
+    zIndex = 1;
     protected _center: Point;
 
     get center() {
@@ -21,6 +22,9 @@ export class Light extends withTags(EmptyClass) implements GameObject, WithCente
         super();
         this._center = center;
         this._tags.push(TAG.LIGHT);
+    }
+    toLines(): Line[] {
+        return [];
     }
     getBoundingBox(): Rectangle {
         return new Rectangle(
@@ -41,7 +45,7 @@ export class Light extends withTags(EmptyClass) implements GameObject, WithCente
         if (d > this.distance) {
             return 0;
         }
-        return this.intensity * (1 - (d / this.distance));
+        return this.intensity * (1 - (d / this.distance)*(d / this.distance));
     }
 
     update(t: number) {}

@@ -1,58 +1,118 @@
 import { Texture } from "./Texture";
 
+export const SIZE = 16;
+
+
+
 export class Image implements Texture {
-    private canvas: HTMLCanvasElement;
-    protected ctx: CanvasRenderingContext2D;
-    private isGenerated: boolean = false;
+    protected static canvas: HTMLCanvasElement;
+    protected static _ctx: CanvasRenderingContext2D;
+    protected static pointer: [number, number] = [0, 0];
+    protected static maxH = 0;
+    protected isGenerated: boolean = false;
     protected repeat = 'no-repeat';
-    constructor(public width: number, public height: number) {
-        this.canvas = document.createElement('canvas');
-        this.canvas.width = width;
-        this.canvas.height = height;
-        this.ctx = this.canvas.getContext('2d')!;
+
+    public flip: boolean = false;
+
+    protected bmp: ImageBitmap;
+
+    protected pos: [number, number];
+
+    static getSpriteSpot(w: number, h: number): [number, number] {
+        if (!this.canvas) {
+            this.canvas = document.createElement('canvas');
+            this.canvas.width = SIZE * 6;
+            this.canvas.height = SIZE * 20;
+            this._ctx = this.canvas.getContext('2d')!;
+            document.body.appendChild(this.canvas);
+        }
+
+        // "book" spot on sprite canvas
+        // this._ctx.fillStyle = "red";
+        // console.log(w, h);
+        // this._ctx.fillRect(0, this.pointer + h, w, h);
+        if (this.pointer[0] + w <= this.canvas.width) {
+            this.pointer[0] += w;
+            this.maxH = Math.max(this.maxH, this.pointer[1] + h);
+            return [this.pointer[0] - w, this.pointer[1]];
+        }
+        this.pointer[1] = this.maxH;
+        this.maxH = this.maxH + h;
+        this.pointer[0] = w;
+        return [this.pointer[0]-w, this.pointer[1]];
+    }
+
+    get ctx() {
+        return Image._ctx;
+    }
+
+    constructor(protected w: number = SIZE, protected h: number = SIZE) {
+        // this.canvas = document.createElement('canvas');
+        // this.canvas.width = SIZE;
+        // this.canvas.height = SIZE;
+        // this.canvas.className = 'top';
+        this.pos = Image.getSpriteSpot(w, h);
+
     }
 
     protected generate() {
         this.ctx.fillStyle = 'red';
-        this.ctx.fillRect(0, 0, this.width, this.height);
+        this.ctx.fillRect(0, 0, SIZE, SIZE);
         this.ctx.fillStyle = 'yellow';
-        this.ctx.fillRect(this.width / 4, this.height / 4, this.width / 2, this.height / 2);
+        this.ctx.fillRect(SIZE / 4, SIZE / 4, SIZE / 2, SIZE / 2);
+    }
+
+    protected generateBmp() {
+        createImageBitmap(this.ctx.getImageData(this.pos[0], this.pos[1], this.w, this.h))
+        .then(b => {
+            this.bmp = b;
+        })
+    }
+
+    public gen() {
+        if (!this.isGenerated) {
+            // can be generated
+            this.generate()
+            this.generateBmp()
+            this.isGenerated = true;
+        }
     }
 
 
     render(ctx: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number): string | CanvasGradient | CanvasPattern {
-        if (!this.isGenerated) {
-            this.generate()
-            this.isGenerated = true;
+        this.gen();
+        if (!this.bmp) {
+            return 'yellow';
         }
-        const pattern = this.ctx.createPattern(this.canvas, this.repeat)!;
+        const pattern = this.ctx.createPattern(this.bmp, this.repeat)!;
+        
+        // Can be probably done with create image bitmap.
         const matrix = new DOMMatrix();
-        const width = (x2 - x1) / this.width;
-        const height = (y2 - y1) / this.height;
-        pattern.setTransform(matrix.translate(x1, y1).scale(width, height));
+        const width = (x2 - x1) / this.w;
+        const height = (y2 - y1) / this.h;
+        let m = matrix
+            .translate(x1, y1)
+            .scale(width, height);
+        if (this.flip) {
+            m = m.translate(this.w / 2, this.h / 2)
+            .scale(-1, 1)
+            .translate(-this.w / 2, -this.h / 2);
+        }
+        pattern.setTransform(m);
         return pattern;
     }
 }
 
-export class Ground extends Image {
-    protected repeat: string = 'repeat';
-    protected generate(): void {
-        this.ctx.fillStyle = 'rgb(30, 50, 30)';
-        this.ctx.fillRect(0, 0, this.width, this.height);
-        this.ctx.strokeStyle = 'rgb(20, 80, 20)';
-        this.ctx.lineWidth = 10;
-        this.ctx.moveTo(this.width / 4, this.height / 4);
-        this.ctx.lineTo(this.width / 4 + 10, this.height / 2);
-        this.ctx.stroke();
-    }
-}
-
 export class PlayerTexture extends Image {
+    constructor() {
+        super(SIZE, SIZE);
+    }
     protected generate(): void {
         const ctx = this.ctx;
+        ctx.imageSmoothingEnabled = false;
         ctx.fillStyle = 'black';
-        ctx.fillRect(this.width / 4, this.height / 4, this.width / 2, this.height / 2);
-        ctx.fillRect(this.width / 4 + this.width / 6, this.height / 2, this.width / 6, this.height / 2);
+        ctx.fillRect(SIZE / 4, SIZE / 4, SIZE / 2, SIZE / 2);
+        ctx.fillRect(SIZE / 4 + SIZE / 6, SIZE / 2, SIZE / 6, SIZE / 2);
     }
 }
 

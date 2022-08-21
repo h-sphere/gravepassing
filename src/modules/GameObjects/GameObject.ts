@@ -14,6 +14,8 @@ export interface GameObject {
     getBoundingBox(): Rectangle;
 
     isGlobal: boolean;
+    zIndex?: number;
+    toLines(): Line[];
 }
 
 export interface Renderable {
@@ -40,6 +42,10 @@ export class RenderableLine extends withTags(Line) implements GameObject, Render
     }
     
     isGlobal = false;
+
+    toLines(): Line[] {
+        return [this];
+    }
 }
 
 // export class RenderableGradientLine extends RenderableLine {
@@ -66,6 +72,10 @@ export class RenderablePoint extends withTags(Point) implements GameObject, Rend
     }
     getRenderInstructions(): Renderable[] {
         return [this];
+    }
+
+    toLines(): Line[] {
+        return [new Line(this, this)];
     }
 
     static fromPoint(p: Point, radius: number = 0.1, color: Texture = Color.RED) {

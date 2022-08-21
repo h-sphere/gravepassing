@@ -1,13 +1,18 @@
 import { lightIntensityAtPoint } from "../../utils/lightIntesity";
+import { getLinesIntersection } from "../../utils/math";
+import { E } from "../Assets/Emojis";
 import { Camera } from "../Camera";
 import { Color } from "../Color/Color";
 import { ColorGradient } from "../Color/Gradient";
-import { Ground } from "../Color/Image";
-import { Texture } from "../Color/Texture";
+import { SIZE } from "../Color/Image";
+import { CombinedEmoji, DirectionableTexture, Dither, Emoji, Ground, Sprite, SpriteWithLight } from "../Color/Sprite";
+import { Texture, NewTexture } from "../Color/Texture";
 import { TAG } from "../constants/tags";
-import { RenderableLine, RenderablePoint } from "../GameObjects/GameObject";
+import { Game } from "../Game";
+import { GameObject, RenderableLine, RenderablePoint } from "../GameObjects/GameObject";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
 import { Light } from "../GameObjects/Light";
+import { withLight, WithLightIface } from "../GameObjects/mixins";
 import { RectangleObject } from "../GameObjects/Rectangle";
 import { RenderableSquaredPoint } from "../GameObjects/SquaredPoint";
 import { Line, Point, Rectangle } from "../Primitives";
@@ -25,16 +30,26 @@ export class Renderer2d implements Renderer {
 
     private bb: Rectangle;
 
+    private ground: Ground = new Ground();
+
     private zoom: number;
 
     private center: Point;
 
     constructor(private ctx: CanvasRenderingContext2D, private width: number, private height: number) {
-
+        ctx.imageSmoothingEnabled = false;
     }
 
     getSizePerPixel() {
-        return (MAIN_ZOOM_RANGE + ZOOM_MAGNIFICATION_PER_VALUE) / this.zoom;
+        return 1/80;
+    }
+
+    getUnitSize() {
+        return 1 / this.getSizePerPixel();
+    }
+
+    getUnits() {
+        return this.width / this.getUnitSize();
     }
 
     private getBoundingBox(): Rectangle {
@@ -72,17 +87,15 @@ export class Renderer2d implements Renderer {
 
     private renderBackground() {
 
-        const ground = new Ground(150, 150);
-
         this.ctx.clearRect(0, 0, this.width, this.height);
 
         const point = this.getPositionOnScreen(new Point(Math.floor(this.bb.p1.x), Math.floor(this.bb.p1.y)));
         const unitSize = 1 / this.getSizePerPixel();
-        this.ctx.fillStyle = ground.render(this.ctx, point[0], point[1], point[0] + unitSize
-        , point[1] + unitSize);
+        this.ctx.fillStyle = '#1d4d36'; this.ground.render(this.ctx, this.getBoundingBox()); //this.ctx, point[0], point[1], point[0] + unitSize
+        //, point[1] + unitSize);
 
         // this.ctx.fillStyle = 'rgb(20,20,20)'
-        this.ctx.fillRect(0, 0, this.width, this.height);
+        // this.ctx.fillRect(0, 0, this.width, this.height);
     }
 
     renderLine(line: RenderableLine, lights: Light[]) {
@@ -138,20 +151,39 @@ export class Renderer2d implements Renderer {
         this.ctx.stroke();
     }
 
-    private renderRectangle(rect: RectangleObject) {
+    private renderRectangle(rect: RectangleObject, lights: Light[]) {
         const r = rect.rectangle;
         this.ctx.beginPath();
         // const pattern = this.ctx.createPattern(image, repetition)
 
+        // FIXME: with illumination.
+
         const p1 = this.getPositionOnScreen(r.p1);
         const p2 = this.getPositionOnScreen(r.p2);
+        if (rect.texture instanceof Emoji || rect.texture instanceof CombinedEmoji || rect.texture instanceof DirectionableTexture) {
+            (rect.texture as NewTexture).newRender(this.ctx, ...p1, p2[0]-p1[0], p2[1]-p1[1]);
 
-        this.ctx.fillStyle = rect.texture.render(this.ctx, ...p1, ...p2);
-        this.ctx.moveTo(...this.getPositionOnScreen(r.p1));
-        this.ctx.lineTo(...this.getPositionOnScreen(r.p1.add(r.width, 0)));
-        this.ctx.lineTo(...this.getPositionOnScreen(r.p2));
-        this.ctx.lineTo(...this.getPositionOnScreen(r.p1.add(0, r.height)));
-        this.ctx.fill();
+        } else {
+            console.log(rect);
+        }
+        // if (rect.texture instanceof EmojiWithLight || rect.texture instanceof SpriteWithLight) {
+        //     // FIXME: use withLight interface.
+        //     const l1 = lightIntensityAtPoint(r.p1, lights);
+        //     const l2 = lightIntensityAtPoint(r.p2, lights);
+        //     rect.texture.setLight(l1, l2);
+        // }
+
+
+        // FIXME: ADD LIGHTING HERE.
+
+        // /*this.ctx.fillStyle =*/ rect.texture.render(this.ctx, ...p1, ...p2);
+        // const p = this.getPositionOnScreen(r.p1);
+        // // this.ctx.moveTo(...this.getPositionOnScreen(r.p1));
+        // // this.ctx.lineTo(...this.getPositionOnScreen(r.p1.add(r.width, 0)));
+        // // this.ctx.lineTo(...this.getPositionOnScreen(r.p2));
+        // // this.ctx.lineTo(...this.getPositionOnScreen(r.p1.add(0, r.height)));
+        // this.ctx.fillRect(...p, r.width / this.getSizePerPixel(), r.height / this.getSizePerPixel());
+        // // this.ctx.fill();
     }
 
     private resolveCircularColor(color: Texture, ctx, p: [number, number], r) {
@@ -172,21 +204,31 @@ export class Renderer2d implements Renderer {
     }
 
     renderSquarePoint(point: RenderableSquaredPoint, gameObjects: GameObjectsContainer) {
-        const r = point.radius / this.getSizePerPixel();
-        const p = this.getPositionOnScreen(point);
-        this.ctx.fillStyle = this.resolveCircularColor(point.color, this.ctx, p, r);
+        // this.ctx.globalCompositeOperation = 'overlay';
+        // const r = point.radius / this.getSizePerPixel();
+        // const p = this.getPositionOnScreen(point);
+        // this.ctx.fillStyle = this.resolveCircularColor(point.color, this.ctx, p, r);
+
+        // const b = point.getBoundingBox();
+        // for(let i=b.p1.x;i<=b.p2.x;i++) {
+        //     for (let j=b.p1.y;j<=b.p2.y;j++) {
+        //         this.ctx.fillStyle = 
+        //     }
+        // }
         // this.ctx.fillStyle = "red";
 
         // FIXME: filter properly.
-        const obstacles = gameObjects.getObjectsInArea(point.getBoundingBox(), TAG.OBSTACLE) as unknown[] as Line[];
-        const points = point.getPolygonPoints(obstacles);
-        this.ctx.beginPath();
-        const initial = this.getPositionOnScreen(points[0]);
-        this.ctx.moveTo(...initial);
-        points.forEach((po) => {
-            this.ctx.lineTo(...this.getPositionOnScreen(po));
-        });
-        this.ctx.fill();
+        // const obstacles = gameObjects.getObjectsInArea(point.getBoundingBox(), TAG.OBSTACLE).map(o => o.toLines()).flat();
+        // const points = point.getPolygonPoints(obstacles); //.map(p => p.round());
+        // this.ctx.beginPath();
+        // const initial = this.getPositionOnScreen(points[0]);
+        // this.ctx.moveTo(...initial);
+        // points.forEach((po) => {
+        //     const pos = this.getPositionOnScreen(po);
+        //     this.ctx.lineTo(pos[0], pos[1]);
+        // });
+        // this.ctx.fill();
+        // this.ctx.globalCompositeOperation = 'source-over';
     }
 
     renderGrid() {
@@ -210,28 +252,77 @@ export class Renderer2d implements Renderer {
         this.ctx.fillText(text, this.width - size.width - 20, 20 + size.fontBoundingBoxAscent);
     }
 
+    renderDitheredLight(lights: Light[], obstructions: Line[]) {
+        const bb = this.getBoundingBox();
+        for(let i=bb.p1.x;i<=bb.p2.x;i++) {
+            for(let j=bb.p1.y;j<=bb.p2.y;j++) {
+                // console.log("Computing", i, j);
+                // FIXME: light intensity with obstructions;
+                // console.log('lights', lights);
+                obstructions.forEach(x => {
+                    this.renderDebugLine(x, 'red')
+                })
+                const lightsFiltered = lights.filter(l => {
+                    const line = new Line(l.center, new Point(i + 0.5, j + 0.5));
+                    if (l.isGlobal) {
+                        return true;
+                    }
 
-    render(camera: Camera, gameObjects: GameObjectsContainer, dt: number) {
+                    // render helper line
+
+                    // Is light obstructed
+                    const find = obstructions.find(o => getLinesIntersection(o, line));
+                    if (find) {
+                        return false;
+                    }
+                    // this.renderDebugLine(line);
+                    return true;
+                })
+                const l = lightIntensityAtPoint(new Point(i,j), lightsFiltered);
+                // console.log(i,j,l);
+                const d = Dither.getDither(l);
+                const pos = this.getPositionOnScreen(new Point(i,j));
+                const pos2 = this.getPositionOnScreen(new Point(i+1,j+1));
+                this.ctx.fillStyle = d.render(this.ctx, ...pos, ...pos2);
+                this.ctx.fillRect(...pos, pos2[0] - pos[0], pos2[1] - pos[1]);
+            }
+        }
+    }
+
+    renderDebugLine(line: Line, color = 'white') {
+        this.ctx.beginPath();
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeStyle = color;
+        this.ctx.moveTo(...this.getPositionOnScreen(line.p1));
+        this.ctx.lineTo(...this.getPositionOnScreen(line.p2));
+        this.ctx.stroke();
+    }
+
+
+    render(camera: Camera, gameObjects: GameObjectsContainer, dt: number, game: Game) {
         this.center = camera.center;
-        this.zoom = camera.zoom;
+        this.zoom = 1;
         const boundingBox = this.getBoundingBox();
         this.bb = boundingBox;
         this.renderBackground();
         if (this.gridEnabled) {
             this.renderGrid();
         }
-        const objects = gameObjects.getObjectsInArea(boundingBox);
-        const lights = objects.filter(o => o instanceof Light);
+        const objects = gameObjects.getObjectsInArea(boundingBox).sort((a, b) => (a.zIndex || 10) - (b.zIndex || 10));
+        const obstructions = gameObjects.getObjectsInArea(boundingBox, TAG.OBSTACLE).map(o => o.toLines()).flat();
+        const lights = objects.filter(o => o instanceof Light) as Light[];
+        this.renderDitheredLight(lights, obstructions); 
+        
         for (const object of objects) {
             for (const obj of object.getRenderInstructions()) {
                 if (obj instanceof RenderableLine) {
-                    this.renderLine(obj, lights as unknown as Light[]);
+                    this.renderLine(obj, lights);
                 } else if (obj instanceof RenderableSquaredPoint) {
                     this.renderSquarePoint(obj, gameObjects);
                 } else if (obj instanceof RenderablePoint) {
                     this.renderPoint(obj);
                 } else if (obj instanceof RectangleObject) {
-                    this.renderRectangle(obj);
+                    this.renderRectangle(obj, lights);
                 }
 
 
@@ -248,9 +339,59 @@ export class Renderer2d implements Renderer {
             
         }
 
+
         if (this.fpsEnable) {
             this.renderFps(this.gatherFps(1000 / dt));
         }
+
+        this.renderHUD(game);
+    }
+
+    renderHUD(game: Game) {
+        const u = this.getUnitSize();
+        const c = this.ctx;
+        const x = u / 4;
+        const y = (this.getUnits() - 2) * u - x;
+        const q = u / 4;
+        c.strokeStyle = "#1a403b";
+        c.fillStyle = "#1a403b";
+        c.lineWidth = 5;
+        c.fillRect(x + q/2, y + q/2, this.getUnitSize() * (this.getUnits() - 0.75), this.getUnitSize() * 1.75);
+        c.strokeRect(x, y, this.getUnitSize() * (this.getUnits() - 0.5), this.getUnitSize() * 2);
+
+
+        let health = 3
+        for(let i=0;i<5;i+=1) {
+            let e = E.health;
+            if (i >= health) {
+                e = E.healthOff;
+            }
+            e.newRender(c, x + q + i*u/2, y + q/2, u, u);
+        }
+
+        const items = game.player.items;
+        const current = game.player.selected;
+
+        // item slots
+        for(let i=0;i<8;i++) {
+            c.fillStyle = "rgba(0,0,0,0.3)";
+            if (i===current) {
+                c.fillStyle = 'rgba(0,0,0,1)';
+            }
+            c.lineWidth = 5;
+            c.fillRect(x + q + i * u/2+4*i, y + q / 2 + u, u/2, u/2);
+            let it = E.itemBgOff;
+
+            if (i === current) {
+                it = E.itemBg;
+            }
+            it.newRender(c, x + q + i * u/2+4*i, y + q / 2 + u, u, u);
+
+            if (items.length > i) {
+                items[i].newRender(c, x + q + i * u/2+4*i, y + q / 2 + u, u, u);
+            }
+        }
+
     }
 
 

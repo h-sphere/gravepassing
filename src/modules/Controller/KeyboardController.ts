@@ -9,7 +9,6 @@ export class KeyboardController {
     private _y: AxisDirection = 0;
 
     private _wheel: number = 0;
-    private _rotation: number = 0;
 
     public get x() {
         return this._x;
@@ -23,9 +22,7 @@ export class KeyboardController {
         return this._wheel;
     }
     
-    public get rotation() {
-        return this._rotation;
-    }
+    public selection: number = 0;
 
     constructor() {
         this.attach();
@@ -48,10 +45,10 @@ export class KeyboardController {
                     this._x = 1;
                     break;
                 case 'q':
-                    this._rotation = 1;
+                    this.selection = -1;
                     break;
                 case 'w':
-                    this._rotation = -1;
+                    this.selection = 1;
                     break;
             }
         });
@@ -69,12 +66,12 @@ export class KeyboardController {
                     break;
                 case 'q':
                 case 'w':
-                    this._rotation = 0;
+                    this.selection = 0;
                     break;
             }
         });
 
-        let handler: number | null = null;
+        let handler = null;
 
         document.addEventListener('wheel', e => {
             this._wheel = e.deltaY;

@@ -7,7 +7,7 @@ import { renderNoise } from "./experiments/perlinNoiseCanvas";
 
 const gameObject = document.querySelector<HTMLCanvasElement>('#game')!;
 
-const game = new Game(gameObject);
+const game = new Game(gameObject, 10, 10);
 game.start();
 
 // renderNoise(gameObject, gameObject.getContext('2d')!);

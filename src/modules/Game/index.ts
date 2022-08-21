@@ -20,6 +20,7 @@ import { LightingScene } from "../Scene/LightingScene";
 import { RoomScene } from "../Scene/RoomScene";
 import { Scene } from "../Scene/Scene";
 import { IsometricRenderer } from "../Renderer/IsometricRenderer";
+import { SIZE } from "../Color/Image";
 
 const ZOOM_SPEED = 1;
 
@@ -30,17 +31,17 @@ export class Game {
     private controller: KeyboardController;
     private renderer: Renderer;
     private lastRenderTime: number;
-    private player: Player;
+    public player: Player;
 
     private qtRender: QuadTreeRenderer;
 
-    constructor(private canvas: HTMLCanvasElement) {
-        const w = window.innerWidth;
-        const h = window.innerHeight;
+    constructor(private canvas: HTMLCanvasElement, private w: number, h: number) {
+        // const w = window.innerWidth;
+        // const h = window.innerHeight;
         this.ctx = canvas.getContext('2d')!;
-        this.canvas.width = w;
-        this.canvas.height = h;
-        this.camera = new Camera(this.ctx, w, h);
+        this.canvas.width = SIZE * w * 5;
+        this.canvas.height = SIZE * h * 5;
+        this.camera = new Camera(this.ctx);
         this.gameObjects = new QuadTreeContainer();
         this.renderer = new Renderer2d(this.ctx, canvas.width, canvas.height);
 
@@ -66,6 +67,7 @@ export class Game {
         this.player = new Player();
         this.gameObjects.add(this.player);
         this.gameObjects.add(this.player.light);
+        this.gameObjects.add(this.player.go); // fixme.
         this.camera.follow(this.player);
 
         // this.qtRender = new QuadTreeRenderer(document.querySelector<HTMLCanvasElement>('#quadtreevis')!);
@@ -80,8 +82,8 @@ export class Game {
 
         this.gameObjects.update();
 
-        this.camera.zoom = Math.max(0.1, this.camera.zoom + tDiff * ZOOM_SPEED * this.controller.wheel / 1000);
-        this.renderer.render(this.camera, this.gameObjects, tDiff);
+        // this.camera.zoom = Math.max(0.1, this.camera.zoom + tDiff * ZOOM_SPEED * this.controller.wheel / 1000);
+        this.renderer.render(this.camera, this.gameObjects, tDiff, this);
         this.lastRenderTime = Date.now();
 
         // this.qtRender.renderQuadtree((this.gameObjects as unknown as QuadTreeContainer).tree);
