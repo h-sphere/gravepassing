@@ -2,6 +2,23 @@ import { distance } from "../../utils/math";
 import { SIZE } from "../Color/Image";
 
 export class Point {
+
+    static get UNIT_UP() {
+        return Point.ORIGIN.add(0, -1);
+    }
+
+    static get UNIT_DOWN() {
+        return Point.ORIGIN.add(0, 1);
+    }
+
+    static get UNIT_LEFT() {
+        return Point.ORIGIN.add(-1, 0);
+    }
+
+    static get UNIT_RIGHT() {
+        return Point.ORIGIN.add(1, 0);
+    }
+
     constructor(public x: number, public y: number) { }
     copy() {
         return new Point(this.x, this.y);
@@ -53,6 +70,24 @@ export class Line {
 
 
 export class Rectangle extends Line {
+
+    static get UNIT() {
+        return new Rectangle(Point.ORIGIN, Point.ORIGIN);
+    }
+
+    static boundingBox(r1: Rectangle, r2: Rectangle): Rectangle {
+        return new Rectangle(
+            new Point(
+                Math.min(r1.p1.x, r2.p1.x),
+                Math.min(r1.p1.y, r2.p1.y)
+            ),
+            new Point(
+                Math.max(r1.p2.x, r2.p2.x),
+                Math.max(r1.p2.y, r2.p2.y)
+            )
+        );
+    }
+
     constructor(p1: Point, p2: Point) {
         super(
             new Point(Math.min(p1.x, p2.x), Math.min(p1.y, p2.y)),

@@ -6,6 +6,8 @@ export interface GameObjectsContainer {
     getObjectsInArea(rect: Rectangle, t?: string): GameObject[];
     add(obj: GameObject): void;
 
+    remove(obj: GameObject): void;
+
     getAll(): GameObject[];
 
     update();

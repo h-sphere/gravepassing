@@ -56,9 +56,9 @@ export class Image implements Texture {
     }
 
     protected generate() {
-        this.ctx.fillStyle = 'red';
+        this.ctx.fillStyle = 'black';
         this.ctx.fillRect(0, 0, SIZE, SIZE);
-        this.ctx.fillStyle = 'yellow';
+        this.ctx.fillStyle = 'black';
         this.ctx.fillRect(SIZE / 4, SIZE / 4, SIZE / 2, SIZE / 2);
     }
 
@@ -82,7 +82,7 @@ export class Image implements Texture {
     render(ctx: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number): string | CanvasGradient | CanvasPattern {
         this.gen();
         if (!this.bmp) {
-            return 'yellow';
+            return 'transparent';
         }
         const pattern = this.ctx.createPattern(this.bmp, this.repeat)!;
         

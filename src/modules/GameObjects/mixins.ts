@@ -103,7 +103,7 @@ export function withMovement<T extends Constructable<WithCenter>>(constructor: T
                 }
             }
             // move slightly from the end
-            this.center = this.center.addVec(line.getMidpoint(shortened ? 0.4 : 1).diffVec(line.p1));
+            this.center = this.center.addVec(line.getMidpoint(shortened ? 0 : 1).diffVec(line.p1));
         }
 
     }

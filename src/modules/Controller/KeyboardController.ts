@@ -10,6 +10,8 @@ export class KeyboardController {
 
     private _wheel: number = 0;
 
+    private _fire: number = 0;
+
     public get x() {
         return this._x;
     }
@@ -20,6 +22,10 @@ export class KeyboardController {
     
     public get wheel() {
         return this._wheel;
+    }
+
+    public get fire() {
+        return this._fire;
     }
     
     public selection: number = 0;
@@ -50,6 +56,9 @@ export class KeyboardController {
                 case 'w':
                     this.selection = 1;
                     break;
+                case ' ':
+                    this._fire = 1;
+                    break;
             }
         });
 
@@ -68,6 +77,8 @@ export class KeyboardController {
                 case 'w':
                     this.selection = 0;
                     break;
+                case ' ':
+                    this._fire = 0;
             }
         });
 

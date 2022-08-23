@@ -19,7 +19,6 @@ import { FirstScene } from "../Scene/FirstScene";
 import { LightingScene } from "../Scene/LightingScene";
 import { RoomScene } from "../Scene/RoomScene";
 import { Scene } from "../Scene/Scene";
-import { IsometricRenderer } from "../Renderer/IsometricRenderer";
 import { SIZE } from "../Color/Image";
 
 const ZOOM_SPEED = 1;
@@ -66,8 +65,6 @@ export class Game {
 
         this.player = new Player();
         this.gameObjects.add(this.player);
-        this.gameObjects.add(this.player.light);
-        this.gameObjects.add(this.player.go); // fixme.
         this.camera.follow(this.player);
 
         // this.qtRender = new QuadTreeRenderer(document.querySelector<HTMLCanvasElement>('#quadtreevis')!);

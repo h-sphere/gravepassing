@@ -4,6 +4,7 @@ import { Color } from "./Color";
 import { NewTexture, Texture } from "./Texture";
 import { withLight } from "../GameObjects/mixins";
 import { Rectangle } from "../Primitives";
+import { Directional } from "../Assets/Emojis";
 
 // export interface EmojiSettings {
 //     emoji: string,
@@ -14,15 +15,15 @@ import { Rectangle } from "../Primitives";
 export class DirectionableTexture implements NewTexture {
     private direction ='left';
 
-    constructor(public left: Emoji, public right: Emoji, public down: Emoji, public up: Emoji) {
+    constructor(public dir: Directional) {
 
     }
     newRender(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
         switch (this.direction) {
-            case 'right': return this.right.newRender(ctx, x, y, w, h);
-            case 'down': return this.down.newRender(ctx, x, y, w, h);
-            case 'up': return this.up.newRender(ctx, x, y, w, h);
-            default: return this.left.newRender(ctx, x, y, w, h);
+            case 'right': return this.dir.right.newRender(ctx, x, y, w, h);
+            case 'down': return this.dir.down.newRender(ctx, x, y, w, h);
+            case 'up': return this.dir.up.newRender(ctx, x, y, w, h);
+            default: return this.dir.left.newRender(ctx, x, y, w, h);
         }
     }
 
@@ -260,7 +261,7 @@ export class Ground {
             ctx.strokeStyle = "red";
             // FIXME: real proportions here
             ctx.fillRect(oX*m, oY*m, m, m);
-            if (p < 0.2) {
+            if (p > 0.30 && p < 0.31) {
                 this.grass.newRender(ctx, oX*m, oY*m, m, m);
             }
             if (p > 0.5 && p < 0.65) {

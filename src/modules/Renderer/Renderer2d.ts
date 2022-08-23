@@ -158,6 +158,9 @@ export class Renderer2d implements Renderer {
 
         // FIXME: with illumination.
 
+        // DRAW BOUNDING BOX
+        rect.toLines().forEach(l => this.renderDebugLine(l));
+
         const p1 = this.getPositionOnScreen(r.p1);
         const p2 = this.getPositionOnScreen(r.p2);
         if (rect.texture instanceof Emoji || rect.texture instanceof CombinedEmoji || rect.texture instanceof DirectionableTexture) {
@@ -388,9 +391,14 @@ export class Renderer2d implements Renderer {
             it.newRender(c, x + q + i * u/2+4*i, y + q / 2 + u, u, u);
 
             if (items.length > i) {
-                items[i].newRender(c, x + q + i * u/2+4*i, y + q / 2 + u, u, u);
+                items[i].icon.newRender(c, x + q + i * u/2+4*i, y + q / 2 + u, u, u);
             }
         }
+
+        this.ctx.font = "16px Times New Roman";
+        this.ctx.fillStyle = "white";
+
+        this.ctx.fillText(game.player.xp + " xp", 6*u, y + 2*q);
 
     }
 

@@ -44,36 +44,25 @@ export class RoomScene extends Scene {
         //     TAG.OBSTACLE,
         // ));
         
-        this.gameObjects.add(new RectangleObject(
-            Point.ORIGIN.add(-2, -3),
-            ND,
-            TAG.OBSTACLE,
-            4,
-        ))
+        // this.gameObjects.add(new RectangleObject(
+        //     Point.ORIGIN.add(-2, -3),
+        //     ND,
+        //     TAG.OBSTACLE,
+        //     4,
+        // ))
 
-        this.gameObjects.add(new RectangleObject(
-            Point.ORIGIN.add(2, -4),
-            E.player_down,
-            undefined, 4,
-        ));
+        for(let i=0;i<10;i++) {
+            this.gameObjects.add(new Enemy(
+                Math.random() < 0.2 ? E.robot : (Math.random() > 0.5) ? E.cowMan : E.frogMan,
+            ));
+        }
 
-        this.gameObjects.add(new RectangleObject(
-            Point.ORIGIN.add(2, 2),
-            E.player_left,
-            undefined,
-            1,
-        ))
-        this.gameObjects.add(new Enemy(
-            E.pigMan,
-            Point.ORIGIN.add(3.3, 2.1),
-        ));
-
-        this.gameObjects.add(new RectangleObject(
-            Point.ORIGIN.add(4, 4),
-            new Emoji("💬", 10, 1),
-            undefined,
-            1
-        ))
+        // this.gameObjects.add(new RectangleObject(
+        //     Point.ORIGIN.add(4, 4),
+        //     new Emoji("💬", 10, 1),
+        //     undefined,
+        //     1
+        // ))
 
         // this.gameObjects.add(new RectangleObject(
         //     Point.ORIGIN.add(-3, 1),

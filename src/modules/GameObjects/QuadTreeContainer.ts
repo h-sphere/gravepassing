@@ -1,6 +1,6 @@
 import { QuadTree } from "../../utils/QuadTree";
 import { Point, Rectangle } from "../Primitives";
-import { GameObject } from "./GameObject";
+import { GameObject, GameObjectGroup } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 
 export class QuadTreeContainer implements GameObjectsContainer {
@@ -41,6 +41,10 @@ export class QuadTreeContainer implements GameObjectsContainer {
         return obj;
     }
     add(obj: GameObject) {
+        if (obj instanceof GameObjectGroup) {
+            obj.getAll().forEach(o => this.add(o));
+            // return;
+        }
         if (obj.isGlobal) {
             this.globalObjects.add(obj);
             return;
@@ -48,6 +52,16 @@ export class QuadTreeContainer implements GameObjectsContainer {
         this.objects.add(obj);
         this.quadTree && this.quadTree.add(obj);
     }
+
+    remove(obj: GameObject): void {
+        if (obj instanceof GameObjectGroup) {
+            obj.getAll().forEach(o => this.remove(o));
+        }
+        // FIXME: check if global obj?
+        this.objects.delete(obj);
+        this.update();
+    }
+
     getAll(): GameObject[] {
         return [...this.globalObjects, ...this.objects];
     }

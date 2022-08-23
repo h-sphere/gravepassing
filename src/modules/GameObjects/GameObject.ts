@@ -3,7 +3,7 @@ import { Texture } from "../Color/Texture";
 import { TAG } from "../constants/tags";
 import { Line, Point, Rectangle } from "../Primitives";
 import { GameObjectsContainer } from "./GameObjectsContainer";
-import { withTags } from "./mixins";
+import { WithCenter, withTags } from "./mixins";
 
 export interface GameObject {
     getRenderInstructions(): Renderable[];
@@ -16,6 +16,53 @@ export interface GameObject {
     isGlobal: boolean;
     zIndex?: number;
     toLines(): Line[];
+}
+
+export class GameObjectGroup implements GameObject, WithCenter {
+    center: Point;
+    private _tags: string[] = [];
+    update(dt: number, container: GameObjectsContainer): void {
+        throw new Error("Method not implemented.");
+    }
+    getBoundingBox(): Rectangle {
+        const box = Rectangle.UNIT;
+        return this.objects.reduce((a, b) => Rectangle.boundingBox(a, b.getBoundingBox()), box);
+    }
+    zIndex?: number | undefined;
+    toLines(): Line[] {
+        return [];
+    }
+    private objects: GameObject[] = [];
+    add(go: GameObject) {
+        this.objects.push(go);
+    }
+
+    getAll(): GameObject[] {
+        return this.objects;
+    }
+
+    remove(go: GameObject) {
+        this.objects = this.objects.filter(o => o !== go);
+    }
+
+    getRenderInstructions(): Renderable[] {
+        return [];
+        // return this.objects.map(o => o.getRenderInstructions()).flat();
+    }
+
+    protected addTag(t: string) {
+        this._tags.push(t);
+    }
+
+    getTags(): string[] {
+        return [...this._tags];
+    }
+
+    hasTag(t: string): boolean {
+        return !!this._tags.find(tag => tag === t);
+    }
+
+    isGlobal: boolean = false;
 }
 
 export interface Renderable {

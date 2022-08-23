@@ -1,101 +1,71 @@
-import { getLinesIntersection } from "../../utils/math";
 import { E } from "../Assets/Emojis";
-import { Color } from "../Color/Color";
-import { ColorGradient } from "../Color/Gradient";
-import { PlayerTexture } from "../Color/Image";
-import { DirectionableTexture, Emoji, Sprite } from "../Color/Sprite";
+import { Emoji } from "../Color/Sprite";
+import { TAG } from "../constants/tags";
 import { KeyboardController } from "../Controller/KeyboardController";
-import { Line, Point, Rectangle } from "../Primitives";
-import { GameObject, Renderable, RenderableLine, RenderablePoint } from "./GameObject";
+import { Point } from "../Primitives";
+import { Bomb } from "./Bomb";
+import { Bullet } from "./Bullet";
+import { Enemy } from "./Enemy";
+import { GameObject } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
-import { Light, TargetLight } from "./Light";
-import { EmptyClass, Rotation, withMovement, withRotation, withTags } from "./mixins";
-import { RectangleObject } from "./Rectangle";
-import { ConicRenderableSquaredPoint } from "./SquaredPoint";
-
+import { SimpleHumanoid } from "./Humanoid";
 
 const MOVEMENT_VELOCITY = 0.005;
-const ROTATION_VELOCITY = Math.PI;
 
-class SimplePlayer extends withTags(EmptyClass) implements GameObject {
-    center: Point;
-    go: RectangleObject;
-    items: Emoji[];
-    selected = 0;
+class InventoryItem {
 
-    protected isSelectionDirty = false;
-    constructor() {
-        super();
-        this.center = new Point(0, 0);
-        this.go = new RectangleObject(this.center, new DirectionableTexture(
-            E.player_left,
-            E.player_right,
-            E.player_down,
-            E.player_top,
-        ));
-        this.items = [
-            E.item2,
-            E.item,
-            E.item,
-        ]
-    }
-    zIndex?: number | undefined;
-    toLines(): Line[] {
-        return [
-            new Line(this.center, this.center.add(1, 0))
-        ]
-    }
-    getBoundingBox(): Rectangle {
-        return this.go.getBoundingBox();
+    private _cb: (() => void)[] = [];
+    protected isDisposable: boolean = true;
+    public amount: number = 0;
+    public cooldown = 300;
+    icon: Emoji = E.item2; // FIXME: naming
+
+    use(user: Player, container: GameObjectsContainer): GameObject[] {
+        return [];
     }
 
-    private _obstacles: GameObject[] = [];
-    get obstacles(): GameObject[] {
-        return this._obstacles;
+    onDelete(cb) {
+        this._cb.push(cb);
     }
-
-
-    getRenderInstructions(): Renderable[] {
-        return [
-        ]
-    }
-
-    update(dt: number, container: GameObjectsContainer) {
-        // Move movement functions here.
-    }
-
-    isGlobal = false;
-    
 }
 
-export class Player extends withRotation(withMovement(SimplePlayer)) implements Rotation {
-    public light: Light;
+class BulletInventoryItem extends InventoryItem {
+    protected isDisposable: boolean = false;
+    icon = E.item2;
+    use(user: Player): GameObject[] {
+        return [
+            new Bullet(user.center, new Point(user.lastX, user.lastY), 300, TAG.ENEMY)
+        ];
+    }
+}
+
+class BombInventoryItem extends InventoryItem {
+    protected isDisposable = true;
+    amount = 1;
+    icon = E.item;
+    use(user: Player): GameObject[] {
+        return [
+            new Bomb(user.center, 300, TAG.ENEMY)
+        ];
+        
+    }
+}
+
+
+export class Player extends SimpleHumanoid {
+    // public light: Light;
     private controller: KeyboardController;
 
-    private lastX: number = 0;
-    private lastY: number = 0;
+    public xp: number = 0;
+
+    public items: InventoryItem[] = [];
+
 
     constructor() {
-        super();
+        super(E.playerDir);
         this.controller = new KeyboardController();
-
-        this.light = new Light(
-            this.center,
-            1,
-            4,
-            Color.WHITE,
-            // Math.PI/ 3,
-            // 0,
-        )
-    }
-
-    set rotation(v: number) {
-        this._rotation = v;
-        // this.light.direction = v;
-    }
-
-    get rotation() {
-        return this._rotation;
+        this.items.push(new BulletInventoryItem());
+        this.items.push(new BombInventoryItem());
     }
 
 
@@ -104,6 +74,8 @@ export class Player extends withRotation(withMovement(SimplePlayer)) implements 
             this.controller.x,
             this.controller.y,
         )
+
+        this.fireCooldown -= dt;
 
         if (!this.controller.selection) {
             this.isSelectionDirty = false;
@@ -115,40 +87,34 @@ export class Player extends withRotation(withMovement(SimplePlayer)) implements 
             this.isSelectionDirty = true;
         }
 
+        if (this.controller.fire && this.fireCooldown <= 0) {
+            console.log("FIRE");
+            this.fireCooldown = 300;
+            const go = this.items[this.selected].use(this, container);
+
+            go.forEach(g => {
+                container.add(g);
+                // FIXME: add proper on hit here.
+            })
+
+            // const bullet = new Bullet(this.center, new Point(this.lastX, this.lastY), 300, TAG.ENEMY);
+            // bullet.onHit((target) => {
+            //     if (target instanceof Enemy) {
+            //         console.log("ENEMY");
+            //         this.xp += target.value;
+            //     }
+            //     console.log("BULLET HIT", target);
+            // }) 
+            // container.add(bullet); 
+        }
+
+        this.move(dt, p, MOVEMENT_VELOCITY, container);
 
         this.selected = Math.max(0, this.selected % this.items.length);
 
         // this.rotation += dt * ROTATION_VELOCITY * this.controller.rotation / 1000;
-        this.move(dt, p, MOVEMENT_VELOCITY, container);
-        this.go.rectangle.moveTo(this.center);
-        if (this.controller.x || this.controller.y) {
-            this.lastX = this.controller.x;
-            this.lastY = this.controller.y;
-        }
-        const x = this.controller.x;
-        let d = 'down';
-        if (this.lastY !== 0) {
-            d = this.lastY < 0 ? 'up' : 'down'
-        } else {
-            d = this.lastX < 0 ? 'left' : 'right';
-            // ((this.go.texture as DirectionableTexture).left as Sprite).flip = this.lastX > 0;
-
-        }
-        (this.go.texture as DirectionableTexture).setDirection(
-            d
-        );
-        this.light.center = this.center;
+        
     }
     
     isGlobal = false;
-
-    
-
-    getRenderInstructions() {
-        return [
-            ...super.getRenderInstructions(),
-            // ...this.light.getRenderInstructions(),
-            // ...this.getVisionRays(Math.PI / 3).map(r => RenderableLine.fromLine(r, 0.2, Color.BLUE))
-        ]
-    }
 }
