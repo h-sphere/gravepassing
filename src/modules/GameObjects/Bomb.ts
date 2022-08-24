@@ -1,5 +1,6 @@
 import { Emoji } from "../Color/Sprite";
 import { Point } from "../Primitives";
+import { UsableItem } from "./Bullet";
 import { GameObject, GameObjectGroup } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { withMovement } from "./mixins";
@@ -7,9 +8,8 @@ import { RectangleObject } from "./Rectangle";
 
 type Callback = (t: GameObject) => void;
 
-export class Bomb extends GameObjectGroup {
+export class Bomb extends UsableItem {
     private o: RectangleObject;
-    private _cb: Callback[] = [];
     constructor(p: Point, private lifeSpan = 200, private targetTag: string) {
         super();
         this.center = p;
@@ -20,10 +20,6 @@ export class Bomb extends GameObjectGroup {
 
         // FIXME: remove duplication
         this.o.rectangle.moveTo(this.center);
-    }
-
-    onHit(cb: Callback) {
-        this._cb.push(cb);
     }
 
     update(dt: number, container: GameObjectsContainer): void {

@@ -1,3 +1,4 @@
+import { CombinedEmoji, DirectionableTexture, Emoji } from "../Color/Sprite";
 import { NewTexture, Texture } from "../Color/Texture";
 import { Line, Point, Rectangle } from "../Primitives";
 import { GameObject, Renderable } from "./GameObject";
@@ -15,12 +16,15 @@ export class RectangleObject extends withTags(EmptyClass) implements GameObject,
             this._tags.push(tag);
         }
     }
+    parentBBExclude: boolean = false;
+    zIndex?: number | undefined;
     toLines(): Line[] {
+        const bb = this.getBoundingBox();
         return [
-            new Line(this.rectangle.p1, this.rectangle.p1.add(this.rectangle.width, 0)),
-            new Line(this.rectangle.p1.add(this.rectangle.width, 0), this.rectangle.p2),
-            new Line(this.rectangle.p2, this.rectangle.p1.add(0, this.rectangle.height)),
-            new Line(this.rectangle.p1, this.rectangle.p1.add(0, this.rectangle.height))
+            new Line(bb.p1, bb.p1.add(bb.width, 0)),
+            new Line(bb.p1.add(bb.width, 0), bb.p2),
+            new Line(bb.p2, bb.p1.add(0, bb.height)),
+            new Line(bb.p1, bb.p1.add(0, bb.height))
         ]
     }
 
@@ -31,6 +35,11 @@ export class RectangleObject extends withTags(EmptyClass) implements GameObject,
         
     }
     getBoundingBox(): Rectangle {
+        // if (this.texture instanceof DirectionableTexture) { // OR EMOJI
+        //     // console.log("MOVING?")
+        //     // console.log("BB", this.texture.getBoundingBox());
+        //     return this.rectangle.moveBy(this.texture.getBoundingBox().p1);
+        // }
         return this.rectangle;
     }
     isGlobal: boolean;

@@ -4,7 +4,7 @@ import { TAG } from "../constants/tags";
 import { KeyboardController } from "../Controller/KeyboardController";
 import { Point } from "../Primitives";
 import { Bomb } from "./Bomb";
-import { Bullet } from "./Bullet";
+import { Bullet, UsableItem } from "./Bullet";
 import { Enemy } from "./Enemy";
 import { GameObject } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
@@ -20,7 +20,7 @@ class InventoryItem {
     public cooldown = 300;
     icon: Emoji = E.item2; // FIXME: naming
 
-    use(user: Player, container: GameObjectsContainer): GameObject[] {
+    use(user: Player, container: GameObjectsContainer): UsableItem[] {
         return [];
     }
 
@@ -32,7 +32,7 @@ class InventoryItem {
 class BulletInventoryItem extends InventoryItem {
     protected isDisposable: boolean = false;
     icon = E.item2;
-    use(user: Player): GameObject[] {
+    use(user: Player) {
         return [
             new Bullet(user.center, new Point(user.lastX, user.lastY), 300, TAG.ENEMY)
         ];
@@ -43,7 +43,7 @@ class BombInventoryItem extends InventoryItem {
     protected isDisposable = true;
     amount = 1;
     icon = E.item;
-    use(user: Player): GameObject[] {
+    use(user: Player) {
         return [
             new Bomb(user.center, 300, TAG.ENEMY)
         ];
@@ -94,6 +94,9 @@ export class Player extends SimpleHumanoid {
 
             go.forEach(g => {
                 container.add(g);
+                g.onHit(t => {
+                    this.xp += t.value;
+                })
                 // FIXME: add proper on hit here.
             })
 

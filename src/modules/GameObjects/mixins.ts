@@ -24,6 +24,7 @@ type MethodsToOmit = 'getRenderInstructions' | 'update' | 'getBoundingBox' | 'is
 
 export function withTags<T extends Constructable>(constructor: T) {
     return class extends constructor implements Omit<GameObject, MethodsToOmit> {
+        parentBBExclude: boolean = false;
         protected _tags: string[] = [];
         getTags(): string[] {
             return this._tags;

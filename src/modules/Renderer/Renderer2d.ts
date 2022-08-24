@@ -16,6 +16,7 @@ import { withLight, WithLightIface } from "../GameObjects/mixins";
 import { RectangleObject } from "../GameObjects/Rectangle";
 import { RenderableSquaredPoint } from "../GameObjects/SquaredPoint";
 import { Line, Point, Rectangle } from "../Primitives";
+import { SceneSettings } from "../Scene/Scene";
 import { Renderer } from "./Renderer";
 
 const MAIN_ZOOM_RANGE = 0.02; // points per pixel
@@ -26,13 +27,8 @@ export class Renderer2d implements Renderer {
     private gridEnabled: boolean = false;
     private fpsEnable: boolean = false;
     private boundingBoxEnable: boolean  = false;
-    private debugLinePoints: boolean = false;
 
     private bb: Rectangle;
-
-    private ground: Ground = new Ground();
-
-    private zoom: number;
 
     private center: Point;
 
@@ -85,74 +81,75 @@ export class Renderer2d implements Renderer {
         ];
     }
 
-    private renderBackground() {
+    private renderBackground(settings: SceneSettings) {
 
         this.ctx.clearRect(0, 0, this.width, this.height);
 
         const point = this.getPositionOnScreen(new Point(Math.floor(this.bb.p1.x), Math.floor(this.bb.p1.y)));
         const unitSize = 1 / this.getSizePerPixel();
-        this.ctx.fillStyle = '#1d4d36'; this.ground.render(this.ctx, this.getBoundingBox()); //this.ctx, point[0], point[1], point[0] + unitSize
+        // const color = settings.backgroundColor || '#1d4d36';
+        settings.ground.render(this.ctx, this.getBoundingBox(), settings); //this.ctx, point[0], point[1], point[0] + unitSize
         //, point[1] + unitSize);
 
         // this.ctx.fillStyle = 'rgb(20,20,20)'
         // this.ctx.fillRect(0, 0, this.width, this.height);
     }
 
-    renderLine(line: RenderableLine, lights: Light[]) {
-        const p1 = this.getPositionOnScreen(line.p1);
-        const p2 = this.getPositionOnScreen(line.p2);
-        let grd;
+    // renderLine(line: RenderableLine, lights: Light[]) {
+    //     const p1 = this.getPositionOnScreen(line.p1);
+    //     const p2 = this.getPositionOnScreen(line.p2);
+    //     let grd;
 
-        if (line.color instanceof Color) {
-            // grd = line.color;
-            // Compute lights
-            const l = line.color.l;
+    //     if (line.color instanceof Color) {
+    //         // grd = line.color;
+    //         // Compute lights
+    //         const l = line.color.l;
 
-            if (this.debugLinePoints) {
-                const onScreen = this.getPositionOnScreen(line.p1);
-                this.ctx.beginPath();
-                this.ctx.arc(onScreen[0], onScreen[1], 1, 0, 2 * Math.PI);
-                this.ctx.fill();
-                const onScreen2 = this.getPositionOnScreen(line.p2);
-                this.ctx.beginPath();
-                this.ctx.arc(onScreen2[0], onScreen2[1], 1, 0, 2 * Math.PI);
-                this.ctx.fill();
-            }
+    //         if (this.debugLinePoints) {
+    //             const onScreen = this.getPositionOnScreen(line.p1);
+    //             this.ctx.beginPath();
+    //             this.ctx.arc(onScreen[0], onScreen[1], 1, 0, 2 * Math.PI);
+    //             this.ctx.fill();
+    //             const onScreen2 = this.getPositionOnScreen(line.p2);
+    //             this.ctx.beginPath();
+    //             this.ctx.arc(onScreen2[0], onScreen2[1], 1, 0, 2 * Math.PI);
+    //             this.ctx.fill();
+    //         }
 
-            grd = this.ctx.createLinearGradient(p1[0], p1[1], p2[0], p2[1]);
-            for(let i=0;i<=1;i+=0.02) {
-                const point = line.getMidpoint(i);
-                if (this.debugLinePoints) {
-                    this.ctx.fillStyle = "white";
-                    const onScreen = this.getPositionOnScreen(point);
-                    this.ctx.beginPath();
-                    this.ctx.arc(onScreen[0], onScreen[1], 1, 0, 2 * Math.PI);
-                    this.ctx.fill();
-                }
-                grd.addColorStop(i, line.color
-                    .withL(l * lightIntensityAtPoint(point, lights)).toString())
-            }
-            // grd.addColorStop(0, line.color
-            //     .withL(l * lightIntensityAtPoint(line.p1, lights)).toString());
-            // grd.addColorStop(0.5, line.color
-            //     .withL(l * lightIntensityAtPoint(line.getMidpoint(0.5), lights)).toString())
-            // grd.addColorStop(1, line.color
-            //     .withL(l * lightIntensityAtPoint(line.p2, lights)).toString());
-        } else {
-            grd = line.color.render(this.ctx, p1[0], p1[1], p2[0], p2[1]);
-            // FIXME: add lighting?
-        }
+    //         grd = this.ctx.createLinearGradient(p1[0], p1[1], p2[0], p2[1]);
+    //         for(let i=0;i<=1;i+=0.02) {
+    //             const point = line.getMidpoint(i);
+    //             if (this.debugLinePoints) {
+    //                 this.ctx.fillStyle = "white";
+    //                 const onScreen = this.getPositionOnScreen(point);
+    //                 this.ctx.beginPath();
+    //                 this.ctx.arc(onScreen[0], onScreen[1], 1, 0, 2 * Math.PI);
+    //                 this.ctx.fill();
+    //             }
+    //             grd.addColorStop(i, line.color
+    //                 .withL(l * lightIntensityAtPoint(point, lights)).toString())
+    //         }
+    //         // grd.addColorStop(0, line.color
+    //         //     .withL(l * lightIntensityAtPoint(line.p1, lights)).toString());
+    //         // grd.addColorStop(0.5, line.color
+    //         //     .withL(l * lightIntensityAtPoint(line.getMidpoint(0.5), lights)).toString())
+    //         // grd.addColorStop(1, line.color
+    //         //     .withL(l * lightIntensityAtPoint(line.p2, lights)).toString());
+    //     } else {
+    //         grd = line.color.render(this.ctx, p1[0], p1[1], p2[0], p2[1]);
+    //         // FIXME: add lighting?
+    //     }
 
-        this.ctx.beginPath()
-        this.ctx.lineWidth = line.width / this.getSizePerPixel() / 20;
-        this.ctx.strokeStyle = grd;
-        this.ctx.moveTo(...p1);
-        this.ctx.lineTo(...p2);
-        this.ctx.stroke();
-    }
+    //     this.ctx.beginPath()
+    //     this.ctx.lineWidth = line.width / this.getSizePerPixel() / 20;
+    //     this.ctx.strokeStyle = grd;
+    //     this.ctx.moveTo(...p1);
+    //     this.ctx.lineTo(...p2);
+    //     this.ctx.stroke();
+    // }
 
     private renderRectangle(rect: RectangleObject, lights: Light[]) {
-        const r = rect.rectangle;
+        const r = rect.getBoundingBox();
         this.ctx.beginPath();
         // const pattern = this.ctx.createPattern(image, repetition)
 
@@ -197,42 +194,42 @@ export class Renderer2d implements Renderer {
         }
     }
 
-    renderPoint(point: RenderablePoint) {
-        const r = point.radius / this.getSizePerPixel();
-        const p = this.getPositionOnScreen(point);
-        this.ctx.beginPath();
-        this.ctx.fillStyle = this.resolveCircularColor(point.color, this.ctx, p, r);
-        this.ctx.arc(p[0], p[1], r, 0, 2 * Math.PI);
-        this.ctx.fill();
-    }
+    // renderPoint(point: RenderablePoint) {
+    //     const r = point.radius / this.getSizePerPixel();
+    //     const p = this.getPositionOnScreen(point);
+    //     this.ctx.beginPath();
+    //     this.ctx.fillStyle = this.resolveCircularColor(point.color, this.ctx, p, r);
+    //     this.ctx.arc(p[0], p[1], r, 0, 2 * Math.PI);
+    //     this.ctx.fill();
+    // }
 
-    renderSquarePoint(point: RenderableSquaredPoint, gameObjects: GameObjectsContainer) {
-        // this.ctx.globalCompositeOperation = 'overlay';
-        // const r = point.radius / this.getSizePerPixel();
-        // const p = this.getPositionOnScreen(point);
-        // this.ctx.fillStyle = this.resolveCircularColor(point.color, this.ctx, p, r);
+    // renderSquarePoint(point: RenderableSquaredPoint, gameObjects: GameObjectsContainer) {
+    //     // this.ctx.globalCompositeOperation = 'overlay';
+    //     // const r = point.radius / this.getSizePerPixel();
+    //     // const p = this.getPositionOnScreen(point);
+    //     // this.ctx.fillStyle = this.resolveCircularColor(point.color, this.ctx, p, r);
 
-        // const b = point.getBoundingBox();
-        // for(let i=b.p1.x;i<=b.p2.x;i++) {
-        //     for (let j=b.p1.y;j<=b.p2.y;j++) {
-        //         this.ctx.fillStyle = 
-        //     }
-        // }
-        // this.ctx.fillStyle = "red";
+    //     // const b = point.getBoundingBox();
+    //     // for(let i=b.p1.x;i<=b.p2.x;i++) {
+    //     //     for (let j=b.p1.y;j<=b.p2.y;j++) {
+    //     //         this.ctx.fillStyle = 
+    //     //     }
+    //     // }
+    //     // this.ctx.fillStyle = "red";
 
-        // FIXME: filter properly.
-        // const obstacles = gameObjects.getObjectsInArea(point.getBoundingBox(), TAG.OBSTACLE).map(o => o.toLines()).flat();
-        // const points = point.getPolygonPoints(obstacles); //.map(p => p.round());
-        // this.ctx.beginPath();
-        // const initial = this.getPositionOnScreen(points[0]);
-        // this.ctx.moveTo(...initial);
-        // points.forEach((po) => {
-        //     const pos = this.getPositionOnScreen(po);
-        //     this.ctx.lineTo(pos[0], pos[1]);
-        // });
-        // this.ctx.fill();
-        // this.ctx.globalCompositeOperation = 'source-over';
-    }
+    //     // FIXME: filter properly.
+    //     // const obstacles = gameObjects.getObjectsInArea(point.getBoundingBox(), TAG.OBSTACLE).map(o => o.toLines()).flat();
+    //     // const points = point.getPolygonPoints(obstacles); //.map(p => p.round());
+    //     // this.ctx.beginPath();
+    //     // const initial = this.getPositionOnScreen(points[0]);
+    //     // this.ctx.moveTo(...initial);
+    //     // points.forEach((po) => {
+    //     //     const pos = this.getPositionOnScreen(po);
+    //     //     this.ctx.lineTo(pos[0], pos[1]);
+    //     // });
+    //     // this.ctx.fill();
+    //     // this.ctx.globalCompositeOperation = 'source-over';
+    // }
 
     renderGrid() {
         const rect = this.getBoundingBox();
@@ -257,6 +254,7 @@ export class Renderer2d implements Renderer {
 
     renderDitheredLight(lights: Light[], obstructions: Line[]) {
         const bb = this.getBoundingBox();
+        // FIXME: use proper bb function.
         for(let i=bb.p1.x;i<=bb.p2.x;i++) {
             for(let j=bb.p1.y;j<=bb.p2.y;j++) {
                 // console.log("Computing", i, j);
@@ -307,7 +305,7 @@ export class Renderer2d implements Renderer {
         this.zoom = 1;
         const boundingBox = this.getBoundingBox();
         this.bb = boundingBox;
-        this.renderBackground();
+        this.renderBackground(game.sceneSettings);
         if (this.gridEnabled) {
             this.renderGrid();
         }
@@ -316,21 +314,16 @@ export class Renderer2d implements Renderer {
         const lights = objects.filter(o => o instanceof Light) as Light[];
         this.renderDitheredLight(lights, obstructions); 
         
-        for (const object of objects) {
-            for (const obj of object.getRenderInstructions()) {
-                if (obj instanceof RenderableLine) {
-                    this.renderLine(obj, lights);
-                } else if (obj instanceof RenderableSquaredPoint) {
-                    this.renderSquarePoint(obj, gameObjects);
-                } else if (obj instanceof RenderablePoint) {
-                    this.renderPoint(obj);
-                } else if (obj instanceof RectangleObject) {
+        for (const obj of objects) {
+                if (obj instanceof RectangleObject) {
                     this.renderRectangle(obj, lights);
+                } else {
+                    console.log("UNKNOWN", obj);
                 }
 
 
                 if (this.boundingBoxEnable) {
-                    this.ctx.strokeStyle = "rgba(255,255,255,0.6)";
+                    this.ctx.strokeStyle = "rgba(255,0,0,0.6)";
                     this.ctx.lineWidth = 1;
                     const bb = obj.getBoundingBox();
                     const p = this.getPositionOnScreen(bb.p1);
@@ -338,7 +331,6 @@ export class Renderer2d implements Renderer {
                     this.ctx.strokeRect(p[0], p[1], p2[0] - p[0], p2[1] - p[1]);
                 }
 
-            }
             
         }
 
@@ -356,8 +348,8 @@ export class Renderer2d implements Renderer {
         const x = u / 4;
         const y = (this.getUnits() - 2) * u - x;
         const q = u / 4;
-        c.strokeStyle = "#1a403b";
-        c.fillStyle = "#1a403b";
+        c.strokeStyle = game.sceneSettings.hudBackground || "#1a403b";
+        c.fillStyle = c.strokeStyle;
         c.lineWidth = 5;
         c.fillRect(x + q/2, y + q/2, this.getUnitSize() * (this.getUnits() - 0.75), this.getUnitSize() * 1.75);
         c.strokeRect(x, y, this.getUnitSize() * (this.getUnits() - 0.5), this.getUnitSize() * 2);

@@ -23,6 +23,7 @@ export class Light extends withTags(EmptyClass) implements GameObject, WithCente
         this._center = center;
         this._tags.push(TAG.LIGHT);
     }
+    parentBBExclude: boolean = false;
     toLines(): Line[] {
         return [];
     }

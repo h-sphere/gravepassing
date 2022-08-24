@@ -102,6 +102,13 @@ export class Rectangle extends Line {
         this.p2 = p.add(w, h);
     }
 
+    moveBy(p: Point) {
+        return new Rectangle(
+            this.p1.add(p.x, p.y),
+            this.p2.add(p.x, p.y),
+        );
+    }
+
     forEachCell(fn: (x: number, y: number, oX: number, oY: number) => void): void {
         for(let i=this.p1.x;i<this.p2.x;i++) {
             for(let j=this.p1.y;j<this.p2.y;j++) {

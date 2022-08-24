@@ -1,16 +1,17 @@
 import { E } from "../Assets/Emojis";
 import { Color } from "../Color/Color";
 import { Image, SIZE } from "../Color/Image";
-import { CombinedEmoji, Dither, Emoji, Sprite, SpriteWithLight } from "../Color/Sprite";
+import { CombinedEmoji, Dither, Emoji, Ground, Sprite, SpriteWithLight } from "../Color/Sprite";
 import { TAG } from "../constants/tags";
 import { Enemy } from "../GameObjects/Enemy";
 import { WallGameObject } from "../GameObjects/GameObject";
+import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
 import { AmbientLight } from "../GameObjects/Light";
 import { RectangleObject } from "../GameObjects/Rectangle";
 import { Point, Rectangle } from "../Primitives";
-import { Scene } from "./Scene";
+import { Scene, SceneSettings } from "./Scene";
 
-export class RoomScene extends Scene {
+export class CementeryScene extends Scene {
     constructor() {
         super();
         const w = 20;
@@ -106,5 +107,14 @@ export class RoomScene extends Scene {
         // }
 
         // this.gameObjects.add(new WallGameObject(new Point(-10, 50), new Point(-10, -50), 3, Color.GREEN));
+    }
+
+    register(container: GameObjectsContainer): SceneSettings {
+        super.register(container);
+        return {
+            backgroundColor: 'rgba(50, 50, 50)',
+            ground: new Ground(),
+            hudBackground: 'purple',
+        }
     }
 }

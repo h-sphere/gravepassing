@@ -15,11 +15,11 @@ import { MovingLight } from "../Special/MovingLight";
 import { QuadTree } from "../../utils/QuadTree";
 import { QuadTreeRenderer } from "../../utils/QuadTreeRenderer";
 import { QuadTreeContainer } from "../GameObjects/QuadTreeContainer";
-import { FirstScene } from "../Scene/FirstScene";
 import { LightingScene } from "../Scene/LightingScene";
-import { RoomScene } from "../Scene/RoomScene";
-import { Scene } from "../Scene/Scene";
+import { CementeryScene } from "../Scene/CementeryScene";
+import { Scene, SceneSettings } from "../Scene/Scene";
 import { SIZE } from "../Color/Image";
+import { LabScene } from "../Scene/LabScene";
 
 const ZOOM_SPEED = 1;
 
@@ -31,6 +31,8 @@ export class Game {
     private renderer: Renderer;
     private lastRenderTime: number;
     public player: Player;
+
+    public sceneSettings: SceneSettings;
 
     private qtRender: QuadTreeRenderer;
 
@@ -60,8 +62,9 @@ export class Game {
         //     ));
         // }
 
-        const scene = new RoomScene();
-        scene.register(this.gameObjects);
+        // const scene = new CementeryScene();
+        const scene = new LabScene();
+        this.sceneSettings = scene.register(this.gameObjects);
 
         this.player = new Player();
         this.gameObjects.add(this.player);

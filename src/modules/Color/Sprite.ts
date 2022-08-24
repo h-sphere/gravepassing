@@ -3,8 +3,9 @@ import image from "../../sprite.png";
 import { Color } from "./Color";
 import { NewTexture, Texture } from "./Texture";
 import { withLight } from "../GameObjects/mixins";
-import { Rectangle } from "../Primitives";
+import { Point, Rectangle } from "../Primitives";
 import { Directional } from "../Assets/Emojis";
+import { SceneSettings } from "../Scene/Scene";
 
 // export interface EmojiSettings {
 //     emoji: string,
@@ -18,13 +19,22 @@ export class DirectionableTexture implements NewTexture {
     constructor(public dir: Directional) {
 
     }
-    newRender(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
+
+    getEmoji() {
         switch (this.direction) {
-            case 'right': return this.dir.right.newRender(ctx, x, y, w, h);
-            case 'down': return this.dir.down.newRender(ctx, x, y, w, h);
-            case 'up': return this.dir.up.newRender(ctx, x, y, w, h);
-            default: return this.dir.left.newRender(ctx, x, y, w, h);
+            case 'right': return this.dir.right;
+            case 'down': return this.dir.down;
+            case 'up': return this.dir.up;
+            default: return this.dir.left;
         }
+    }
+
+    newRender(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
+        return this.getEmoji().newRender(ctx, x, y, w, h);
+    }
+
+    getBoundingBox(): Rectangle {
+        return this.getEmoji().boundingBox();
     }
 
     setDirection(d: string) {
@@ -72,12 +82,14 @@ export class CombinedEmoji implements NewTexture {
     }
     canvas;
     bmp;
+    _boundingBox: Rectangle;
     protected generate(): void {
 
         const c = document.createElement('canvas');
         c.width = this.scale * SIZE;
         c.height = this.scale * SIZE;
         const ct = c.getContext('2d')!;
+        let p1, p2;
 
         this.emojis.forEach(e => {
             console.log(e);
@@ -88,13 +100,29 @@ export class CombinedEmoji implements NewTexture {
             // ct.fillRect(0, 0, c.width, c.height);
             // const t = this.ctx.measureText(e.emoji);
             // ct.fillRect(0, 0, c.width, c.height);
+            const x = ct.measureText(e.emoji)
+            console.log(x);
+
+            if (!p1 || !p2) {
+                p1 = new Point(e.pos[0], e.pos[1]);
+                p2 = new Point(e.pos[0] + x.width, e.pos[1] + x.actualBoundingBoxDescent);
+            } else {
+                p1 = new Point(Math.min(e.pos[0], p1.x), Math.min(e.pos[1], p1.y));
+                p2 = new Point(Math.max(e.pos[0] + x.width, p2.x), Math.max(e.pos[1] + x.actualBoundingBoxAscent, p2.y));
+            }
+
             ct.fillText(e.emoji, e.pos[0], e.pos[1]);
         });
+        this._boundingBox = new Rectangle(p1, p2);
         this.canvas = c;
 
         // OMFG, why does this help?
         createImageBitmap(ct.getImageData(0, 0, c.width, c.height))
         .then(b => this.bmp = b);
+    }
+
+    boundingBox(): Rectangle {
+        return this._boundingBox;
     }
 
     newRender(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
@@ -249,12 +277,12 @@ export class Ground {
     constructor() {
         // this.grass.gen();
     }
-    render(ctx: CanvasRenderingContext2D, bb: Rectangle): void {
+    render(ctx: CanvasRenderingContext2D, bb: Rectangle, s: SceneSettings): void {
         const m = SIZE * 5; // FIXME: PROPER DATA HERE
         bb.forEachCell((x, y, oX, oY) => {
             // console.log(oX, oY);
             const p = FN(x,y, 231);
-            ctx.fillStyle = 'hsla(173,39%,47%)';
+            ctx.fillStyle = s.backgroundColor || 'hsla(173,39%,47%)';
             // if (x*x+y*y - 9 < 1) {
             //     ctx.fillStyle = "red";
             // }

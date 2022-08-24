@@ -6,6 +6,7 @@ import { GameObjectsContainer } from "./GameObjectsContainer";
 import { WithCenter, withTags } from "./mixins";
 
 export interface GameObject {
+    parentBBExclude: boolean;
     getRenderInstructions(): Renderable[];
     getTags(): string[];
     hasTag(t: string): boolean;
@@ -19,6 +20,7 @@ export interface GameObject {
 }
 
 export class GameObjectGroup implements GameObject, WithCenter {
+    parentBBExclude: boolean = false;
     center: Point;
     private _tags: string[] = [];
     update(dt: number, container: GameObjectsContainer): void {
@@ -26,7 +28,9 @@ export class GameObjectGroup implements GameObject, WithCenter {
     }
     getBoundingBox(): Rectangle {
         const box = Rectangle.UNIT;
-        return this.objects.reduce((a, b) => Rectangle.boundingBox(a, b.getBoundingBox()), box);
+        return this.objects
+        .filter(o => !o.parentBBExclude)
+        .reduce((a, b) => Rectangle.boundingBox(a, b.getBoundingBox()), box);
     }
     zIndex?: number | undefined;
     toLines(): Line[] {
@@ -74,6 +78,8 @@ export class RenderableLine extends withTags(Line) implements GameObject, Render
     constructor(p1: Point, p2: Point, public width: number = 3, public color: Texture = Color.RED) {
         super(p1, p2);
     }
+    parentBBExclude: boolean = false;
+    zIndex?: number | undefined;
     getRenderInstructions(): Renderable[] {
         return [this];
     }
@@ -114,6 +120,7 @@ export class WallGameObject extends RenderableLine {
 }
 
 export class RenderablePoint extends withTags(Point) implements GameObject, Renderable {
+    parentBBExclude = false;
     constructor(x: number, y: number, public radius: number = 0.1, public color: Texture = Color.RED) {
         super(x, y);
     }
