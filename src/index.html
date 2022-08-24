@@ -18,18 +18,6 @@
                 border: 1px solid black;
             }
 
-            #sidebar {
-                display: none;
-                background: #333;
-                color: #FFF;
-                width: 300px;
-                height: 100vh;
-                position: absolute;
-                top: 0; right: 0;
-                padding: 10px;
-                box-sizing: border-box;
-            }
-
             .top {
                 position: absolute;
                 z-index: 11;
@@ -40,11 +28,6 @@
     <body>
         <canvas id="game" width="800" height="600"></canvas>
         <canvas id="quadtreevis" width="300" height="300"></canvas>
-        <div id="sidebar">
-            <section>
-                <h3>Scenes</h3>
-            </section>
-        </div>
         <script src="game.ts" type="module"></script>
     </body>
 </html>

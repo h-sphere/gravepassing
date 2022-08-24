@@ -156,7 +156,15 @@ export class Renderer2d implements Renderer {
         // FIXME: with illumination.
 
         // DRAW BOUNDING BOX
-        rect.toLines().forEach(l => this.renderDebugLine(l));
+        // rect.toLines().forEach(l => this.renderDebugLine(l));
+        // rect.collisionBoundingBox()
+        // .toLines()
+        // .forEach(l => this.renderDebugLine(l, 'orange'));
+
+        rect.getBoundingBox()
+        .toLines()
+        .forEach(l => this.renderDebugLine(l, 'red'))
+
 
         const p1 = this.getPositionOnScreen(r.p1);
         const p2 = this.getPositionOnScreen(r.p2);
@@ -302,7 +310,6 @@ export class Renderer2d implements Renderer {
 
     render(camera: Camera, gameObjects: GameObjectsContainer, dt: number, game: Game) {
         this.center = camera.center;
-        this.zoom = 1;
         const boundingBox = this.getBoundingBox();
         this.bb = boundingBox;
         this.renderBackground(game.sceneSettings);

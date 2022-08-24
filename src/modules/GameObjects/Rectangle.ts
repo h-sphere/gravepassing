@@ -34,12 +34,17 @@ export class RectangleObject extends withTags(EmptyClass) implements GameObject,
     update(dt: number, container: GameObjectsContainer): void {
         
     }
+
+    collisionBoundingBox() {
+        if (this.texture instanceof DirectionableTexture) { // OR EMOJI
+            // console.log("MOVING?")
+            // console.log("BB", this.texture.getBoundingBox());
+            return this.texture.collisionBoundingBox()//.moveBy(this.rectangle.center); //this.rectangle;
+        }
+        return this.rectangle;
+    }
+
     getBoundingBox(): Rectangle {
-        // if (this.texture instanceof DirectionableTexture) { // OR EMOJI
-        //     // console.log("MOVING?")
-        //     // console.log("BB", this.texture.getBoundingBox());
-        //     return this.rectangle.moveBy(this.texture.getBoundingBox().p1);
-        // }
         return this.rectangle;
     }
     isGlobal: boolean;

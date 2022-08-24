@@ -1,5 +1,4 @@
 import { Image as ImageTexture, SIZE } from "./Image";
-import image from "../../sprite.png";
 import { Color } from "./Color";
 import { NewTexture, Texture } from "./Texture";
 import { withLight } from "../GameObjects/mixins";
@@ -33,8 +32,8 @@ export class DirectionableTexture implements NewTexture {
         return this.getEmoji().newRender(ctx, x, y, w, h);
     }
 
-    getBoundingBox(): Rectangle {
-        return this.getEmoji().boundingBox();
+    collisionBoundingBox(): Rectangle {
+        return this.getEmoji().collisionBoundingBox();
     }
 
     setDirection(d: string) {
@@ -90,9 +89,14 @@ export class CombinedEmoji implements NewTexture {
         c.height = this.scale * SIZE;
         const ct = c.getContext('2d')!;
         let p1, p2;
+        const ZOOM_FACTOR = 1/16; // FIXME: is that alright?
+        const div = document.createElement('div');
 
         this.emojis.forEach(e => {
             console.log(e);
+            div.style.fontSize=e.size + 'px';
+            div.innerText = e.emoji;
+
 
             ct.font = `${e.size}px Arial`
             ct.fillStyle = this.color;
@@ -102,18 +106,18 @@ export class CombinedEmoji implements NewTexture {
             // ct.fillRect(0, 0, c.width, c.height);
             const x = ct.measureText(e.emoji)
             console.log(x);
-
             if (!p1 || !p2) {
                 p1 = new Point(e.pos[0], e.pos[1]);
-                p2 = new Point(e.pos[0] + x.width, e.pos[1] + x.actualBoundingBoxDescent);
+                p2 = new Point(e.pos[0] + x.width, e.pos[1] + x.actualBoundingBoxDescent).mul(1/16);
             } else {
                 p1 = new Point(Math.min(e.pos[0], p1.x), Math.min(e.pos[1], p1.y));
-                p2 = new Point(Math.max(e.pos[0] + x.width, p2.x), Math.max(e.pos[1] + x.actualBoundingBoxAscent, p2.y));
+                p2 = new Point(Math.max(e.pos[0] + x.width, p2.x), Math.max(e.pos[1] + x.actualBoundingBoxAscent, p2.y)).mul(1/16);
             }
 
             ct.fillText(e.emoji, e.pos[0], e.pos[1]);
         });
         this._boundingBox = new Rectangle(p1, p2);
+        console.log('bibi', this._boundingBox);
         this.canvas = c;
 
         // OMFG, why does this help?
@@ -121,7 +125,7 @@ export class CombinedEmoji implements NewTexture {
         .then(b => this.bmp = b);
     }
 
-    boundingBox(): Rectangle {
+    collisionBoundingBox(): Rectangle {
         return this._boundingBox;
     }
 
@@ -228,45 +232,49 @@ export class Dither extends ImageTexture {
 }
 Dither.generateDithers();
 
-export class Sprite extends ImageTexture {
-    static img: HTMLImageElement;
-    static loaded: boolean = false;
+// export class Sprite extends ImageTexture {
+//     static img: HTMLImageElement;
+//     static loaded: boolean = false;
 
 
-    static getImage(): HTMLImageElement {
-        if (this.img) {
-            return this.img;
-        }
-        this.img = new Image();
-        this.img.src = image;
-        this.img.onload = () => this.loaded = true;
-        return this.img;
-    }
+//     static getImage(): HTMLImageElement {
+//         if (this.img) {
+//             return this.img;
+//         }
+//         this.img = new Image();
+//         this.img.src = image;
+//         this.img.onload = () => this.loaded = true;
+//         return this.img;
+//     }
 
-    constructor(protected x: number, protected y: number) {
-        super();
-        Sprite.getImage();
-    }
+//     constructor(protected x: number, protected y: number) {
+//         super();
+//         Sprite.getImage();
+//     }
 
-    protected generate(): void {
-        this.ctx.drawImage(Sprite.getImage(), this.x * SIZE, this.y * SIZE, SIZE, SIZE, this.pos[0], this.pos[1], SIZE, SIZE);
-    }
+//     protected generate(): void {
+//         this.ctx.drawImage(Sprite.getImage(), this.x * SIZE, this.y * SIZE, SIZE, SIZE, this.pos[0], this.pos[1], SIZE, SIZE);
+//     }
 
-    render(ctx: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number): string | CanvasGradient | CanvasPattern {
-        if(!Sprite.loaded) {
-            return 'red';
-        }
-        return super.render(ctx, x1, y1, x2, y2);
-    }
+//     render(ctx: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number): string | CanvasGradient | CanvasPattern {
+//         if(!Sprite.loaded) {
+//             return 'red';
+//         }
+//         return super.render(ctx, x1, y1, x2, y2);
+//     }
 
-}
+// }
 
-export class SpriteWithLight extends withLight(Sprite) {
-}
+// export class SpriteWithLight extends withLight(Sprite) {
+// }
 
-// seed(23);
 
 const FN = (x, y, S) => (Math.sin(432.432*S + x * y - 3*y+Math.cos(x-y))+1)/2;
+
+export interface EmojiList {
+    emoji: Emoji,
+    range: [number, number],
+}
 
 export class Ground {
     private color = new Color(173,39,0.47);
@@ -274,14 +282,14 @@ export class Ground {
     private grave = new Emoji("🪦", 12, 1);
     private cross = new Emoji("✝", 16, 1);
     private directions = new Emoji("🪨", 10, 1);
-    constructor() {
+    constructor(private emojis: EmojiList[] = [], private seed: number) {
         // this.grass.gen();
     }
     render(ctx: CanvasRenderingContext2D, bb: Rectangle, s: SceneSettings): void {
         const m = SIZE * 5; // FIXME: PROPER DATA HERE
         bb.forEachCell((x, y, oX, oY) => {
             // console.log(oX, oY);
-            const p = FN(x,y, 231);
+            const p = FN(x,y, this.seed || 231);
             ctx.fillStyle = s.backgroundColor || 'hsla(173,39%,47%)';
             // if (x*x+y*y - 9 < 1) {
             //     ctx.fillStyle = "red";
@@ -289,24 +297,32 @@ export class Ground {
             ctx.strokeStyle = "red";
             // FIXME: real proportions here
             ctx.fillRect(oX*m, oY*m, m, m);
-            if (p > 0.30 && p < 0.31) {
-                this.grass.newRender(ctx, oX*m, oY*m, m, m);
-            }
-            if (p > 0.5 && p < 0.65) {
-                this.grass.newRender(ctx, oX*m+4, oY*m+9, m, m);
-            }
 
-            if (p > 0.999) {
-                this.grave.newRender(ctx, oX*m, oY*m, m, m);
-            }
+            this.emojis.forEach(e => {
+                if (p > e.range[0] && p < e.range[1]) {
+                    e.emoji.newRender(ctx, oX *m, oY *m, m, m);
+                }
+            });
 
-            if (p > 0.645 && p < 0.6823) {
-                this.cross.newRender(ctx, oX*m, oY*m, m, m);
-            }
 
-            if(p > 0.3 && p < 0.31) {
-                this.directions.newRender(ctx, oX*m, oY*m, m, m);
-            }
+            // if (p > 0.30 && p < 0.31) {
+            //     this.grass.newRender(ctx, oX*m, oY*m, m, m);
+            // }
+            // if (p > 0.5 && p < 0.65) {
+            //     this.grass.newRender(ctx, oX*m+4, oY*m+9, m, m);
+            // }
+
+            // if (p > 0.999) {
+            //     this.grave.newRender(ctx, oX*m, oY*m, m, m);
+            // }
+
+            // if (p > 0.645 && p < 0.6823) {
+            //     this.cross.newRender(ctx, oX*m, oY*m, m, m);
+            // }
+
+            // if(p > 0.3 && p < 0.31) {
+            //     this.directions.newRender(ctx, oX*m, oY*m, m, m);
+            // }
             // if (p < 0.2) {
             //     const bmp = this.grass.getBitmap();
             //     if (!bmp) {

@@ -37,8 +37,11 @@ export class Game {
     private qtRender: QuadTreeRenderer;
 
     constructor(private canvas: HTMLCanvasElement, private w: number, h: number) {
-        // const w = window.innerWidth;
-        // const h = window.innerHeight;
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+
+        const multiplier = 1;
+
         this.ctx = canvas.getContext('2d')!;
         this.canvas.width = SIZE * w * 5;
         this.canvas.height = SIZE * h * 5;

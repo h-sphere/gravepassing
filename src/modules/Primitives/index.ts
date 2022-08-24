@@ -24,6 +24,16 @@ export class Point {
         return new Point(this.x, this.y);
     }
 
+    normalize(): Point {
+        if (!this.distanceFromOrigin()) {
+            return this; 
+        }
+        return new Point(
+            this.x / this.distanceFromOrigin(),
+            this.y / this.distanceFromOrigin(),
+        );
+    }
+
     add(x: number, y: number) {
         return new Point(this.x + x, this.y + y);
     }
@@ -86,6 +96,15 @@ export class Rectangle extends Line {
                 Math.max(r1.p2.y, r2.p2.y)
             )
         );
+    }
+
+    toLines(): Line[] {
+        return [
+            new Line(this.p1, this.p1.add(this.width, 0)),
+            new Line(this.p1.add(this.width, 0), this.p2),
+            new Line(this.p2, this.p1.add(0, this.height)),
+            new Line(this.p1, this.p1.add(0, this.height))
+        ];
     }
 
     constructor(p1: Point, p2: Point) {

@@ -2,7 +2,7 @@ import { E } from "../Assets/Emojis";
 import { Emoji } from "../Color/Sprite";
 import { TAG } from "../constants/tags";
 import { KeyboardController } from "../Controller/KeyboardController";
-import { Point } from "../Primitives";
+import { Point, Rectangle } from "../Primitives";
 import { Bomb } from "./Bomb";
 import { Bullet, UsableItem } from "./Bullet";
 import { Enemy } from "./Enemy";
@@ -73,7 +73,7 @@ export class Player extends SimpleHumanoid {
         const p = new Point(
             this.controller.x,
             this.controller.y,
-        )
+        ).normalize();
 
         this.fireCooldown -= dt;
 
