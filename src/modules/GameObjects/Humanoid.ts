@@ -91,7 +91,6 @@ export class SimpleHumanoid extends withRotation(withMovement(SimpleHumanoidPref
             this.lastX = direction.x;
             this.lastY = direction.y;
         }
-        const x = direction.x;
         let d = 'down';
         if (this.lastY !== 0) {
             d = this.lastY < 0 ? 'up' : 'down'
@@ -101,7 +100,7 @@ export class SimpleHumanoid extends withRotation(withMovement(SimpleHumanoidPref
 
         }
         (this.sprite.texture as DirectionableTexture).setDirection(
-            d
+            d, direction.distanceFromOrigin()
         );
         this.light.center = this.sprite.rectangle.center;
     }

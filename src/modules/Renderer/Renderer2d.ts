@@ -32,12 +32,13 @@ export class Renderer2d implements Renderer {
 
     private center: Point;
 
-    constructor(private ctx: CanvasRenderingContext2D, private width: number, private height: number) {
+    constructor(private ctx: CanvasRenderingContext2D, private width: number, private height: number, private game: Game) {
         ctx.imageSmoothingEnabled = false;
     }
 
     getSizePerPixel() {
-        return 1/80;
+        return 1 / this.game.UNIT_SIZE;
+        return 1 / 80;
     }
 
     getUnitSize() {
@@ -88,7 +89,7 @@ export class Renderer2d implements Renderer {
         const point = this.getPositionOnScreen(new Point(Math.floor(this.bb.p1.x), Math.floor(this.bb.p1.y)));
         const unitSize = 1 / this.getSizePerPixel();
         // const color = settings.backgroundColor || '#1d4d36';
-        settings.ground.render(this.ctx, this.getBoundingBox(), settings); //this.ctx, point[0], point[1], point[0] + unitSize
+        settings.ground.render(this.ctx, this.getBoundingBox(), settings, this.game); //this.ctx, point[0], point[1], point[0] + unitSize
         //, point[1] + unitSize);
 
         // this.ctx.fillStyle = 'rgb(20,20,20)'
@@ -161,9 +162,9 @@ export class Renderer2d implements Renderer {
         // .toLines()
         // .forEach(l => this.renderDebugLine(l, 'orange'));
 
-        rect.getBoundingBox()
-        .toLines()
-        .forEach(l => this.renderDebugLine(l, 'red'))
+        // rect.getBoundingBox()
+        // .toLines()
+        // .forEach(l => this.renderDebugLine(l, 'red'))
 
 
         const p1 = this.getPositionOnScreen(r.p1);
@@ -289,7 +290,7 @@ export class Renderer2d implements Renderer {
                 })
                 const l = lightIntensityAtPoint(new Point(i,j), lightsFiltered);
                 // console.log(i,j,l);
-                const d = Dither.getDither(l);
+                const d = this.game.sceneSettings.getDither(l);
                 const pos = this.getPositionOnScreen(new Point(i,j));
                 const pos2 = this.getPositionOnScreen(new Point(i+1,j+1));
                 this.ctx.fillStyle = d.render(this.ctx, ...pos, ...pos2);
@@ -325,7 +326,7 @@ export class Renderer2d implements Renderer {
                 if (obj instanceof RectangleObject) {
                     this.renderRectangle(obj, lights);
                 } else {
-                    console.log("UNKNOWN", obj);
+                    // console.log("UNKNOWN", obj);
                 }
 
 

@@ -6,7 +6,7 @@ import { AmbientLight } from "../GameObjects/Light";
 import { Point } from "../Primitives";
 import { Scene, SceneSettings } from "./Scene";
 
-export class LabScene extends Scene {
+export class HellScene extends Scene {
     constructor() {
         super();
         this.gameObjects.add(new AmbientLight(0.3));
@@ -16,15 +16,15 @@ export class LabScene extends Scene {
         super.register(container);
         return {
             ground: new Ground([
-                { emoji: new Emoji("🔬", 12, 1), range: [0.999, 1] },
-                { emoji: new Emoji("🔋", 8, 1, 0, 4), range: [0.5, 0.51] },
-                { emoji: new Emoji("📚", 10, 1, 0, 5), range: [0.2, 0.21]},
-                { emoji: new Emoji("🧪", 8, 1, 0, 2), range: [0.6, 0.61]},
-                { emoji: new Emoji("🖥", 12, 1, 0, 2), range: [0.9, 0.92]}
-            ], 5234),
-            hudBackground: 'rebeccapurple',
-            backgroundColor: "rgba(220, 220, 240)",
-            getDither: Dither.generateDithers(10, [200, 70, 255]),
+                { emoji: new Emoji("💀", 12, 1), range: [0.999, 1] },
+                { emoji: new Emoji("🍖", 8, 1, 0, 4), range: [0.5, 0.51] },
+                { emoji: new Emoji("🪨", 10, 1, 0, 5), range: [0.2, 0.21]},
+                { emoji: new Emoji("🗿", 12, 1, 0, 2), range: [0.6, 0.61]},
+                { emoji: new Emoji("🦴", 12, 1, 0, 2), range: [0.9, 0.92]}
+            ], 534),
+            hudBackground: '#470100',
+            backgroundColor: "rgba(100, 10, 10)",
+            getDither: Dither.generateDithers(10, [200, 34, 24]),
         };
     }
 }

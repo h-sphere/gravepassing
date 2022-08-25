@@ -120,6 +120,7 @@ export class CementeryScene extends Scene {
                 { emoji: new Emoji("🪨", 10, 1), range: [0.6, 0.61]}
             ], 5234),
             hudBackground: 'purple',
+            getDither: Dither.generateDithers(16),
         }
     }
 }

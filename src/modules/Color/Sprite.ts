@@ -5,6 +5,7 @@ import { withLight } from "../GameObjects/mixins";
 import { Point, Rectangle } from "../Primitives";
 import { Directional } from "../Assets/Emojis";
 import { SceneSettings } from "../Scene/Scene";
+import { Game } from "../Game";
 
 // export interface EmojiSettings {
 //     emoji: string,
@@ -36,8 +37,16 @@ export class DirectionableTexture implements NewTexture {
         return this.getEmoji().collisionBoundingBox();
     }
 
-    setDirection(d: string) {
+    setDirection(d: string, len: number) {
         this.direction = d;
+        const e = this.getEmoji();
+        if (e instanceof AnimatedEmoji) {
+            if (len) {
+                e.start();
+            } else {
+                e.stop();
+            }
+        }
     }
 
     // render(ctx: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number): string | CanvasGradient | CanvasPattern {
@@ -93,7 +102,6 @@ export class CombinedEmoji implements NewTexture {
         const div = document.createElement('div');
 
         this.emojis.forEach(e => {
-            console.log(e);
             div.style.fontSize=e.size + 'px';
             div.innerText = e.emoji;
 
@@ -105,7 +113,6 @@ export class CombinedEmoji implements NewTexture {
             // const t = this.ctx.measureText(e.emoji);
             // ct.fillRect(0, 0, c.width, c.height);
             const x = ct.measureText(e.emoji)
-            console.log(x);
             if (!p1 || !p2) {
                 p1 = new Point(e.pos[0], e.pos[1]);
                 p2 = new Point(e.pos[0] + x.width, e.pos[1] + x.actualBoundingBoxDescent).mul(1/16);
@@ -117,7 +124,6 @@ export class CombinedEmoji implements NewTexture {
             ct.fillText(e.emoji, e.pos[0], e.pos[1]);
         });
         this._boundingBox = new Rectangle(p1, p2);
-        console.log('bibi', this._boundingBox);
         this.canvas = c;
 
         // OMFG, why does this help?
@@ -166,6 +172,74 @@ export class CombinedEmoji implements NewTexture {
     // }
 }
 
+export class AnimatedEmoji extends CombinedEmoji {
+    constructor(emojis, scale, color, private steps: number = 3, private stepFn: (step: number, steps: number, canvas: HTMLCanvasElement) => void) {
+        super(emojis, scale, color);
+        this.generate();
+    }
+
+    private canvases: HTMLCanvasElement[] = [];
+
+    protected generate(): void {
+        if (!this.steps) {
+            return;
+        }
+        const steps = 10;
+        console.log("GENERATE?", this.steps);
+        super.generate();
+        for(let i=0;i<steps;i++) {
+            console.log("RENDERING ", i, " FRAME");
+            // copy context here.
+            const canvas = document.createElement('canvas');
+            canvas.width = this.canvas.width;
+            canvas.height = this.canvas.height;
+            const ctx = canvas.getContext('2d')!;
+            ctx.drawImage(this.canvas, 0, 0, canvas.width, canvas.height);
+            this.stepFn(i, steps, canvas);
+            this.canvases.push(canvas);
+
+            // OMFG, why does this help?
+            createImageBitmap(ctx.getImageData(0, 0, canvas.width, canvas.height))
+            .then(b => this.bmp = b);
+            
+            // FIXME: Optimisation here.
+        }
+    }
+    private isStarted = false;
+    private h: any = null;
+    start() {
+        if (this.isStarted) {
+            return;
+        }
+        this.isStarted = true;
+        this.h = setInterval(() => {
+            this.setFrame(this._n + 1);
+        }, 50);
+    }
+
+    stop() {
+        if (this.h) {
+            clearInterval(this.h);
+            this.isStarted = false;
+            this._n = 0;
+        }
+    }
+
+    newRender(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number): void {
+        const c = this.canvases[this._n];
+        try {
+            ctx.drawImage(c, 0, 0, c.width, c.height, x, y, w, h);
+        } catch (e) {
+            console.log("ERROR", e);
+        }
+    }
+
+    private _n: number = 0;
+    setFrame(n: number) {
+        this._n = n % this.steps;
+    }
+}
+
 export class Emoji extends CombinedEmoji {
     constructor(e: string, size: number, scale: number, x = 0, y = 0) {
         super([{emoji: e, size: size, pos: [x, y]}], scale, 'white');
@@ -178,59 +252,44 @@ export class Emoji extends CombinedEmoji {
 
 const D_STEP = 11;
 
-const c = (n) => Math.round(n * (D_STEP - 1))
+const c = (n, steps) => Math.round(n * (steps - 1))
 export class Dither extends ImageTexture {
     
-    private static d;
+    // private static d;
 
-    static getDither(n: number): Dither {
-        return this.d[c(n)];
+    // static getDither(n: number): Dither {
+    //     return this.d[c(n)];
+    // }
+
+    static generateDithers(steps: number = D_STEP, color: number[] = [44, 100, 94]) {
+        const dithers: Dither[] = [];
+        for(let i=0;i<=steps;i++) {
+            const d = new Dither(i / steps, steps, color);
+            dithers.push(d);
+        }
+        return (n: number) => dithers[c(n, steps)];
     }
 
-    static generateDithers() {
-        if (this.d) {
-            return;
-        }
-        this.d = {};
-        for(let i=0;i<=D_STEP;i++) {
-            const d = new Dither();
-            d.setLight(i / D_STEP);
-            this.d[i] = d;
-        }
-    }
-
-    private l: number = 0.55;
-    private constructor() {
+    private constructor(private l: number, private s: number, private c: number[]) {
         super();
-        // setInterval(() => {
-        //     this.l = this.l + 0.02;
-        //     if (this.l > 1) {
-        //         this.l = 0;
-        //     }
-        //     this.generate();
-        // }, 100);
-    }
-    setLight(l: number) {
-        this.l = l;
         this.generate();
     }
     protected generate(): void {
         this.ctx.clearRect(this.pos[0], this.pos[1], SIZE, SIZE);
-        this.ctx.fillStyle = 'rgb(44, 100, 94, ' + (1-this.l/1.2-0.2) + ')';
+        this.ctx.fillStyle = 'rgb('+this.c.join(',') + ', ' + (1-this.l/1.2-0.2) + ')';
         // if (this.l > 0.95) {
         //     return;
         // }
         for(let i=0;i<SIZE;i++) {
             for(let j=0;j<SIZE;j++) {
-                const p = j + i * SIZE;
-                if ((c(Math.abs(i*i + j*j)) % (D_STEP)) >= c(this.l)) {
+                if ((c(Math.abs(i*i + j*j), this.s) % (this.s)) >= c(this.l, this.s)) {
                     this.ctx.fillRect(this.pos[0] + i, this.pos[1] + j, 1, 1);
                 }
             }
         }
     }
 }
-Dither.generateDithers();
+// Dither.generateDithers();
 
 // export class Sprite extends ImageTexture {
 //     static img: HTMLImageElement;
@@ -285,8 +344,8 @@ export class Ground {
     constructor(private emojis: EmojiList[] = [], private seed: number) {
         // this.grass.gen();
     }
-    render(ctx: CanvasRenderingContext2D, bb: Rectangle, s: SceneSettings): void {
-        const m = SIZE * 5; // FIXME: PROPER DATA HERE
+    render(ctx: CanvasRenderingContext2D, bb: Rectangle, s: SceneSettings, game: Game): void {
+        const m = SIZE * game.MULTIPLIER;
         bb.forEachCell((x, y, oX, oY) => {
             // console.log(oX, oY);
             const p = FN(x,y, this.seed || 231);

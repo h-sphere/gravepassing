@@ -1,4 +1,4 @@
-import { CombinedEmoji, Emoji, EmojiSet } from "../Color/Sprite";
+import { AnimatedEmoji, CombinedEmoji, Emoji, EmojiSet } from "../Color/Sprite";
 
 const S = 1;
 
@@ -26,6 +26,17 @@ export interface Directional {
         { emoji: head || "👱", pos: [4, 0], size: 5}
  */
 
+const renderLegs = (s: number, steps: number, c: HTMLCanvasElement) => {
+    const ctx = c.getContext('2d')!;
+    if (!s) {
+        return;
+    }
+    ctx.fillStyle = "red";
+    // ctx.fillRect(0, 0, s, s);
+    ctx.clearRect(4, 16, 3, -4*(s/steps))
+    ctx.clearRect(7, 16, 3, -4*(Math.abs(s/steps-0.5)))
+}
+
 const createDirectional = (head?, body?, pants?): Directional => {
     const base = [
         { emoji: pants || "👖", pos: [4, 10], size: 5},
@@ -33,10 +44,10 @@ const createDirectional = (head?, body?, pants?): Directional => {
         { emoji: head || "👱", pos: [4, 0], size: 5}
     ];
     return {
-        "up": new CombinedEmoji(base, 1),
-        "down": new CombinedEmoji([...base, glasses], 1),
-        "left": new CombinedEmoji([...base, singleGlass], 1),
-        "right": new CombinedEmoji([...base, singleRightGlass], 1),
+        "up": new AnimatedEmoji(base, 1, "white", 10, renderLegs),
+        "down": new AnimatedEmoji([...base, glasses], 1, 'white', 10, renderLegs),
+        "left": new AnimatedEmoji([...base, singleGlass], 1, 'white', 10, renderLegs),
+        "right": new AnimatedEmoji([...base, singleRightGlass], 1, 'white', 10, renderLegs),
     }
 }
 
