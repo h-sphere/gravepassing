@@ -33,8 +33,11 @@ const renderLegs = (s: number, steps: number, c: HTMLCanvasElement) => {
     }
     ctx.fillStyle = "red";
     // ctx.fillRect(0, 0, s, s);
-    ctx.clearRect(4, 16, 3, -4*(s/steps))
-    ctx.clearRect(7, 16, 3, -4*(Math.abs(s/steps-0.5)))
+    if (s/steps <= 0.5) {
+        ctx.clearRect(4, 16, 3, -4*(2*s/steps))
+    } else {
+        ctx.clearRect(7, 16, 3, -4*(Math.abs(2*s/steps-1)))
+    }
 }
 
 const createDirectional = (head?, body?, pants?): Directional => {

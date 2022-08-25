@@ -45,7 +45,7 @@ class BombInventoryItem extends InventoryItem {
     icon = E.item;
     use(user: Player) {
         return [
-            new Bomb(user.center, 300, TAG.ENEMY)
+            new Bomb(user.center, 1000, TAG.ENEMY)
         ];
         
     }

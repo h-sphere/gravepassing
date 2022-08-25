@@ -1,3 +1,4 @@
+import { AudioManager } from "../Audio/AudioManager";
 import { Emoji } from "../Color/Sprite";
 import { Point } from "../Primitives";
 import { GameObject, GameObjectGroup } from "./GameObject";
@@ -31,6 +32,7 @@ export class Bullet extends UsableItem {
 
         // FIXME: remove duplication
         this.o.rectangle.moveTo(this.center);
+        AudioManager.get().shot();
     }
 
     update(dt: number, container: GameObjectsContainer): void {

@@ -1,11 +1,17 @@
 interface SynthConfig {
     type: OscillatorType;
     cutoff?: number;
+    delay?: {
+        time: number,
+        gain: number,
+    }
 }
 export class AudioTrack {
+    private interacted: boolean = false;
+    private isStoped: boolean = true;
     constructor(public bpm: number, public duration: number, public definition: string, public synth: SynthConfig) {
         const fn = () => {
-            this.makeSynth();
+            this.interacted = true;
             document.removeEventListener('keydown', fn);
         }
         document.addEventListener('keydown', fn);
@@ -14,15 +20,54 @@ export class AudioTrack {
     private osc: OscillatorNode;
     private ctx: AudioContext;
 
-    makeSynth() {
-        const ctx = new window.AudioContext();
+    public start(ctx: AudioContext) {
+        this.ctx = ctx;
+        if (this.interacted) {
+            this.makeSynth()
+        } else {
+            const fn = () => {
+                this.makeSynth();
+                document.removeEventListener('keydown', fn);
+            }
+            document.addEventListener('keydown', fn);
+        }
+    }
+
+    stop() {
+        // FIXME: ramp music.
+        this.isStoped = true;
+    }
+
+    private makeSynth() {
+        console.log("MAKE SYNTH")
+        this.isStoped = false;
+        const ctx = this.ctx; // new window.AudioContext();
         const osc = ctx.createOscillator();
         const fil = ctx.createBiquadFilter();
+        const gain = ctx.createGain();
+
+        const t = ctx.currentTime;
+
+        gain.gain.setValueAtTime(0.1, t);
+
         fil.type = 'lowpass';
-        fil.frequency.setValueAtTime(this.synth.cutoff || 40000, ctx.currentTime);
+        fil.frequency.setValueAtTime(this.synth.cutoff || 40000, t);
+        fil.connect(gain);
+        gain.connect(ctx.destination);
+        
         osc.type = this.synth.type;
         osc.connect(fil);
-        fil.connect(ctx.destination);
+
+        if (this.synth.delay) {
+            const del = ctx.createDelay()
+            del.delayTime.setValueAtTime(this.synth.delay.time, t);
+            fil.connect(del);
+            const delAten = ctx.createGain();
+            del.connect(delAten);
+            delAten.connect(ctx.destination);
+            delAten.gain.setValueAtTime(this.synth.delay.gain, t);
+        }
+
         this.osc = osc;
         this.ctx = ctx;
         this.schedule();
@@ -30,26 +75,27 @@ export class AudioTrack {
 
     }
 
+    nextStartTime: number = -1;
+
     schedule() {
-        console.log(this.ctx);
+        if (this.isStoped) {
+            return;
+        }
         const l = 60 / this.bpm;
-        console.log('SPEED', l);
-        // const l = 0.5;
-        console.log('timez', this.ctx.currentTime);
+        let s = this.nextStartTime;
+        if (s < 0) {
+            s = this.ctx.currentTime;
+        }
         for(let i = 0; i < this.definition.length; i++) {
             const m = this.definition.charCodeAt(i);
             let hz = Math.pow(2, (m-69)/12)*440;
             if (hz > 5000) {
                 hz = 0;
             }
-            console.log(hz, this.ctx.currentTime+l*i+l/2);
-            this.osc.frequency.setValueAtTime(hz, this.ctx.currentTime+l*i);
-            this.osc.frequency.setValueAtTime(0, this.ctx.currentTime+l*i+l*this.duration);
+            this.osc.frequency.setValueAtTime(hz, s+l*i);
+            this.duration < 1 && this.osc.frequency.setValueAtTime(0, s+l*i+l*this.duration);
         }
-        setTimeout(() => this.schedule(), l * this.definition.length * 1000);
-    }
-
-    start() {
-
+        this.nextStartTime = s + this.definition.length * l;
+        setTimeout(() => this.schedule(), l * this.definition.length * 0.9 * 1000);
     }
 }

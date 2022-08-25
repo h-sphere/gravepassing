@@ -214,7 +214,7 @@ export class AnimatedEmoji extends CombinedEmoji {
         this.isStarted = true;
         this.h = setInterval(() => {
             this.setFrame(this._n + 1);
-        }, 50);
+        }, 25);
     }
 
     stop() {
