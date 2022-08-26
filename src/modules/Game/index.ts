@@ -78,7 +78,7 @@ export class Game {
         // }
 
         // const scene = new CementeryScene();
-        const scene = new HubScene();
+        const scene = new CementeryScene();
         this.sceneSettings = scene.register(this.gameObjects);
 
         this.player = new Player();

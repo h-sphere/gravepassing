@@ -1,4 +1,6 @@
 import { E } from "../Assets/Emojis";
+import { AudioTrack } from "../Audio/AudioTrack";
+import { Song } from "../Audio/Song";
 import { Color } from "../Color/Color";
 import { Image, SIZE } from "../Color/Image";
 import { CombinedEmoji, Dither, Emoji, Ground, Sprite, SpriteWithLight } from "../Color/Sprite";
@@ -25,7 +27,7 @@ export class CementeryScene extends Scene {
         // const texture = new Image();
 
         // const WALL = new SpriteWithLight(4, 18);
-        const WALL2 = new SpriteWithLight(1, 15);
+        // const WALL2 = new SpriteWithLight(1, 15);
         // const EMOJI = new Emoji("⚡️", 10);
         // const TREE = new Emoji("🀫", 16, 2);
         const ND = new Emoji("⛪️", 32, 2);
@@ -111,6 +113,25 @@ export class CementeryScene extends Scene {
 
     register(container: GameObjectsContainer): SceneSettings {
         super.register(container);
+        const delay = { time: 0.1, gain: 0.1 };
+
+
+            const X = "45241452"
+            const V = X+X+X+"1451x5xx"
+
+            const S = "xxxx";
+
+            const B = "$$$$"
+            const V2 = B+S+B+S+B+B+S+S;
+
+        const music = new Song([
+            new AudioTrack(65*4, 1, V, { type: "triangle", cutoff: 600, delay}),
+            new AudioTrack(65*8, 0.5, V2, { type: "sawtooth", cutoff: 300, delay}),
+            // new AudioTrack(65, 1, "45", { type: "square", cutoff: 300, delay: {time: 0.3, gain: 0.4} })
+        
+        ]);
+        // music.play();
+        
         return {
             backgroundColor: 'rgba(50, 50, 50)',
             ground: new Ground([

@@ -33,6 +33,7 @@ export class Bullet extends UsableItem {
         // FIXME: remove duplication
         this.o.rectangle.moveTo(this.center);
         AudioManager.get().shot();
+        // AudioManager.get().collected();
     }
 
     update(dt: number, container: GameObjectsContainer): void {

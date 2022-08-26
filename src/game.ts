@@ -49,7 +49,7 @@ const CementeryMusic = new Song([
 
 // CementeryMusic.play();
 
-LabMusic.play();
+// LabMusic.play();
 
 
 // new AudioTrack(bpm/4, 0.9, "1", {

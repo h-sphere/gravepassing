@@ -1,4 +1,4 @@
-import { Bomb, Shot } from "./AudioEffect";
+import { Bomb, Collected, Shot } from "./AudioEffect";
 import { AudioTrack } from "./AudioTrack";
 
 export class AudioManager {
@@ -13,6 +13,7 @@ export class AudioManager {
     private sounds = {
         "shot": new Shot(),
         "bomb": new Bomb(),
+        "collected": new Collected(),
     }
 
     constructor() {
@@ -25,5 +26,9 @@ export class AudioManager {
 
     bomb(e: boolean) {
         this.sounds.bomb.play(e);
+    }
+
+    collected() {
+        this.sounds.collected.play();
     }
 }

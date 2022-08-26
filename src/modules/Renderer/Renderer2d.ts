@@ -348,6 +348,7 @@ export class Renderer2d implements Renderer {
         }
 
         this.renderHUD(game);
+        this.renderPostEffects();
     }
 
     renderHUD(game: Game) {
@@ -406,6 +407,33 @@ export class Renderer2d implements Renderer {
         // E.goal.down.newRender(this.ctx, 4.5*u, 6.25*u, u, u);
         E.goal.left.newRender(this.ctx, u/4, 3*u, u, u);
         // E.goal.right.newRender(this.ctx, 8.5*u, 3*u, u, u);
+
+    }
+
+    postCanvas: HTMLCanvasElement;
+    pattern: CanvasPattern;
+    renderPostEffects() {
+        if (this.game.MULTIPLIER < 2) {
+            // NO SPACE FOR POST PROCESSING
+            return;
+        }
+
+        if (!this.postCanvas) {
+            this.postCanvas = document.createElement('canvas');
+            this.postCanvas.width = this.game.MULTIPLIER;
+            this.postCanvas.height = this.game.MULTIPLIER;
+            const ctx = this.postCanvas.getContext('2d')!;
+            ctx.strokeStyle = "rgba(0,0,0,0.1)";
+            const m = this.game.MULTIPLIER;
+            ctx.lineWidth = 1;
+            ctx.strokeRect(0, 0, m, m);
+            // ctx.fillRect(0, 0, m / 2, m / 2);
+            // ctx.fillRect(m, m, -m/2, -m/2);
+            // RENDERING HERE
+            this.pattern = ctx.createPattern(this.postCanvas, "repeat")!;
+        }
+        this.ctx.fillStyle = this.pattern;
+        this.ctx.fillRect(0, 0, this.width, this.height);
 
     }
 
