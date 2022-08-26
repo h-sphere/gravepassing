@@ -1,0 +1,25 @@
+image: node:17
+
+stages:
+  - build
+  - pages
+
+project_build:
+  stage: build
+  script:
+    - yarn install
+    - yarn build
+    - mv dist public
+  artifacts:
+    paths:
+    - public
+  cache:
+    paths:
+    - node_modules
+pages:
+  stage: pages
+  only:
+  - main
+  artifacts:
+    paths:
+      - public
