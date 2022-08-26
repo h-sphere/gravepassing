@@ -136,6 +136,11 @@ export class Rectangle extends Line {
         }
     }
 
+    scale(x: number, y: number) {
+        const p2 = new Point(this.p2.x - this.width*(1-x), this.p2.y - this.height*(1-y));
+        return new Rectangle(this.p1, p2);
+    }
+
     static fromPoint(p: Point) {
         return new Rectangle(p.copy(), p.copy());
     }

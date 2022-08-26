@@ -76,6 +76,12 @@ class SimpleHumanoidPref extends GameObjectGroup {
         // Move movement functions here.
     }
 
+    getBoundingBox(): Rectangle {
+        const bb = super.getBoundingBox();
+        const w = bb.width;
+        return bb.moveBy(new Point(w / 3, 0)).scale(1/3, 1)
+    }
+
 
     public lastX: number = 0;
     public lastY: number = 0;
