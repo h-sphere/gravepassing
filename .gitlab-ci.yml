@@ -18,6 +18,8 @@ project_build:
     - node_modules
 pages:
   stage: pages
+  script:
+    - ls public
   only:
   - main
   artifacts:
