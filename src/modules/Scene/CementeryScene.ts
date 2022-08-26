@@ -120,19 +120,26 @@ export class CementeryScene extends Scene {
         super.register(container);
         const delay = { time: 0.1, gain: 0.1 };
 
+        const sil = "xxxxxxxx";
 
         const X = "45241452"
-        const V = X + X + X + "1451x5xx"
+        const V = X + X + X + "1451x5xx" + X + sil + X + "12115xxx";
 
         const S = "xxxx";
 
         const B = "$$$$"
-        const V2 = B + S + B + S + B + B + S + S;
+        const C = "$$))"
+
+        const var1 = B + S + B + S + B + B + S + S;
+        const var2 = C + S + B + S + C + C + S + C;
+
+        const V2 = var1+var1+var1+var2;
 
         const music = new Song([
-            new AudioTrack(65 * 4, 1, V, { type: "triangle", cutoff: 600, delay }),
-            new AudioTrack(65 * 8, 0.5, V2, { type: "sawtooth", cutoff: 300, delay }),
-            // new AudioTrack(65, 1, "45", { type: "square", cutoff: 300, delay: {time: 0.3, gain: 0.4} })
+            new AudioTrack(65 * 4, 1, V, { type: "square", cutoff: 400, delay }),
+            new AudioTrack(65 * 8, 0.5, V2, { type: "sawtooth", cutoff: 230, delay }),
+            // new AudioTrack(65, 1, "444x333x111x", { type: "square", cutoff: 100 }),
+            // new AudioTrack(65, 1, ":::x:::x666x", { type: "square", cutoff: 100 })
 
         ]);
         music.play();
