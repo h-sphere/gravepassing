@@ -331,9 +331,9 @@ export class Renderer2d implements Renderer {
                     // console.log("UNKNOWN", obj);
                 }
 
-                if (obj instanceof SimpleHumanoid || obj instanceof UsableItem) {
-                    obj.getBoundingBox().toLines().forEach(l => this.renderDebugLine(l, 'orange'));
-                }
+                // if (obj instanceof SimpleHumanoid || obj instanceof UsableItem) {
+                //     obj.getBoundingBox().toLines().forEach(l => this.renderDebugLine(l, 'orange'));
+                // }
 
 
                 if (this.boundingBoxEnable) {
@@ -370,7 +370,7 @@ export class Renderer2d implements Renderer {
         c.strokeRect(x, y, this.getUnitSize() * (this.getUnits() - 0.5), this.getUnitSize() * 2);
 
 
-        let health = 3
+        let health = game.player.life;
         for(let i=0;i<5;i+=1) {
             let e = E.health;
             if (i >= health) {

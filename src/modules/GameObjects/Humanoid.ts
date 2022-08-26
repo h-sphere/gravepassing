@@ -1,9 +1,6 @@
-import { getLinesIntersection } from "../../utils/math";
 import { Directional, E } from "../Assets/Emojis";
 import { Color } from "../Color/Color";
-import { ColorGradient } from "../Color/Gradient";
-import { PlayerTexture } from "../Color/Image";
-import { DirectionableTexture, Emoji, Sprite } from "../Color/Sprite";
+import { DirectionableTexture } from "../Color/Sprite";
 import { TAG } from "../constants/tags";
 import { KeyboardController } from "../Controller/KeyboardController";
 import { Line, Point, Rectangle } from "../Primitives";
@@ -109,6 +106,15 @@ export class SimpleHumanoid extends withRotation(withMovement(SimpleHumanoidPref
             d, direction.distanceFromOrigin()
         );
         this.light.center = this.sprite.rectangle.center;
+    }
+
+    life: number = 5;
+
+    getHit() {
+        this.life--;
+        if (this.life <= 0) {
+            console.log("I AM DED");
+        }
     }
 
     isGlobal = false;

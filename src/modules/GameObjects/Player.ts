@@ -1,4 +1,5 @@
 import { E } from "../Assets/Emojis";
+import { Audio } from "../Audio/AudioManager";
 import { Emoji } from "../Color/Sprite";
 import { TAG } from "../constants/tags";
 import { KeyboardController } from "../Controller/KeyboardController";
@@ -97,8 +98,12 @@ export class Player extends SimpleHumanoid {
             go.forEach(g => {
                 container.add(g);
                 g.onHit(t => {
-                    this.xp += t.value;
-                })
+                    console.log("HIT", t, t.life, t.value);
+                    if (t.life <= 0) {
+                        this.xp += t.value;
+                        Audio.killed.play()
+                    }
+                });
                 // FIXME: add proper on hit here.
             })
 

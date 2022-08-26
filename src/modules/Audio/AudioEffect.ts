@@ -66,3 +66,17 @@ export class Collected extends AudioEffect {
         // this.osc.frequency.setValueAtTime(0, t + 0.8);
     }
 }
+
+export class EnemyKilled extends AudioEffect {
+    play() {
+        this.osc.type = 'square';
+        const t = this.ctx.currentTime;
+        this.osc.frequency.setValueAtTime(700, t);
+        this.osc.frequency.setValueAtTime(400, t + 0.05);
+        this.osc.frequency.setValueAtTime(700, t + 0.1);
+        // this.osc.frequency.linearRampToValueAtTime(700, t+0.09);
+        this.osc.frequency.setValueAtTime(0, t + 0.2);
+        // this.osc.frequency.setValueAtTime(800, t + 0.7);
+        // this.osc.frequency.setValueAtTime(0, t + 0.8);
+    }
+}

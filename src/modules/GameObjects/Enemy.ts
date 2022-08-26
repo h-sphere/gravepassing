@@ -1,8 +1,8 @@
 import { Directional } from "../Assets/Emojis";
-import { Emoji } from "../Color/Sprite";
+import { AnimatedEmoji, Emoji, EmojiSet } from "../Color/Sprite";
 import { TAG } from "../constants/tags";
 import { Point } from "../Primitives";
-import { GameObjectGroup } from "./GameObject";
+import { GameObject, GameObjectGroup } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { SimpleHumanoid } from "./Humanoid";
 import { BulletInventoryItem } from "./Player";
@@ -16,10 +16,48 @@ export class Enemy extends SimpleHumanoid {
     constructor(d: Directional, public value: number = 100) {
         super(d, 3, 0.5);
         this.addTag(TAG.ENEMY);
+        const e: EmojiSet = {
+            emoji: "♥️",
+            size: 4,
+            pos: [0, 0],
+        }
+
+        const emojis = [];
+
+        for(let i=0;i<this.life;i++) {
+            emojis.push({...e, pos: [i*3, 0]})
+        }
+
+        // FIXME: we don't want to do that for every enemy.
+        this.hitPoints = new AnimatedEmoji(emojis, 1, "red", this.life, (step, steps, canvas) => { 
+            const ctx = canvas.getContext('2d')!;
+            console.log("STEPZ", steps);
+            ctx.globalCompositeOperation = 'source-atop'
+            if (step === 0) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                return;
+            }
+            ctx.fillRect(steps*3,0, -(steps-step)*3, canvas.height);
+        });
+        const obj = new RectangleObject(Point.ORIGIN, this.hitPoints);
+        obj.parentBBExclude = true;
+        this.add(obj);
+        this.pointsObj = obj;
+        this.hitPoints.setFrame(this.life);
     }
+
+    hitPoints: AnimatedEmoji;
+    pointsObj;
 
     lastFired = -1;
     inventory = new BulletInventoryItem()
+
+    getHit() {
+        super.getHit();
+        this.hitPoints.setFrame(this.life);
+        // update hit points above
+
+    }
 
 
     update(dt: number, container: GameObjectsContainer): void {
@@ -40,6 +78,7 @@ export class Enemy extends SimpleHumanoid {
         }
 
         this.move(dt, this.p, SPEED, container);
+        this.pointsObj.rectangle.moveTo(this.center.add(0, -0.2));
 
         // FIXME: check where is the player and shot only then.
         // const player = container.getObjectsInArea()

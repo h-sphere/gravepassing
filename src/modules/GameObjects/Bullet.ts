@@ -1,4 +1,4 @@
-import { AudioManager } from "../Audio/AudioManager";
+import { Audio } from "../Audio/AudioManager";
 import { Emoji } from "../Color/Sprite";
 import { Point, Rectangle } from "../Primitives";
 import { GameObject, GameObjectGroup } from "./GameObject";
@@ -32,8 +32,7 @@ export class Bullet extends UsableItem {
 
         // FIXME: remove duplication
         this.o.rectangle.moveTo(this.center);
-        AudioManager.get().shot();
-        // AudioManager.get().collected();
+        Audio.shot.play();
     }
 
     getBoundingBox(): Rectangle {
@@ -52,9 +51,11 @@ export class Bullet extends UsableItem {
             console.log('HIT', enemiesHit[0].getBoundingBox(), this.o.getBoundingBox());
             const enemy = enemiesHit[0];
             if (enemy instanceof SimpleHumanoid) {
+            enemy.getHit();
             this.hit(enemy);
-            // FIXME: add enemies health here.
-            container.remove(enemiesHit[0]);
+            if (enemy.life <= 0) {
+                container.remove(enemiesHit[0]);
+            }
             this.lifeSpan = 0;
             } else {
                 console.log("UNKNOWN ENEMY TYPE", enemy);

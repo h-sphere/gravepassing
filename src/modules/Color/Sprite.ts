@@ -102,7 +102,7 @@ export class CombinedEmoji implements NewTexture {
         
     }
 
-    protected generate(): void {
+    protected generate(...props: any[]): void {
 
         const c = document.createElement('canvas');
         c.width = this.scale * SIZE;
@@ -191,17 +191,16 @@ export class AnimatedEmoji extends CombinedEmoji {
         super(emojis, scale, color);
         setTimeout(() => {
             // hack to make inherited classes have time to set constructor variables.
-            this.generate();
+            this.generate(steps);
         });
     }
 
     private canvases: HTMLCanvasElement[] = [];
 
-    protected generate(): void {
+    protected generate(steps: number): void {
         if (!this.steps) {
             return;
         }
-        const steps = 10;
         console.log("GENERATE?", this.steps);
         super.generate();
         for(let i=0;i<steps;i++) {
