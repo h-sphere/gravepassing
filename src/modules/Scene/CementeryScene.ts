@@ -136,14 +136,44 @@ export class CementeryScene extends Scene {
         
         ]);
         music.play();
+
+
+        const grave = new CombinedEmoji([
+            { emoji: "🪦", size: 12, pos: [0, 0]},
+            { emoji: "🌱", size: 6, pos: [0, 10], hueShift: -30 },
+            { emoji: "🌱", size: 4, pos: [10, 10], hueShift: -50 },
+            { emoji: "🌱🌱🌱", size: 4, pos: [5, 10], hueShift: -20 },
+        ], 1);
+
+        const cross = new CombinedEmoji([
+            { emoji: "✝", size: 16, pos: [0, 0]},
+            { emoji: "🌱 🌱", size: 4, pos: [0, 10], hueShift: -70 },
+        ], 1);
+
+        const stone = new CombinedEmoji([
+            { emoji: "🌿", size: 16, pos: [0, 0], hueShift: -60},
+            { emoji: "🪨", size: 10, pos: [0, 10]},
+            { emoji: "🌱 🌱", size: 4, pos: [0, 14], hueShift: -70 },
+        ], 1);
+
+        const leaf = new CombinedEmoji([
+            { emoji: "🍃", size: 6, pos: [0, 0], hueShift: -30},
+            { emoji: "🍃", size: 6, pos: [10, 0], hueShift: -50},
+            { emoji: "🍃", size: 6, pos: [0, 10], hueShift: -70},
+            { emoji: "🍃", size: 6, pos: [15, 0], hueShift: -30},
+            { emoji: "🍃", size: 6, pos: [2, 10], hueShift: -20},
+        ])
+
+
         
         return {
             backgroundColor: 'rgb(50, 50, 50)',
             ground: new Ground([
-                { emoji: new Emoji("🪦", 12, 1), range: [0.999, 1] },
+                { emoji: grave, range: [0.999, 1] },
                 { emoji: new Emoji("🌱", 4, 1, 0, 0, '', -30), range: [0.5, 0.6] },
-                { emoji: new Emoji("✝", 16, 1, 0, 0, '#DDD'), range: [0.2, 0.21]},
-                { emoji: new Emoji("🪨", 10, 1), range: [0.6, 0.61]}
+                { emoji: cross, range: [0.2, 0.21]},
+                { emoji: stone, range: [0.6, 0.61]},
+                { emoji: leaf, range: [0.2, 0.3]}
             ], 5234),
             hudBackground: 'rgb(30,30,50)',
             getDither: Dither.generateDithers(16, [30,40,30]),
