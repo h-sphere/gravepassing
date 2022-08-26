@@ -1,5 +1,5 @@
 import { E } from "../Assets/Emojis";
-import { Audio } from "../Audio/AudioManager";
+import { Audio, getAudio } from "../Audio/AudioManager";
 import { Emoji } from "../Color/Sprite";
 import { TAG } from "../constants/tags";
 import { KeyboardController } from "../Controller/KeyboardController";
@@ -101,7 +101,7 @@ export class Player extends SimpleHumanoid {
                     console.log("HIT", t, t.life, t.value);
                     if (t.life <= 0) {
                         this.xp += t.value;
-                        Audio.killed.play()
+                        getAudio('killed').play()
                     }
                 });
                 // FIXME: add proper on hit here.
