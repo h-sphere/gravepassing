@@ -9,6 +9,7 @@ import { CombinedEmoji, DirectionableTexture, Dither, Emoji, Ground, Sprite, Spr
 import { Texture, NewTexture } from "../Color/Texture";
 import { TAG } from "../constants/tags";
 import { Game } from "../Game";
+import { UsableItem } from "../GameObjects/Bullet";
 import { GameObject, RenderableLine, RenderablePoint } from "../GameObjects/GameObject";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
 import { SimpleHumanoid } from "../GameObjects/Humanoid";
@@ -330,7 +331,7 @@ export class Renderer2d implements Renderer {
                     // console.log("UNKNOWN", obj);
                 }
 
-                if (obj instanceof SimpleHumanoid) {
+                if (obj instanceof SimpleHumanoid || obj instanceof UsableItem) {
                     obj.getBoundingBox().toLines().forEach(l => this.renderDebugLine(l, 'orange'));
                 }
 

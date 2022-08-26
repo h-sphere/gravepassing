@@ -1,6 +1,6 @@
 import { AudioManager } from "../Audio/AudioManager";
 import { Emoji } from "../Color/Sprite";
-import { Point } from "../Primitives";
+import { Point, Rectangle } from "../Primitives";
 import { GameObject, GameObjectGroup } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { SimpleHumanoid } from "./Humanoid";
@@ -27,7 +27,7 @@ export class Bullet extends UsableItem {
     constructor(p: Point, private direction: Point, private lifeSpan = 200, private targetTag: string) {
         super();
         this.center = p;
-        this.o = new RectangleObject(p, new Emoji("🔅", 5, 1, 8, 8));
+        this.o = new RectangleObject(p, new Emoji("🔅", 4, 1, 6, 6));
         this.add(this.o);
 
         // FIXME: remove duplication
@@ -36,11 +36,16 @@ export class Bullet extends UsableItem {
         // AudioManager.get().collected();
     }
 
+    getBoundingBox(): Rectangle {
+        const bb = super.getBoundingBox().scale(1/3, 1/3);
+        return bb.moveBy(new Point(bb.width, bb.height));
+    }
+
     update(dt: number, container: GameObjectsContainer): void {
 
         // Check collision
         const enemiesHit = container
-            .getObjectsInArea(this.o.getBoundingBox(), this.targetTag)
+            .getObjectsInArea(this.getBoundingBox(), this.targetTag)
             .filter(obj => obj.getBoundingBox().isIntersectingRectangle(this.o.getBoundingBox())); // FIXME: this can be optimised
         if (enemiesHit.length) {
             // hit only first
