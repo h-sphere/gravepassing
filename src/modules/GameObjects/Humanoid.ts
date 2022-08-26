@@ -84,7 +84,7 @@ class SimpleHumanoidPref extends GameObjectGroup {
 
 
     public lastX: number = 0;
-    public lastY: number = 0;
+    public lastY: number = 1;
 
 }
 

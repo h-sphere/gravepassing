@@ -81,16 +81,27 @@ export interface EmojiSet {
     emoji: string;
     size: number;
     pos: number[];
+    hueShift?: number;
 }
 
 export class CombinedEmoji implements NewTexture {
     constructor(private emojis: EmojiSet[], private scale: number = 1, private color = 'white') {
         // super(SIZE*scale, SIZE*scale);
         this.generate();
+        // setTimeout(() => {
+        //     // hack to make inherited classes have time to set constructor variables.
+        //     this.generate();
+        // });
     }
     canvas;
     bmp;
     _boundingBox: Rectangle;
+
+
+    protected postProcessing() {
+        
+    }
+
     protected generate(): void {
 
         const c = document.createElement('canvas');
@@ -112,6 +123,7 @@ export class CombinedEmoji implements NewTexture {
             // ct.fillRect(0, 0, c.width, c.height);
             // const t = this.ctx.measureText(e.emoji);
             // ct.fillRect(0, 0, c.width, c.height);
+            ct.filter = 'hue-rotate('+(e.hueShift||0) + 'deg)';
             const x = ct.measureText(e.emoji)
             if (!p1 || !p2) {
                 p1 = new Point(e.pos[0], e.pos[1]);
@@ -122,9 +134,11 @@ export class CombinedEmoji implements NewTexture {
             }
 
             ct.fillText(e.emoji, e.pos[0], e.pos[1]);
+            ct.filter = '';
         });
         this._boundingBox = new Rectangle(p1, p2);
         this.canvas = c;
+        this.postProcessing();
 
         // OMFG, why does this help?
         createImageBitmap(ct.getImageData(0, 0, c.width, c.height))
@@ -175,7 +189,10 @@ export class CombinedEmoji implements NewTexture {
 export class AnimatedEmoji extends CombinedEmoji {
     constructor(emojis, scale, color, private steps: number = 3, private stepFn: (step: number, steps: number, canvas: HTMLCanvasElement) => void) {
         super(emojis, scale, color);
-        this.generate();
+        setTimeout(() => {
+            // hack to make inherited classes have time to set constructor variables.
+            this.generate();
+        });
     }
 
     private canvases: HTMLCanvasElement[] = [];
@@ -241,8 +258,9 @@ export class AnimatedEmoji extends CombinedEmoji {
 }
 
 export class Emoji extends CombinedEmoji {
-    constructor(e: string, size: number, scale: number, x = 0, y = 0, color: string = 'white') {
-        super([{emoji: e, size: size, pos: [x, y]}], scale, color);
+    constructor(e: string, size: number, scale: number, x = 0, y = 0, color: string = 'white', hueShift: number = 0) {
+        super([{emoji: e, size: size, pos: [x, y], hueShift}], scale, color);
+        this.generate();
     }
 }
 

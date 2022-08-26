@@ -1,7 +1,6 @@
 {
   "name": "game2022",
   "version": "1.0.0",
-  "main": "index.js",
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^28.1.6",
@@ -12,6 +11,7 @@
   },
   "scripts": {
     "start": "parcel src/index.html",
+    "build": "parcel build src/index.html",
     "test": "jest"
   },
   "dependencies": {

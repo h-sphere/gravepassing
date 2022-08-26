@@ -5,6 +5,7 @@ import { Point } from "../Primitives";
 import { GameObjectGroup } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { SimpleHumanoid } from "./Humanoid";
+import { BulletInventoryItem } from "./Player";
 import { RectangleObject } from "./Rectangle";
 
 const SPEED = 0.001;
@@ -16,6 +17,9 @@ export class Enemy extends SimpleHumanoid {
         super(d, 3, 0.5);
         this.addTag(TAG.ENEMY);
     }
+
+    lastFired = -1;
+    inventory = new BulletInventoryItem()
 
 
     update(dt: number, container: GameObjectsContainer): void {
@@ -36,6 +40,23 @@ export class Enemy extends SimpleHumanoid {
         }
 
         this.move(dt, this.p, SPEED, container);
+
+        // FIXME: check where is the player and shot only then.
+        // const player = container.getObjectsInArea()
+
+        // FIRE?
+        if (this.lastFired + 900 < Date.now() && Math.random() < 0.001) {
+            // FIRE
+            const go = this.inventory.use(this, container, TAG.PLAYER);
+            go.forEach(g => {
+                container.add(g);
+                g.onHit(t => {
+                    console.log("HIT PLAYER");
+                    // this.xp += t.value;
+                })
+            });
+            this.lastFired = Date.now();
+        }
 
         // FIXME: obstacles
 

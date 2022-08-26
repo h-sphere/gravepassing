@@ -20,7 +20,7 @@ class InventoryItem {
     public cooldown = 300;
     icon: Emoji = E.item2; // FIXME: naming
 
-    use(user: Player, container: GameObjectsContainer): UsableItem[] {
+    use(user: Player, container: GameObjectsContainer, tag: string): UsableItem[] {
         return [];
     }
 
@@ -29,12 +29,13 @@ class InventoryItem {
     }
 }
 
-class BulletInventoryItem extends InventoryItem {
+export class BulletInventoryItem extends InventoryItem {
     protected isDisposable: boolean = false;
     icon = E.item2;
-    use(user: Player) {
+    use(user: SimpleHumanoid, container: GameObjectsContainer, tag = TAG.ENEMY) {
+        console.log("SHOT", user);
         return [
-            new Bullet(user.center, new Point(user.lastX, user.lastY), 300, TAG.ENEMY)
+            new Bullet(user.center, new Point(user.lastX, user.lastY), 300, tag)
         ];
     }
 }
@@ -63,6 +64,7 @@ export class Player extends SimpleHumanoid {
 
     constructor() {
         super(E.playerDir);
+        this.addTag(TAG.PLAYER);
         this.controller = new KeyboardController();
         this.items.push(new BulletInventoryItem());
         this.items.push(new BombInventoryItem());
@@ -90,7 +92,7 @@ export class Player extends SimpleHumanoid {
         if (this.controller.fire && this.fireCooldown <= 0) {
             console.log("FIRE");
             this.fireCooldown = 300;
-            const go = this.items[this.selected].use(this, container);
+            const go = this.items[this.selected].use(this, container, TAG.ENEMY);
 
             go.forEach(g => {
                 container.add(g);

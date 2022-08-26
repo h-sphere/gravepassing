@@ -60,6 +60,11 @@ export class CementeryScene extends Scene {
             ));
         }
 
+        const gem = new RectangleObject(
+            Point.ORIGIN.add(-3,-2),
+            new Emoji("💎", 8, 1, 4, 4, 'white', 180));
+        this.gameObjects.add(gem);
+
         // this.gameObjects.add(new RectangleObject(
         //     Point.ORIGIN.add(4, 4),
         //     new Emoji("💬", 10, 1),
@@ -136,8 +141,8 @@ export class CementeryScene extends Scene {
             backgroundColor: 'rgb(50, 50, 50)',
             ground: new Ground([
                 { emoji: new Emoji("🪦", 12, 1), range: [0.999, 1] },
-                { emoji: new Emoji("🌱", 4, 1), range: [0.5, 0.6] },
-                { emoji: new Emoji("✝", 16, 1), range: [0.2, 0.21]},
+                { emoji: new Emoji("🌱", 4, 1, 0, 0, '', -30), range: [0.5, 0.6] },
+                { emoji: new Emoji("✝", 16, 1, 0, 0, '#DDD'), range: [0.2, 0.21]},
                 { emoji: new Emoji("🪨", 10, 1), range: [0.6, 0.61]}
             ], 5234),
             hudBackground: 'rgb(30,30,50)',

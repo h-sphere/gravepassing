@@ -14,7 +14,7 @@ export class Bomb extends UsableItem {
     constructor(p: Point, private lifeSpan = 1000, private targetTag: string) {
         super();
         this.center = p;
-        this.o = new RectangleObject(p, new Emoji("💣", 8, 1, 8, 8));
+        this.o = new RectangleObject(p, new Emoji("💣", 8, 1, 4, 4));
         this.add(this.o);
 
         // FIXME: add coloured light around it.
