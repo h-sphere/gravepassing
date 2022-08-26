@@ -241,8 +241,8 @@ export class AnimatedEmoji extends CombinedEmoji {
 }
 
 export class Emoji extends CombinedEmoji {
-    constructor(e: string, size: number, scale: number, x = 0, y = 0) {
-        super([{emoji: e, size: size, pos: [x, y]}], scale, 'white');
+    constructor(e: string, size: number, scale: number, x = 0, y = 0, color: string = 'white') {
+        super([{emoji: e, size: size, pos: [x, y]}], scale, color);
     }
 }
 

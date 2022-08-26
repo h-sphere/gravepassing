@@ -47,9 +47,9 @@ const CementeryMusic = new Song([
 
 ]);
 
-CementeryMusic.play();
+// CementeryMusic.play();
 
-// LabMusic.play();
+LabMusic.play();
 
 
 // new AudioTrack(bpm/4, 0.9, "1", {

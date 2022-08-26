@@ -86,4 +86,11 @@ export const E = {
     itemBgOff:new CombinedEmoji([
         { emoji: "⬛️", size: 8, pos: [0, 2]}
     ], 1, 'rgba(255,0,0,0.5)'),
+    goal: {
+        top: new Emoji("⬆", 16, 1, 0, 4, 'rgba(255,255,255,0.8)'),
+        down: new Emoji("⬇", 16, 1, 0, 4, 'rgba(255,255,255,0.8)'),
+        left: new Emoji("⬅", 16, 1, 0, 4, 'rgba(255,255,255,0.8)'),
+        right: new Emoji("➡", 16, 1, 0, 4, 'rgba(255,255,255,0.8)')
+
+    },
 }

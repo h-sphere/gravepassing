@@ -400,6 +400,13 @@ export class Renderer2d implements Renderer {
 
         this.ctx.fillText(game.player.xp + " xp", 6*u, y + 2*q);
 
+
+        // GOAL LIGHT
+        E.goal.top.newRender(this.ctx, 4.5*u, u/4, u, u);
+        // E.goal.down.newRender(this.ctx, 4.5*u, 6.25*u, u, u);
+        E.goal.left.newRender(this.ctx, u/4, 3*u, u, u);
+        // E.goal.right.newRender(this.ctx, 8.5*u, 3*u, u, u);
+
     }
 
 
