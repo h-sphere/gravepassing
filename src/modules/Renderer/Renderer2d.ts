@@ -11,6 +11,7 @@ import { TAG } from "../constants/tags";
 import { Game } from "../Game";
 import { GameObject, RenderableLine, RenderablePoint } from "../GameObjects/GameObject";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
+import { SimpleHumanoid } from "../GameObjects/Humanoid";
 import { Light } from "../GameObjects/Light";
 import { withLight, WithLightIface } from "../GameObjects/mixins";
 import { RectangleObject } from "../GameObjects/Rectangle";
@@ -327,6 +328,10 @@ export class Renderer2d implements Renderer {
                     this.renderRectangle(obj, lights);
                 } else {
                     // console.log("UNKNOWN", obj);
+                }
+
+                if (obj instanceof SimpleHumanoid) {
+                    obj.getBoundingBox().toLines().forEach(l => this.renderDebugLine(l, 'orange'));
                 }
 
 

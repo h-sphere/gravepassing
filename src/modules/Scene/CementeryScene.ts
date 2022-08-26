@@ -130,18 +130,18 @@ export class CementeryScene extends Scene {
             // new AudioTrack(65, 1, "45", { type: "square", cutoff: 300, delay: {time: 0.3, gain: 0.4} })
         
         ]);
-        // music.play();
+        music.play();
         
         return {
-            backgroundColor: 'rgba(50, 50, 50)',
+            backgroundColor: 'rgb(50, 50, 50)',
             ground: new Ground([
                 { emoji: new Emoji("🪦", 12, 1), range: [0.999, 1] },
                 { emoji: new Emoji("🌱", 4, 1), range: [0.5, 0.6] },
                 { emoji: new Emoji("✝", 16, 1), range: [0.2, 0.21]},
                 { emoji: new Emoji("🪨", 10, 1), range: [0.6, 0.61]}
             ], 5234),
-            hudBackground: 'purple',
-            getDither: Dither.generateDithers(16),
+            hudBackground: 'rgb(30,30,50)',
+            getDither: Dither.generateDithers(16, [30,40,30]),
         }
     }
 }

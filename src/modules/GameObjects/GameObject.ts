@@ -27,10 +27,12 @@ export class GameObjectGroup implements GameObject, WithCenter {
         throw new Error("Method not implemented.");
     }
     getBoundingBox(): Rectangle {
-        const box = Rectangle.UNIT;
-        return this.objects
-        .filter(o => !o.parentBBExclude)
-        .reduce((a, b) => Rectangle.boundingBox(a, b.getBoundingBox()), box);
+        const boxes = this.objects
+        .filter(o => !o.parentBBExclude).map(x => x.getBoundingBox());
+        if (!boxes.length) {
+            return Rectangle.fromPoint(this.center);
+        }
+        return boxes.reduce((a, b) => Rectangle.boundingBox(a, b));
     }
     zIndex?: number | undefined;
     toLines(): Line[] {
