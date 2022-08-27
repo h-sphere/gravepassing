@@ -61,13 +61,12 @@ export class Bullet extends UsableItem {
                 console.log("UNKNOWN ENEMY TYPE", enemy);
             }
         }
-
+        const m = this.move(dt, this.direction, BULLET_SPEED, container);
         this.lifeSpan -= dt;
-        if (this.lifeSpan <= 0) {
+        if (this.lifeSpan <= 0 || !m) {
             // DIE.
             container.remove(this);
         }
-        this.move(dt, this.direction, BULLET_SPEED, container);
         this.o.rectangle.moveTo(this.center);
     }
 }

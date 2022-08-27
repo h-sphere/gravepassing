@@ -39,7 +39,6 @@ export class AudioTrack {
     }
 
     private makeSynth() {
-        console.log("MAKE SYNTH")
         this.isStoped = false;
         const ctx = this.ctx; // new window.AudioContext();
         const osc = ctx.createOscillator();

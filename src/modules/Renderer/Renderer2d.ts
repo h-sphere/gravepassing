@@ -15,6 +15,7 @@ import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
 import { SimpleHumanoid } from "../GameObjects/Humanoid";
 import { Light } from "../GameObjects/Light";
 import { withLight, WithLightIface } from "../GameObjects/mixins";
+import { Player } from "../GameObjects/Player";
 import { RectangleObject } from "../GameObjects/Rectangle";
 import { RenderableSquaredPoint } from "../GameObjects/SquaredPoint";
 import { Line, Point, Rectangle } from "../Primitives";
@@ -152,6 +153,9 @@ export class Renderer2d implements Renderer {
     // }
 
     private renderRectangle(rect: RectangleObject, lights: Light[]) {
+        if (rect.isHidden) {
+            return;
+        }
         const r = rect.getBoundingBox();
         this.ctx.beginPath();
         // const pattern = this.ctx.createPattern(image, repetition)
@@ -271,9 +275,9 @@ export class Renderer2d implements Renderer {
                 // console.log("Computing", i, j);
                 // FIXME: light intensity with obstructions;
                 // console.log('lights', lights);
-                obstructions.forEach(x => {
-                    this.renderDebugLine(x, 'red')
-                })
+                // obstructions.forEach(x => {
+                //     this.renderDebugLine(x, 'red')
+                // })
                 const lightsFiltered = lights.filter(l => {
                     const line = new Line(l.center, new Point(i + 0.5, j + 0.5));
                     if (l.isGlobal) {
@@ -319,7 +323,7 @@ export class Renderer2d implements Renderer {
         if (this.gridEnabled) {
             this.renderGrid();
         }
-        const objects = gameObjects.getObjectsInArea(boundingBox).sort((a, b) => (a.zIndex || 10) - (b.zIndex || 10));
+        const objects = gameObjects.getObjectsInArea(boundingBox).sort((a,b) => a.getBoundingBox().center.y-b.getBoundingBox().center.y) //.sort((a, b) => (a.zIndex || 10) - (b.zIndex || 10));
         const obstructions = gameObjects.getObjectsInArea(boundingBox, TAG.OBSTACLE).map(o => o.toLines()).flat();
         const lights = objects.filter(o => o instanceof Light) as Light[];
         this.renderDitheredLight(lights, obstructions); 
@@ -331,9 +335,9 @@ export class Renderer2d implements Renderer {
                     // console.log("UNKNOWN", obj);
                 }
 
-                // if (obj instanceof SimpleHumanoid || obj instanceof UsableItem) {
-                //     obj.getBoundingBox().toLines().forEach(l => this.renderDebugLine(l, 'orange'));
-                // }
+                if (obj instanceof Player) {
+                    obj.getFeetBox().toLines().forEach(l => this.renderDebugLine(l, 'orange'));
+                }
 
 
                 if (this.boundingBoxEnable) {
@@ -429,7 +433,7 @@ export class Renderer2d implements Renderer {
             this.postCanvas.width = this.game.MULTIPLIER;
             this.postCanvas.height = this.game.MULTIPLIER;
             const ctx = this.postCanvas.getContext('2d')!;
-            ctx.strokeStyle = "rgba(0,0,0,0.1)";
+            ctx.strokeStyle = "rgba(0,0,0,0.3)";
             const m = this.game.MULTIPLIER;
             ctx.lineWidth = 1;
             ctx.strokeRect(0, 0, m, m);

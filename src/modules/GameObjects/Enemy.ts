@@ -1,7 +1,8 @@
+import { getLinesIntersection } from "../../utils/math";
 import { Directional } from "../Assets/Emojis";
 import { AnimatedEmoji, Emoji, EmojiSet } from "../Color/Sprite";
 import { TAG } from "../constants/tags";
-import { Point } from "../Primitives";
+import { Line, Point, Rectangle } from "../Primitives";
 import { GameObject, GameObjectGroup } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { SimpleHumanoid } from "./Humanoid";
@@ -13,8 +14,9 @@ const SPEED = 0.001;
 export class Enemy extends SimpleHumanoid {
     private p = Point.UNIT_DOWN;
     private changeTimedown = 0;
-    constructor(d: Directional, public value: number = 100) {
+    constructor(d: Directional, public value: number = 100, p: Point = Point.ORIGIN) {
         super(d, 3, 0.5);
+        this.center = p;
         this.addTag(TAG.ENEMY);
         const e: EmojiSet = {
             emoji: "♥️",
@@ -31,7 +33,6 @@ export class Enemy extends SimpleHumanoid {
         // FIXME: we don't want to do that for every enemy.
         this.hitPoints = new AnimatedEmoji(emojis, 1, "red", this.life, (step, steps, canvas) => { 
             const ctx = canvas.getContext('2d')!;
-            console.log("STEPZ", steps);
             ctx.globalCompositeOperation = 'source-atop'
             if (step === 0) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -39,18 +40,34 @@ export class Enemy extends SimpleHumanoid {
             }
             ctx.fillRect(steps*3,0, -(steps-step)*3, canvas.height);
         });
+
         const obj = new RectangleObject(Point.ORIGIN, this.hitPoints);
         obj.parentBBExclude = true;
         this.add(obj);
         this.pointsObj = obj;
         this.hitPoints.setFrame(this.life);
+
+        const markEmoji = new Emoji("❗️", 6, 1);
+        const obj2 = new RectangleObject(Point.ORIGIN, markEmoji);
+        obj2.parentBBExclude = true;
+        this.add(obj2);
+        this.exclamation = obj2;
+        this.exclamation.isHidden = true;
+
+        if(Math.random() > 0.5) {
+            this.directionMoveFirst = 'y';
+        }
+
     }
 
     hitPoints: AnimatedEmoji;
+    exclamation: RectangleObject;
     pointsObj;
 
     lastFired = -1;
     inventory = new BulletInventoryItem()
+    
+    directionMoveFirst = 'x';
 
     getHit() {
         super.getHit();
@@ -63,7 +80,98 @@ export class Enemy extends SimpleHumanoid {
     update(dt: number, container: GameObjectsContainer): void {
         this.changeTimedown -= dt;
 
-        if (this.changeTimedown < 0) {
+        // TARGETTING PLAYER.
+        const bb = this.getBoundingBox().expand(4);
+        const player = container.getObjectsInArea(bb, TAG.PLAYER);
+        let playerSpotted = false;
+        if (player.length) {
+            const line = new Line(player[0].getBoundingBox().center, this.center);
+            if (line.length <= 2) {
+                playerSpotted = true;
+            } else {
+                const obst = container.getObjectsInArea(bb.expand(3), TAG.OBSTACLE);
+                const bareer = obst.map(o => o.toLines()).flat().find(o => !!getLinesIntersection(o, line));
+                console.log("OBSTACL", bareer);
+                playerSpotted = !bareer;
+            }
+        }
+        this.exclamation.isHidden = !playerSpotted;
+
+        let dir = this.p;
+
+        let speed = SPEED;
+        let doNotSecondMove = false;
+
+        let xDiff = 0;
+        let yDiff = 0;
+
+        if (playerSpotted) {
+            const line = new Line(player[0].getBoundingBox().center, this.center);
+            if (line.length <= 1) {
+                // stop
+                dir = Point.ORIGIN;
+                doNotSecondMove = true;
+            } else {
+                xDiff = player[0].getBoundingBox().center.x - this.center.x - 0.5
+                yDiff = player[0].getBoundingBox().center.y - this.center.y - 0.5
+                if (Math.abs(xDiff) < 0.05) {
+                    xDiff = 0;
+                }
+
+                if (Math.abs(yDiff) < 0.05) {
+                    yDiff = 0;
+                }
+                // following
+                dir = new Point(
+                    this.directionMoveFirst === 'x' ? xDiff : 0,
+                    this.directionMoveFirst === 'y' ? yDiff : 0).normalize()
+                speed *= 2;
+            }
+        }
+
+
+        let moved = this.move(dt, dir, speed, container);
+
+        if (!moved && playerSpotted) {
+            // trying moving on Y
+            dir = new Point(
+                this.directionMoveFirst === 'y' ? xDiff : 0,
+                this.directionMoveFirst === 'x' ? yDiff : 0).normalize()
+            moved = this.move(dt, dir, speed, container);
+        }
+
+        if (playerSpotted) {
+        // Point towards player
+            this.lastX = yDiff ? 0 : xDiff;
+            this.lastY = yDiff;
+        }
+
+        this.pointsObj.rectangle.moveTo(this.center.add(0, -0.2));
+        this.exclamation.rectangle.moveTo(this.center.add(0.2, -0.5));
+
+
+        // FIXME: check where is the player and shot only then.
+        // const player = container.getObjectsInArea()
+
+        // FIRE?
+        if (this.lastFired + 1000 < Date.now() && playerSpotted) {
+            // FIRE
+            const go = this.inventory.use(this, container, TAG.PLAYER);
+            go.forEach(g => {
+                container.add(g);
+                g.onHit(t => {
+                    // this.xp += t.value;
+                })
+            });
+            this.lastFired = Date.now();
+        }
+
+        if (!moved) {
+            this.changeTimedown = 0;
+        }
+
+
+        if (this.changeTimedown <= 0) {
             const rand = Math.random();
             if (rand < 0.25) {
                 this.p = Point.UNIT_UP;
@@ -75,26 +183,6 @@ export class Enemy extends SimpleHumanoid {
                 this.p = Point.UNIT_RIGHT;
             }
             this.changeTimedown = 2000 + 1000 * Math.random(); // 2s?
-        }
-
-        this.move(dt, this.p, SPEED, container);
-        this.pointsObj.rectangle.moveTo(this.center.add(0, -0.2));
-
-        // FIXME: check where is the player and shot only then.
-        // const player = container.getObjectsInArea()
-
-        // FIRE?
-        if (this.lastFired + 900 < Date.now() && Math.random() < 0.001) {
-            // FIRE
-            const go = this.inventory.use(this, container, TAG.PLAYER);
-            go.forEach(g => {
-                container.add(g);
-                g.onHit(t => {
-                    console.log("HIT PLAYER");
-                    // this.xp += t.value;
-                })
-            });
-            this.lastFired = Date.now();
         }
 
         // FIXME: obstacles

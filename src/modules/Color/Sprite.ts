@@ -3,9 +3,12 @@ import { Color } from "./Color";
 import { NewTexture, Texture } from "./Texture";
 import { withLight } from "../GameObjects/mixins";
 import { Point, Rectangle } from "../Primitives";
-import { Directional } from "../Assets/Emojis";
+import { Directional, E } from "../Assets/Emojis";
 import { SceneSettings } from "../Scene/Scene";
 import { Game } from "../Game";
+import { TAG } from "../constants/tags";
+import { RectangleObject } from "../GameObjects/Rectangle";
+import { Enemy } from "../GameObjects/Enemy";
 
 // export interface EmojiSettings {
 //     emoji: string,
@@ -201,10 +204,8 @@ export class AnimatedEmoji extends CombinedEmoji {
         if (!this.steps) {
             return;
         }
-        console.log("GENERATE?", this.steps);
         super.generate();
         for(let i=0;i<steps;i++) {
-            console.log("RENDERING ", i, " FRAME");
             // copy context here.
             const canvas = document.createElement('canvas');
             canvas.width = this.canvas.width;
@@ -350,6 +351,7 @@ const FN = (x, y, S) => (Math.sin(432.432*S + x * y - 3*y+Math.cos(x-y))+1)/2;
 export interface EmojiList {
     emoji: Emoji,
     range: [number, number],
+    asGameObject?: boolean,
 }
 
 export class Ground {
@@ -359,60 +361,47 @@ export class Ground {
     private cross = new Emoji("✝", 16, 1);
     private directions = new Emoji("🪨", 10, 1);
     constructor(private emojis: EmojiList[] = [], private seed: number) {
-        // this.grass.gen();
     }
     render(ctx: CanvasRenderingContext2D, bb: Rectangle, s: SceneSettings, game: Game): void {
+        // Check if there are already generated obstacles in the area.
+        const areGenerated = !!game.gameObjects.getObjectsInArea(bb, TAG.GENERATED).length;
+
+        let generatedAnything = false;
         const m = SIZE * game.MULTIPLIER;
         bb.forEachCell((x, y, oX, oY) => {
-            // console.log(oX, oY);
             const p = FN(x,y, this.seed || 231);
             ctx.fillStyle = s.backgroundColor || 'hsla(173,39%,47%)';
-            // if (x*x+y*y - 9 < 1) {
-            //     ctx.fillStyle = "red";
-            // }
             ctx.strokeStyle = "red";
-            // FIXME: real proportions here
             ctx.fillRect(oX*m, oY*m, m, m);
 
             this.emojis.forEach(e => {
                 if (p > e.range[0] && p < e.range[1]) {
-                    e.emoji.newRender(ctx, oX *m, oY *m, m, m);
+                    if (!e.asGameObject) {
+                        e.emoji.newRender(ctx, oX *m, oY *m, m, m);
+                    } else {
+                        if (!areGenerated) {
+                            console.log("TAG GEN")
+                            const obj = new RectangleObject(new Point(x, y), e.emoji, [TAG.GENERATED, TAG.OBSTACLE]);
+                            game.gameObjects.add(obj);           
+                            generatedAnything = true;                 
+                        }
+                    }
                 }
             });
-
-
-            // if (p > 0.30 && p < 0.31) {
-            //     this.grass.newRender(ctx, oX*m, oY*m, m, m);
-            // }
-            // if (p > 0.5 && p < 0.65) {
-            //     this.grass.newRender(ctx, oX*m+4, oY*m+9, m, m);
-            // }
-
-            // if (p > 0.999) {
-            //     this.grave.newRender(ctx, oX*m, oY*m, m, m);
-            // }
-
-            // if (p > 0.645 && p < 0.6823) {
-            //     this.cross.newRender(ctx, oX*m, oY*m, m, m);
-            // }
-
-            // if(p > 0.3 && p < 0.31) {
-            //     this.directions.newRender(ctx, oX*m, oY*m, m, m);
-            // }
-            // if (p < 0.2) {
-            //     const bmp = this.grass.getBitmap();
-            //     if (!bmp) {
-            //         return;
-            //     }
-            //     ctx.drawImage(bmp, oX*m, oY*m);
-            // }
-            // ctx.strokeRect(oX*m, oY*m, m, m);
         });
-    }
 
-    // protected generate(): void {
-    //     super.generate()
-    //     // this.setLight(0.4, 0.4);
-    // }
-    // protected repeat: string = 'repeat';
+        // GENERATE GAME OBJECTS IF NEEDED.
+        if (generatedAnything) { // making sure we don't generate infinitly enemies on empty patches.
+            const g = FN(bb.p1.x+0.424, bb.p1.y+0.2, this.seed+4324);
+            console.log("G", g);
+            const generatingNr = Math.round(g * 5);
+            console.log("GENERATING", generatingNr);
+            for(let i=0;i<generatingNr;i++) {
+                const p = bb.p1.add(Math.random()*bb.width, Math.random()*bb.height);
+                game.gameObjects.add(new Enemy(
+                    Math.random() < 0.2 ? E.robot : (Math.random() > 0.5) ? E.cowMan : E.frogMan,
+                100, p));
+            }
+        }
+    }
 }

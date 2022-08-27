@@ -34,7 +34,6 @@ export class BulletInventoryItem extends InventoryItem {
     protected isDisposable: boolean = false;
     icon = E.item2;
     use(user: SimpleHumanoid, container: GameObjectsContainer, tag = TAG.ENEMY) {
-        console.log("SHOT", user);
         return [
             new Bullet(user.center, new Point(user.lastX, user.lastY), 300, tag)
         ];
@@ -56,7 +55,7 @@ class BombInventoryItem extends InventoryItem {
 
 export class Player extends SimpleHumanoid {
     // public light: Light;
-    private controller: KeyboardController;
+    public controller: KeyboardController;
 
     public xp: number = 0;
 
@@ -65,10 +64,17 @@ export class Player extends SimpleHumanoid {
 
     constructor() {
         super(E.playerDir);
+        this.center = new Point(0, -20);
         this.addTag(TAG.PLAYER);
         this.controller = new KeyboardController();
         this.items.push(new BulletInventoryItem());
         this.items.push(new BombInventoryItem());
+    }
+
+    getFeetBox() {
+        const bb = this.getBoundingBox();
+        return bb.scale(1, 1/5).moveBy(new Point(0, 4/5*bb.height));
+        
     }
 
 
@@ -91,7 +97,6 @@ export class Player extends SimpleHumanoid {
         }
 
         if (this.controller.fire && this.fireCooldown <= 0) {
-            console.log("FIRE");
             this.fireCooldown = 300;
             const go = this.items[this.selected].use(this, container, TAG.ENEMY);
 

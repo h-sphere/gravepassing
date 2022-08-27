@@ -54,11 +54,11 @@ export class CementeryScene extends Scene {
         //     4,
         // ))
 
-        for (let i = 0; i < 10; i++) {
-            this.gameObjects.add(new Enemy(
-                Math.random() < 0.2 ? E.robot : (Math.random() > 0.5) ? E.cowMan : E.frogMan,
-            ));
-        }
+        // for (let i = 0; i < 10; i++) {
+        //     this.gameObjects.add(new Enemy(
+        //         Math.random() < 0.2 ? E.robot : (Math.random() > 0.5) ? E.cowMan : E.frogMan,
+        //     ));
+        // }
 
         const gem = new RectangleObject(
             Point.ORIGIN.add(-3, -2),
@@ -182,7 +182,7 @@ export class CementeryScene extends Scene {
             { emoji: cross, range: [0.2, 0.21] },
             { emoji: stone, range: [0.6, 0.61] },
             { emoji: leaf, range: [0.2, 0.3] },
-            { emoji: wall, range: [0.35, 0.37] }
+            { emoji: wall, range: [0.35, 0.37], asGameObject: true }
         ];
 
         let range = 0.3;
@@ -198,17 +198,17 @@ export class CementeryScene extends Scene {
             if (i% 3 == 0) {
                 em.push({ emoji: "🌱🌱🌱", size: 4, pos: [5, 10], hueShift: -20 });
             }
-            ground.push({ emoji: new CombinedEmoji(em), range: [range, range+progress]});
+            ground.push({ emoji: new CombinedEmoji(em), range: [range, range+progress], asGameObject: true});
             range+=progress;
         }
 
 
 
         return {
-            backgroundColor: 'rgb(50, 50, 50)',
+            backgroundColor: '#08422e',
             ground: new Ground(ground, 5234),
             hudBackground: 'rgb(30,30,50)',
-            getDither: Dither.generateDithers(16, [30, 40, 30]),
+            getDither: Dither.generateDithers(16, [5, 46, 32]),
         }
     }
 }

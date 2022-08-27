@@ -15,6 +15,7 @@ export interface GameObject {
     getBoundingBox(): Rectangle;
 
     isGlobal: boolean;
+    isHidden: boolean;
     zIndex?: number;
     toLines(): Line[];
 }

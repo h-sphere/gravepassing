@@ -32,7 +32,6 @@ export class AudioEffect {
 
 export class Shot extends AudioEffect {
     play(): void {
-        console.log('playxx')
         this.osc.frequency.setValueAtTime(200, this.ctx.currentTime)
         this.osc.frequency.setValueAtTime(400, this.ctx.currentTime + 0.05)
         this.osc.frequency.linearRampToValueAtTime(500, this.ctx.currentTime + 0.06);

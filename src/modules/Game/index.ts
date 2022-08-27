@@ -28,8 +28,7 @@ const ZOOM_SPEED = 1;
 export class Game {
     private ctx: CanvasRenderingContext2D;
     private camera: Camera;
-    private gameObjects: GameObjectsContainer;
-    private controller: KeyboardController;
+    public gameObjects: GameObjectsContainer;
     private renderer: Renderer;
     private lastRenderTime: number;
     public player: Player;
@@ -37,8 +36,6 @@ export class Game {
     public sceneSettings: SceneSettings;
     public MULTIPLIER = 1;
     public UNIT_SIZE = 1;
-
-    private qtRender: QuadTreeRenderer;
 
     constructor(private canvas: HTMLCanvasElement, private w: number, h: number) {
 

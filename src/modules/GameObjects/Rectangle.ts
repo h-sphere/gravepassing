@@ -9,13 +9,18 @@ export class RectangleObject extends withTags(EmptyClass) implements GameObject,
 
     public rectangle: Rectangle;
 
-    constructor(public p: Point, public texture: NewTexture, tag?: string, scale = 1) {
+    constructor(public p: Point, public texture: NewTexture, tag?: string|string[], scale = 1) {
         super();
         this.rectangle = new Rectangle(p.add(scale, -scale), p);
         if (tag) {
-            this._tags.push(tag);
+            if(Array.isArray(tag)) {
+                tag.forEach(t => this._tags.push(t));
+            } else {
+                this._tags.push(tag);
+            }
         }
     }
+    isHidden: boolean = false;
     parentBBExclude: boolean = false;
     zIndex?: number | undefined;
     toLines(): Line[] {

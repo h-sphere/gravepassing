@@ -4,4 +4,5 @@ export const TAG = Object.freeze({
     ENEMY: "enemy",
     INTERACTIVE: "interactive",
     LIGHT: "light",
+    GENERATED: "generated"
 });

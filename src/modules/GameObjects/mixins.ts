@@ -91,11 +91,37 @@ interface Movable {
 
 export function withMovement<T extends Constructable<WithCenter>>(constructor: T) {
     return class extends constructor implements Movable {
-        move(dt: number, direction: Point, speed: number, container: GameObjectsContainer) {
+        move(dt: number, direction: Point, speed: number, container: GameObjectsContainer): boolean {
             let distance = direction.mul(dt * speed);
             let line = new Line(this.center, this.center.addVec(distance));
             let shortened = false;
-            const obstacles = container.getObjectsInArea(new Rectangle(this.center, this.center.addVec(distance)), TAG.OBSTACLE).map(o => o.toLines()).flat();
+
+
+            let bb = this.getBoundingBox();
+            if (this.getFeetBox) {
+                // FIXME: expand one way or another.
+                bb = this.getFeetBox().expand(0.01)
+            }
+
+            // SIMULATE MOVING BB BY LINE
+
+            const combined = bb.moveBy(line.toPoint());
+
+            // FIXME: FIX STUCK ENEMIES HERE
+            const stuck = !!container.getObjectsInArea(bb, TAG.OBSTACLE).length;
+            if (stuck) {
+                // moving slightly left
+                this.center = this.center.add(0.05, 0);
+            }
+
+            const obstacles = container.getObjectsInArea(combined, TAG.OBSTACLE).map(o => o.toLines()).flat();
+            
+            if(obstacles.length) {
+                // push back just slightly so the user does not intersect anymore
+                // this.center = this.center.copy().addVec(direction.copy().neg().mul(dt*speed*3));
+                return false;
+            }
+
             for (let ob of obstacles) {
                 const i = getLinesIntersection(line, ob);
                 if (i) {
@@ -105,6 +131,7 @@ export function withMovement<T extends Constructable<WithCenter>>(constructor: T
             }
             // move slightly from the end
             this.center = this.center.addVec(line.getMidpoint(shortened ? 0 : 1).diffVec(line.p1));
+            return true;
         }
 
     }

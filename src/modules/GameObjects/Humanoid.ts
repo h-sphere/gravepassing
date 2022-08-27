@@ -87,8 +87,8 @@ class SimpleHumanoidPref extends GameObjectGroup {
 
 export class SimpleHumanoid extends withRotation(withMovement(SimpleHumanoidPref)) {
     value = 0;
-    move(dt: number, direction: Point, speed: number, container: GameObjectsContainer) {
-        super.move(dt, direction, speed, container);
+    move(dt: number, direction: Point, speed: number, container: GameObjectsContainer): boolean {
+        const moved = super.move(dt, direction, speed, container);
         this.sprite.rectangle.moveTo(this.center);
         if (direction.x || direction.y) {
             this.lastX = direction.x;
@@ -106,6 +106,8 @@ export class SimpleHumanoid extends withRotation(withMovement(SimpleHumanoidPref
             d, direction.distanceFromOrigin()
         );
         this.light.center = this.sprite.rectangle.center;
+
+        return moved;
     }
 
     life: number = 5;

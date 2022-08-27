@@ -24,6 +24,10 @@ export class Point {
         return new Point(this.x, this.y);
     }
 
+    neg() {
+        return new Point(-this.x, -this.y);
+    }
+
     normalize(): Point {
         if (!this.distanceFromOrigin()) {
             return this; 
@@ -73,6 +77,10 @@ export class Line {
         );
     }
 
+    toPoint() {
+        return new Point(this.p2.x-this.p1.x,this.p2.y-this.p1.y);
+    }
+
     get length() {
         return distance(this.p1, this.p2);
     }
@@ -96,6 +104,10 @@ export class Rectangle extends Line {
                 Math.max(r1.p2.y, r2.p2.y)
             )
         );
+    }
+
+    expand(n: number) {
+        return new Rectangle(this.p1.add(-n, -n), this.p2.add(n, n));
     }
 
     toLines(): Line[] {
