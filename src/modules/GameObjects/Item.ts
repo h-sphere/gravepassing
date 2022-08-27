@@ -1,3 +1,4 @@
+import { getAudio } from "../Audio/AudioManager";
 import { CombinedEmoji, Emoji } from "../Color/Sprite";
 import { TAG } from "../constants/tags";
 import { Point } from "../Primitives";
@@ -28,6 +29,7 @@ export class Item extends GameObjectGroup {
 
         const player = players[0];
         this.onAdd(player as unknown as Player);
+        getAudio('collected').play();
         container.remove(this);
     }
 }

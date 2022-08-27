@@ -57,10 +57,10 @@ export class Collected extends AudioEffect {
     play() {
         this.osc.type = 'square';
         const t = this.ctx.currentTime;
-        this.osc.frequency.setValueAtTime(220, t);
-        this.osc.frequency.setValueAtTime(440, t + 0.05);
+        this.osc.frequency.setValueAtTime(880, t);
+        this.osc.frequency.setValueAtTime(2*880, t + 0.1);
         // this.osc.frequency.linearRampToValueAtTime(700, t+0.09);
-        this.osc.frequency.setValueAtTime(0, t + 0.1);
+        this.osc.frequency.setValueAtTime(0, t + 0.2);
         // this.osc.frequency.setValueAtTime(800, t + 0.7);
         // this.osc.frequency.setValueAtTime(0, t + 0.8);
     }
