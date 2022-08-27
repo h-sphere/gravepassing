@@ -65,11 +65,12 @@ const lvlToXp = (lvl: number) => (lvl-1)*(lvl-1)*300;
 export class Player extends SimpleHumanoid {
     // public light: Light;
     public controller: KeyboardController;
+    isHidden = false;
 
-    private _xp: number;
+    private _xp: number = 0;
     public lvl: number = 1;
     public lvlProgress: number = 0;
-    public xpTexture: NewTexture;
+    public xpTexture: NewTexture  ;
     public lvlTexture: NewTexture;
 
     container: GameObjectsContainer;
@@ -91,7 +92,7 @@ export class Player extends SimpleHumanoid {
             this.lvl++;
             lowerT = lvlToXp(this.lvl);
             upperT = lvlToXp(this.lvl + 1);
-            const txt = new InGameTextGO("⬆ LVL UP", this.center, 4, 1, "rgba(0,0,0,0)");
+            const txt = new InGameTextGO("⬆ LVL UP", this.center, 4, 1, "rgb(190, 250, 190)");
             this.container.add(txt)
         }
         this.lvlProgress = (this._xp - lowerT) / (upperT - lowerT);

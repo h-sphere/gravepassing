@@ -40,12 +40,12 @@ const S = "xxxx";
 const B = "$$$$"
 const V2 = B+S+B+S+B+B+S+S;
 
-const CementeryMusic = new Song([
-    new AudioTrack(65*4, 1, V, { type: "triangle", cutoff: 600, delay}),
-    new AudioTrack(65*8, 0.5, V2, { type: "sawtooth", cutoff: 300, delay}),
-    // new AudioTrack(65, 1, "45", { type: "square", cutoff: 300, delay: {time: 0.3, gain: 0.4} })
+// const CementeryMusic = new Song([
+//     new AudioTrack(65*4, 1, V, { type: "triangle", cutoff: 600, delay}),
+//     new AudioTrack(65*8, 0.5, V2, { type: "sawtooth", cutoff: 300, delay}),
+//     // new AudioTrack(65, 1, "45", { type: "square", cutoff: 300, delay: {time: 0.3, gain: 0.4} })
 
-]);
+// ]);
 
 // CementeryMusic.play();
 

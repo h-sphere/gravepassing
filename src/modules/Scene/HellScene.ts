@@ -1,3 +1,5 @@
+import { AudioTrack } from "../Audio/AudioTrack";
+import { Song } from "../Audio/Song";
 import { Color } from "../Color/Color";
 import { Dither, Emoji, Ground } from "../Color/Sprite";
 import { WallGameObject } from "../GameObjects/GameObject";
@@ -10,6 +12,29 @@ export class HellScene extends Scene {
     constructor() {
         super();
         this.gameObjects.add(new AmbientLight(0.3));
+    }
+
+    playMusic() {
+        const bpm = 60;
+        const x = [60, 72, 72, 1000, 60, 75, 75, 1000].map(x => x-12)
+        .map(y => String.fromCharCode(y)).join('');
+        
+        const end = [60, 60, 70, 70, 1000, 1000, 1000, 1000].map(x => x-12)
+        .map(y => String.fromCharCode(y)).join('');
+
+        const track = x+x +end;
+
+        const power = track.split('').map(x => String.fromCharCode(x.charCodeAt(0)+5)).join('');
+
+        const LabMusic = new Song([
+            new AudioTrack(
+                bpm*8, 1,
+                track, { type: 'square'}
+            ),
+            new AudioTrack(
+                bpm*8, 1,
+                power, { type: 'square'}
+            ),
     }
 
     register(container: GameObjectsContainer): SceneSettings {

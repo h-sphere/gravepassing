@@ -9,7 +9,7 @@ import { RectangleObject } from "./Rectangle";
 
 export class TextTexture implements NewTexture {
     canvas
-    constructor(protected text: string[], protected w: number ,protected h: number, private bg: string) {
+    constructor(protected text: string[], protected w: number ,protected h: number, private bg: string, private txtcol: string = 'white') {
         this.generate();
     }
 
@@ -23,7 +23,7 @@ export class TextTexture implements NewTexture {
         const ctx = this.canvas.getContext('2d')!;
         ctx.fillStyle = this.bg;
         ctx.fillRect(0, 0, w, h);
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = this.txtcol;
         ctx.textAlign = "start";
         // ctx.scale(1, 3);
         ctx.font = "6px Verdana";
@@ -58,8 +58,8 @@ export class TextGameObject extends RectangleObject {
     
     autoHide = 2000;
 
-    constructor(text: string[], p: Point, private w: number, private h: number, private autoremove: boolean = false, bg: string = "black") {
-        super(p, new TextTexture(text, w, h, bg));
+    constructor(text: string[], p: Point, private w: number, private h: number, private autoremove: boolean = false, bg: string = "black", textcolor: string = 'white') {
+        super(p, new TextTexture(text, w, h, bg, textcolor));
         this.rectangle = new Rectangle(p, p.add(w, h));
     }
 
@@ -81,7 +81,7 @@ export class TextGameObject extends RectangleObject {
 
 export class InGameTextGO extends TextGameObject {
     constructor(text: string, p: Point, w: number, h: number, color: string) {
-        super([text], p, w, h, true, "rgba(0,0,0,0)");
+        super([text], p, w, h, true, "rgba(0,0,0,0)", color);
         this.rectangle = this.rectangle.scale(0.5, 0.5);
     }
     isGlobal: boolean = false;

@@ -75,7 +75,7 @@ export class Game {
         // }
 
         // const scene = new CementeryScene();
-        const scene = new CementeryScene();
+        const scene = new LabScene();
         this.sceneSettings = scene.register(this.gameObjects);
 
         this.player = new Player();
