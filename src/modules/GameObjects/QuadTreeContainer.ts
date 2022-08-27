@@ -57,7 +57,7 @@ export class QuadTreeContainer implements GameObjectsContainer {
         if (obj instanceof GameObjectGroup) {
             obj.getAll().forEach(o => this.remove(o));
         }
-        // FIXME: check if global obj?
+        this.globalObjects.delete(obj);
         this.objects.delete(obj);
         this.update();
     }

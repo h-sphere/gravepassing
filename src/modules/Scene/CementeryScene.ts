@@ -11,6 +11,7 @@ import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
 import { Item } from "../GameObjects/Item";
 import { AmbientLight } from "../GameObjects/Light";
 import { RectangleObject } from "../GameObjects/Rectangle";
+import { TextGameObject } from "../GameObjects/TextModule";
 import { Point, Rectangle } from "../Primitives";
 import { Scene, SceneSettings } from "./Scene";
 
@@ -65,6 +66,8 @@ export class CementeryScene extends Scene {
             Point.ORIGIN.add(-3, -2),
             new Emoji("💎", 8, 1, 4, 4, 'white', 180));
         this.gameObjects.add(gem);
+
+        this.gameObjects.add(new TextGameObject(["Shoot: [SPACE]", "Inventory: [Q] / [W]"], Point.ORIGIN.add(0.5, 5.5), 9, 2, true));
 
         // this.gameObjects.add(new RectangleObject(
         //     Point.ORIGIN.add(4, 4),

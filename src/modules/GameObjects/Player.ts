@@ -10,6 +10,7 @@ import { Enemy } from "./Enemy";
 import { GameObject } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { SimpleHumanoid } from "./Humanoid";
+import { TextGameObject } from "./TextModule";
 
 const MOVEMENT_VELOCITY = 0.005;
 
@@ -87,13 +88,21 @@ export class Player extends SimpleHumanoid {
     getFeetBox() {
         const bb = this.getBoundingBox();
         return bb.scale(1, 1/5).moveBy(new Point(0, 4/5*bb.height));
-        
     }
 
     heal() {
         if (this.life < 5) {
             this.life++;
         }
+    }
+
+    getHit(container: GameObjectsContainer) {
+        console.log("PLAYER GOT HIT");
+        super.getHit(container);
+    }
+
+    die(container: GameObjectsContainer) {
+        container.add(new TextGameObject(["You died", "BETTER LUCK NEXT TIME"], new Point(1, 4), 8, 1.5, false));
     }
 
 

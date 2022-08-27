@@ -53,7 +53,7 @@ export class Bomb extends UsableItem {
             const bb = l.getBoundingBox();
             container.getObjectsInArea(bb, this.targetTag).forEach(target => {
                 if (target instanceof SimpleHumanoid) {
-                    target.getHit();
+                    target.getHit(container);
                     if (target.life <= 0) {
                         container.remove(target);
                         this.hit(target);

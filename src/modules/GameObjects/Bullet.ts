@@ -51,12 +51,13 @@ export class Bullet extends UsableItem {
             console.log('HIT', enemiesHit[0].getBoundingBox(), this.o.getBoundingBox());
             const enemy = enemiesHit[0];
             if (enemy instanceof SimpleHumanoid) {
-            enemy.getHit();
-            this.hit(enemy);
-            if (enemy.life <= 0) {
-                container.remove(enemiesHit[0]);
-            }
-            this.lifeSpan = 0;
+                console.log("CONTTTTTT");
+                enemy.getHit(container);
+                this.hit(enemy);
+                if (enemy.life <= 0) {
+                    container.remove(enemiesHit[0]);
+                }
+                this.lifeSpan = 0;
             } else {
                 console.log("UNKNOWN ENEMY TYPE", enemy);
             }

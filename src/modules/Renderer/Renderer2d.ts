@@ -18,6 +18,7 @@ import { withLight, WithLightIface } from "../GameObjects/mixins";
 import { Player } from "../GameObjects/Player";
 import { RectangleObject } from "../GameObjects/Rectangle";
 import { RenderableSquaredPoint } from "../GameObjects/SquaredPoint";
+import { TextTexture } from "../GameObjects/TextModule";
 import { Line, Point, Rectangle } from "../Primitives";
 import { SceneSettings } from "../Scene/Scene";
 import { Renderer } from "./Renderer";
@@ -173,9 +174,22 @@ export class Renderer2d implements Renderer {
         // .forEach(l => this.renderDebugLine(l, 'red'))
 
 
-        const p1 = this.getPositionOnScreen(r.p1);
-        const p2 = this.getPositionOnScreen(r.p2);
-        if (rect.texture instanceof Emoji || rect.texture instanceof CombinedEmoji || rect.texture instanceof DirectionableTexture) {
+        let p1 = this.getPositionOnScreen(r.p1);
+        let p2 = this.getPositionOnScreen(r.p2);
+
+        if (rect.isGlobal) {
+            // Displaying in screenc coordinates
+            p1 = this.getPositionOnScreen(this.bb.p1.add(r.p1.x, r.p1.y));
+            p2 = this.getPositionOnScreen(this.bb.p1.add(r.p2.x, r.p2.y));
+        }
+
+        if (
+            rect.texture instanceof Emoji ||
+            rect.texture instanceof CombinedEmoji ||
+            rect.texture instanceof DirectionableTexture ||
+            rect.texture instanceof TextTexture
+            )
+             {
             (rect.texture as NewTexture).newRender(this.ctx, ...p1, p2[0]-p1[0], p2[1]-p1[1]);
 
         } else {

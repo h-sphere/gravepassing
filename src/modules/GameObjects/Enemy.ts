@@ -73,8 +73,8 @@ export class Enemy extends SimpleHumanoid {
     
     directionMoveFirst = 'x';
 
-    getHit() {
-        super.getHit();
+    getHit(container) {
+        super.getHit(container);
         this.hitPoints.setFrame(this.life);
         // update hit points above
         if (this.life === 0) {
