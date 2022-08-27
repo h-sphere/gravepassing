@@ -433,18 +433,45 @@ export class Renderer2d implements Renderer {
             this.postCanvas.width = this.game.MULTIPLIER;
             this.postCanvas.height = this.game.MULTIPLIER;
             const ctx = this.postCanvas.getContext('2d')!;
-            ctx.strokeStyle = "rgba(0,0,0,0.3)";
             const m = this.game.MULTIPLIER;
-            ctx.lineWidth = 1;
-            ctx.strokeRect(0, 0, m, m);
+            ctx.fillStyle = "red";
+            ctx.fillRect(0, 0,  m / 3, m);
+            ctx.fillStyle = "green";
+            ctx.fillRect(m/3, 0, m/3, m);
+            ctx.fillStyle = "blue";
+            ctx.fillRect(2*m/3, 0, m/3, m);
             // ctx.fillRect(0, 0, m / 2, m / 2);
             // ctx.fillRect(m, m, -m/2, -m/2);
             // RENDERING HERE
+
+            ctx.strokeStyle = "rgba(0,0,0,0.1)";
+            ctx.lineWidth = 1;
+            ctx.strokeRect(0, 0, m, m);
+
             this.pattern = ctx.createPattern(this.postCanvas, "repeat")!;
         }
+        this.ctx.globalAlpha = 0.1;
+        this.ctx.globalCompositeOperation = "xor";
         this.ctx.fillStyle = this.pattern;
         this.ctx.fillRect(0, 0, this.width, this.height);
 
+
+
+        this.ctx.globalAlpha = 0.1;
+        this.ctx.globalCompositeOperation = "color-burn";
+        this.ctx.fillStyle = this.pattern;
+        this.ctx.fillRect(0, 0, this.width, this.height);
+
+
+        this.ctx.globalAlpha = 0.2;
+        this.ctx.globalCompositeOperation = "luminosity";
+        this.ctx.fillStyle = this.pattern;
+        this.ctx.fillRect(0, 0, this.width, this.height);
+        
+
+
+        this.ctx.globalCompositeOperation = "source-over";
+        this.ctx.globalAlpha = 1;
     }
 
 

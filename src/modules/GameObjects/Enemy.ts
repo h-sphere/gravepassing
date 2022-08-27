@@ -12,6 +12,9 @@ import { RectangleObject } from "./Rectangle";
 const SPEED = 0.001;
 
 export class Enemy extends SimpleHumanoid {
+
+    life = 3;
+
     private p = Point.UNIT_DOWN;
     private changeTimedown = 0;
     constructor(d: Directional, public value: number = 100, p: Point = Point.ORIGIN) {
