@@ -26,7 +26,7 @@ export class TextTexture implements NewTexture {
         ctx.fillStyle = this.txtcol;
         ctx.textAlign = "start";
         // ctx.scale(1, 3);
-        ctx.font = "6px Verdana";
+        ctx.font = "7px 'papyrus'";
         // FIXME: measure somehow the padding required.
         ctx.textBaseline = "top"
         ctx.imageSmoothingEnabled = false;
@@ -59,7 +59,7 @@ export class TextGameObject extends RectangleObject {
     autoHide = 2000;
 
     constructor(text: string[], p: Point, private w: number, private h: number, private autoremove: boolean = false, bg: string = "black", textcolor: string = 'white') {
-        super(p, new TextTexture(text, w, h, bg, textcolor));
+        super(p, new TextTexture(text, 2*w, 2*h, bg, textcolor));
         this.rectangle = new Rectangle(p, p.add(w, h));
     }
 
@@ -82,7 +82,6 @@ export class TextGameObject extends RectangleObject {
 export class InGameTextGO extends TextGameObject {
     constructor(text: string, p: Point, w: number, h: number, color: string) {
         super([text], p, w, h, true, "rgba(0,0,0,0)", color);
-        this.rectangle = this.rectangle.scale(0.5, 0.5);
     }
     isGlobal: boolean = false;
     autoHide = 1000;

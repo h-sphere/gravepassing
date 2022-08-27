@@ -13,7 +13,14 @@ export class LabScene extends Scene {
     constructor() {
         super();
         this.gameObjects.add(new AmbientLight(0.3));
-        this.gameObjects.add(new TextGameObject(["Shoot: [SPACE]", "Inventory: [Q] / [W]"], Point.ORIGIN.add(0.5, 5.5), 9, 2, true));
+        this.gameObjects.add(new TextGameObject([
+            "You wake up alone on a cementery",
+            "From the distance you hear terrible noises.",
+            "You suddenly remember the horror of yesterday",
+            "Screams, animals and people turning into",
+            "monsters.",
+            "all you can do now is to fight for your life."
+        ], Point.ORIGIN.add(0.5, 5.5), 9, 2, true));
     }
 
     register(container: GameObjectsContainer): SceneSettings {
