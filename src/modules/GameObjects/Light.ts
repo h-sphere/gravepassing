@@ -10,6 +10,7 @@ import { ConicRenderableSquaredPoint, RenderableSquaredPoint } from "./SquaredPo
 export class Light extends withTags(EmptyClass) implements GameObject, WithCenter, Renderable {
     zIndex = 1;
     protected _center: Point;
+    isHidden = false;
 
     get center() {
         return this._center;

@@ -293,12 +293,25 @@ export class Renderer2d implements Renderer {
                     }
                     // this.renderDebugLine(line);
                     return true;
-                })
+                });
+
+                const pos = this.getPositionOnScreen(new Point(i,j));
+                const pos2 = this.getPositionOnScreen(new Point(i+1,j+1));
+                
+                // Extra colouring
+                lightsFiltered.forEach(l => {
+                    if (l.color.render() !== Color.WHITE.render()) {
+                        this.ctx.globalCompositeOperation = "overlay"
+                        this.ctx.globalAlpha = lightIntensityAtPoint(new Point(i, j), [l]);
+                        this.ctx.fillStyle = l.color.render();
+                        this.ctx.fillRect(...pos, pos2[0] - pos[0], pos2[1] - pos[1]);
+                    }
+                });
+                this.ctx.globalCompositeOperation = "source-over";
+                this.ctx.globalAlpha = 1;
                 const l = lightIntensityAtPoint(new Point(i,j), lightsFiltered);
                 // console.log(i,j,l);
                 const d = this.game.sceneSettings.getDither(l);
-                const pos = this.getPositionOnScreen(new Point(i,j));
-                const pos2 = this.getPositionOnScreen(new Point(i+1,j+1));
                 this.ctx.fillStyle = d.render(this.ctx, ...pos, ...pos2);
                 this.ctx.fillRect(...pos, pos2[0] - pos[0], pos2[1] - pos[1]);
             }
