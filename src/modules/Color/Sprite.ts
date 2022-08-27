@@ -100,6 +100,10 @@ export class CombinedEmoji implements NewTexture {
     bmp;
     _boundingBox: Rectangle;
 
+    toGameObject(p: Point): RectangleObject {
+        return new RectangleObject(p, this);
+    }
+
 
     protected postProcessing() {
         

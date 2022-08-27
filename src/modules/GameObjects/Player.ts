@@ -16,7 +16,7 @@ const MOVEMENT_VELOCITY = 0.005;
 class InventoryItem {
 
     private _cb: (() => void)[] = [];
-    protected isDisposable: boolean = true;
+    isDisposable: boolean = true;
     public amount: number = 0;
     public cooldown = 300;
     icon: Emoji = E.item2; // FIXME: naming
@@ -28,10 +28,14 @@ class InventoryItem {
     onDelete(cb) {
         this._cb.push(cb);
     }
+
+    shouldBeDeleted() {
+        return this.isDisposable && this.amount <= 0;
+    }
 }
 
 export class BulletInventoryItem extends InventoryItem {
-    protected isDisposable: boolean = false;
+    isDisposable: boolean = false;
     icon = E.item2;
     use(user: SimpleHumanoid, container: GameObjectsContainer, tag = TAG.ENEMY) {
         return [
@@ -41,10 +45,11 @@ export class BulletInventoryItem extends InventoryItem {
 }
 
 class BombInventoryItem extends InventoryItem {
-    protected isDisposable = true;
+    isDisposable = true;
     amount = 1;
     icon = E.item;
     use(user: Player) {
+        this.amount--;
         return [
             new Bomb(user.center, 1000, TAG.ENEMY)
         ];
@@ -71,10 +76,24 @@ export class Player extends SimpleHumanoid {
         this.items.push(new BombInventoryItem());
     }
 
+    addItem(type: string) {
+        if (this.items.length < 8) {
+            if (type === 'bomb') {
+                this.items.push(new BombInventoryItem());
+            }
+        }
+    }
+
     getFeetBox() {
         const bb = this.getBoundingBox();
         return bb.scale(1, 1/5).moveBy(new Point(0, 4/5*bb.height));
         
+    }
+
+    heal() {
+        if (this.life < 5) {
+            this.life++;
+        }
     }
 
 
@@ -98,7 +117,13 @@ export class Player extends SimpleHumanoid {
 
         if (this.controller.fire && this.fireCooldown <= 0) {
             this.fireCooldown = 300;
-            const go = this.items[this.selected].use(this, container, TAG.ENEMY);
+            const inventory = this.items[this.selected];
+            const go = inventory.use(this, container, TAG.ENEMY);
+
+            // FIXME: disposing of used items.
+            if (inventory.shouldBeDeleted()) {
+                this.items = this.items.filter(i => i !== inventory);
+            }
 
             go.forEach(g => {
                 container.add(g);

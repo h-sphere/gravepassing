@@ -1,11 +1,12 @@
 import { getLinesIntersection } from "../../utils/math";
-import { Directional } from "../Assets/Emojis";
+import { Directional, E } from "../Assets/Emojis";
 import { AnimatedEmoji, Emoji, EmojiSet } from "../Color/Sprite";
 import { TAG } from "../constants/tags";
 import { Line, Point, Rectangle } from "../Primitives";
 import { GameObject, GameObjectGroup } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { SimpleHumanoid } from "./Humanoid";
+import { BombCollectableItem, LifeCollectableItem } from "./Item";
 import { BulletInventoryItem } from "./Player";
 import { RectangleObject } from "./Rectangle";
 
@@ -76,11 +77,29 @@ export class Enemy extends SimpleHumanoid {
         super.getHit();
         this.hitPoints.setFrame(this.life);
         // update hit points above
+        if (this.life === 0) {
+            console.log("DIE");
+            this.die();
+        }
+    }
 
+    die() {
+        // Spawning items
+        if (Math.random() < 0.5) {
+            console.log("DIED SPAWNING IN ", this.center, this.container)
+            this.container?.add(new LifeCollectableItem(this.center));
+        } else if (Math.random() < 0.4) {
+            this.container?.add(new BombCollectableItem(this.center));
+        }
     }
 
 
+    // FIXME: probably do it in a nicer way.
+    container: GameObjectsContainer;
+
+
     update(dt: number, container: GameObjectsContainer): void {
+        this.container = container;
         this.changeTimedown -= dt;
 
         // TARGETTING PLAYER.
@@ -94,7 +113,6 @@ export class Enemy extends SimpleHumanoid {
             } else {
                 const obst = container.getObjectsInArea(bb.expand(3), TAG.OBSTACLE);
                 const bareer = obst.map(o => o.toLines()).flat().find(o => !!getLinesIntersection(o, line));
-                console.log("OBSTACL", bareer);
                 playerSpotted = !bareer;
             }
         }

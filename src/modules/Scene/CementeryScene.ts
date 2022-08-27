@@ -8,6 +8,7 @@ import { TAG } from "../constants/tags";
 import { Enemy } from "../GameObjects/Enemy";
 import { WallGameObject } from "../GameObjects/GameObject";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
+import { Item } from "../GameObjects/Item";
 import { AmbientLight } from "../GameObjects/Light";
 import { RectangleObject } from "../GameObjects/Rectangle";
 import { Point, Rectangle } from "../Primitives";
@@ -60,7 +61,7 @@ export class CementeryScene extends Scene {
         //     ));
         // }
 
-        const gem = new RectangleObject(
+        const gem = new Item(
             Point.ORIGIN.add(-3, -2),
             new Emoji("💎", 8, 1, 4, 4, 'white', 180));
         this.gameObjects.add(gem);

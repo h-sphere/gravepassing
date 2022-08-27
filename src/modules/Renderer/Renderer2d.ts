@@ -348,9 +348,9 @@ export class Renderer2d implements Renderer {
                     // console.log("UNKNOWN", obj);
                 }
 
-                if (obj instanceof Player) {
-                    obj.getFeetBox().toLines().forEach(l => this.renderDebugLine(l, 'orange'));
-                }
+                // if (obj instanceof Player) {
+                //     obj.getFeetBox().toLines().forEach(l => this.renderDebugLine(l, 'orange'));
+                // }
 
 
                 if (this.boundingBoxEnable) {
