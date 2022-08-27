@@ -1,6 +1,7 @@
 import { E } from "../Assets/Emojis";
 import { Audio, getAudio } from "../Audio/AudioManager";
 import { Emoji } from "../Color/Sprite";
+import { NewTexture } from "../Color/Texture";
 import { TAG } from "../constants/tags";
 import { KeyboardController } from "../Controller/KeyboardController";
 import { Point, Rectangle } from "../Primitives";
@@ -10,7 +11,7 @@ import { Enemy } from "./Enemy";
 import { GameObject } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { SimpleHumanoid } from "./Humanoid";
-import { TextGameObject } from "./TextModule";
+import { InGameTextGO, TextGameObject, TextTexture } from "./TextModule";
 
 const MOVEMENT_VELOCITY = 0.005;
 
@@ -58,18 +59,53 @@ class BombInventoryItem extends InventoryItem {
     }
 }
 
+const lvlToXp = (lvl: number) => (lvl-1)*(lvl-1)*300;
+
 
 export class Player extends SimpleHumanoid {
     // public light: Light;
     public controller: KeyboardController;
 
-    public xp: number = 0;
+    private _xp: number;
+    public lvl: number = 1;
+    public lvlProgress: number = 0;
+    public xpTexture: NewTexture;
+    public lvlTexture: NewTexture;
+
+    container: GameObjectsContainer;
+
+    get xp() {
+        return this._xp;
+    }
+
+    set xp(v: number) {
+        this._xp = v;
+        // FIXME: thresholds for LVLS
+        this.xpTexture = new TextTexture([this.xp + "xp"],2, 1,"rgba(0,0,0,0)");
+        
+        let lowerT = lvlToXp(this.lvl);
+        let upperT = lvlToXp(this.lvl+1);
+        if (this._xp >= upperT) {
+            // Advancing level!
+            console.log("YOU LEVELED UP");
+            this.lvl++;
+            lowerT = lvlToXp(this.lvl);
+            upperT = lvlToXp(this.lvl + 1);
+            const txt = new InGameTextGO("⬆ LVL UP", this.center, 4, 1, "rgba(0,0,0,0)");
+            this.container.add(txt)
+        }
+        this.lvlProgress = (this._xp - lowerT) / (upperT - lowerT);
+        console.log("PROGRESS", this.lvlProgress);
+        
+        this.lvlTexture = new TextTexture(["LVL "+this.lvl], 2, 1, "rgba(0,0,0,0)");
+    }
 
     public items: InventoryItem[] = [];
 
 
     constructor() {
         super(E.playerDir);
+        this.xp = 0;
         this.center = new Point(0, -20);
         this.addTag(TAG.PLAYER);
         this.controller = new KeyboardController();
@@ -107,6 +143,7 @@ export class Player extends SimpleHumanoid {
 
 
     update(dt: number, container: GameObjectsContainer) {
+        this.container = container;
         const p = new Point(
             this.controller.x,
             this.controller.y,

@@ -7,7 +7,7 @@ import { SimpleHumanoid } from "./Humanoid";
 import { withMovement } from "./mixins";
 import { RectangleObject } from "./Rectangle";
 
-const BULLET_SPEED = 0.04;
+const BULLET_SPEED = 0.02;
 
 type Callback = (t: SimpleHumanoid) => void;
 
@@ -24,7 +24,7 @@ export class UsableItem extends withMovement(GameObjectGroup) {
 
 export class Bullet extends UsableItem {
     private o: RectangleObject;
-    constructor(p: Point, private direction: Point, private lifeSpan = 200, private targetTag: string) {
+    constructor(p: Point, private direction: Point, private lifeSpan = 100, private targetTag: string) {
         super();
         this.center = p;
         this.o = new RectangleObject(p, new Emoji("🔅", 4, 1, 6, 6));

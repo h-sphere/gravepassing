@@ -436,7 +436,19 @@ export class Renderer2d implements Renderer {
         this.ctx.font = "16px Times New Roman";
         this.ctx.fillStyle = "white";
 
-        this.ctx.fillText(game.player.xp + " xp", 6*u, y + 2*q);
+        const text = game.player.xpTexture;
+        const lvlText = game.player.lvlTexture;
+        text.newRender(this.ctx, 6*u, y+2*q, u, u/2);
+        lvlText.newRender(this.ctx, 9*u-u/4, y+2*q, u, u/2);
+
+        this.ctx.fillStyle = "rgba(0,0,0,0.5)";
+        const wid = 1.5*u
+        this.ctx.fillRect(7*u, y+2.5*q, wid, q/4);
+        this.ctx.fillStyle = "rgb(30, 30, 200)"
+        this.ctx.fillRect(7*u, y+2.5*q,wid*game.player.lvlProgress, q/4);
+        
+
+        // this.ctx.fillText(game.player.xp + " xp", 6*u, y + 2*q);
 
 
         // GOAL LIGHT

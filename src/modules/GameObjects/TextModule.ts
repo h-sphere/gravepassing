@@ -9,7 +9,7 @@ import { RectangleObject } from "./Rectangle";
 
 export class TextTexture implements NewTexture {
     canvas
-    constructor(protected text: string[], protected w: number ,protected h: number) {
+    constructor(protected text: string[], protected w: number ,protected h: number, private bg: string) {
         this.generate();
     }
 
@@ -21,7 +21,7 @@ export class TextTexture implements NewTexture {
         this.canvas.width = w;
         this.canvas.height = h;
         const ctx = this.canvas.getContext('2d')!;
-        ctx.fillStyle = 'black';
+        ctx.fillStyle = this.bg;
         ctx.fillRect(0, 0, w, h);
         ctx.fillStyle = 'white';
         ctx.textAlign = "start";
@@ -40,6 +40,7 @@ export class TextTexture implements NewTexture {
 
     }
     newRender(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
+        // FIXME: move bg drawing here so it's easier to change in menu items.
         ctx.globalAlpha = this.opacity;
         ctx.drawImage(this.canvas, 0, 0, this.canvas.width, this.canvas.height, x, y, w , h);
         ctx.globalAlpha = 1;
@@ -57,8 +58,8 @@ export class TextGameObject extends RectangleObject {
     
     autoHide = 2000;
 
-    constructor(text: string[], p: Point, private w: number, private h: number, private autoremove: boolean = false) {
-        super(p, new TextTexture(text, w, h));
+    constructor(text: string[], p: Point, private w: number, private h: number, private autoremove: boolean = false, bg: string = "black") {
+        super(p, new TextTexture(text, w, h, bg));
         this.rectangle = new Rectangle(p, p.add(w, h));
     }
 
@@ -75,5 +76,18 @@ export class TextGameObject extends RectangleObject {
             }
             this.texture.setOpacity(Math.floor(opacity*5)/5);
         }
+    }
+}
+
+export class InGameTextGO extends TextGameObject {
+    constructor(text: string, p: Point, w: number, h: number, color: string) {
+        super([text], p, w, h, true, "rgba(0,0,0,0)");
+        this.rectangle = this.rectangle.scale(0.5, 0.5);
+    }
+    isGlobal: boolean = false;
+    autoHide = 1000;
+    update(dt: number, container: GameObjectsContainer) {
+        super.update(dt, container);
+        this.rectangle = this.rectangle.moveBy(new Point(0, -dt*0.2/1000));
     }
 }
