@@ -34,12 +34,6 @@ export class Light extends withTags(EmptyClass) implements GameObject, WithCente
             this.center.add(this.distance, this.distance),
         );
     }
-    getRenderInstructions(): Renderable[] {
-        const grd = new ColorGradient();
-        grd.addStop(0, this.color.withAlpha(this.intensity));
-        grd.addStop(1, this.color.withAlpha(0));
-        return [RenderableSquaredPoint.fromPoint(this.center, this.distance, grd)];
-    }
 
     getIntensityAtPoint(p: Point): number {
         const d = distance(this.center, p);
@@ -58,13 +52,6 @@ export class Light extends withTags(EmptyClass) implements GameObject, WithCente
 export class TargetLight extends Light {
     constructor(center: Point, intensity, distance, color: Color = Color.WHITE, public angle: number = Math.PI * 2 / 3, public direction: number = 0) {
         super(center, intensity, distance, color);
-    }
-
-    getRenderInstructions(): Renderable[] {
-        const grd = ColorGradient.fromColorToTransparent(this.color.withAlpha(this.intensity));
-        return [
-            ConicRenderableSquaredPoint.fromPoint(this.center, this.distance, grd, this.angle, this.direction)
-        ]
     }
 
     getBoundingBox(): Rectangle {
@@ -93,10 +80,6 @@ export class AmbientLight extends Light {
 
     getIntensityAtPoint(p: Point): number {
         return this.intensity;
-    }
-
-    getRenderInstructions(): Renderable[] {
-        return [];
     }
 
     isGlobal = true;

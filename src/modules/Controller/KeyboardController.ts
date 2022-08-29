@@ -12,6 +12,7 @@ export class KeyboardController {
 
     private _fire: number = 0;
 
+    public esc: number = 0;
     public get x() {
         return this._x;
     }
@@ -36,7 +37,7 @@ export class KeyboardController {
 
     private attach() {
         document.addEventListener('keydown', e => {
-            e.preventDefault();
+            let p = true;;
             switch (e.key) {
                 case 'ArrowUp':
                     this._y = -1;
@@ -59,7 +60,14 @@ export class KeyboardController {
                 case ' ':
                     this._fire = 1;
                     break;
+                case 'Escape':
+                    this.esc = 1;
+                    break;
+                default:
+                    console.log("COMBINATION NOT FOUND", e.key);
+                    p = false;
             }
+            p && e.preventDefault();
         });
 
         document.addEventListener('keyup', e => {
@@ -79,6 +87,8 @@ export class KeyboardController {
                     break;
                 case ' ':
                     this._fire = 0;
+                case 'Escape':
+                    this.esc = 0;
             }
         });
 

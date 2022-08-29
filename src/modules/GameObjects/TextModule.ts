@@ -9,7 +9,7 @@ import { RectangleObject } from "./Rectangle";
 
 export class TextTexture implements NewTexture {
     canvas
-    constructor(protected text: string[], protected w: number ,protected h: number, private bg: string, private txtcol: string = 'white') {
+    constructor(protected text: string[], public w: number , public h: number, private bg: string, private txtcol: string = 'white') {
         this.generate();
     }
 

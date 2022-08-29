@@ -4,6 +4,7 @@ import { Emoji } from "../Color/Sprite";
 import { NewTexture } from "../Color/Texture";
 import { TAG } from "../constants/tags";
 import { KeyboardController } from "../Controller/KeyboardController";
+import { Game } from "../Game";
 import { Point, Rectangle } from "../Primitives";
 import { Bomb } from "./Bomb";
 import { Bullet, UsableItem } from "./Bullet";
@@ -11,6 +12,7 @@ import { Enemy } from "./Enemy";
 import { GameObject } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { SimpleHumanoid } from "./Humanoid";
+import { PauseMenu } from "./PauseMenu";
 import { InGameTextGO, TextGameObject, TextTexture } from "./TextModule";
 
 const MOVEMENT_VELOCITY = 0.005;
@@ -114,6 +116,11 @@ export class Player extends SimpleHumanoid {
         this.items.push(new BombInventoryItem());
     }
 
+    game: Game;
+    setGame(game: Game) {
+        this.game = game;
+    }
+
     addItem(type: string) {
         if (this.items.length < 8) {
             if (type === 'bomb') {
@@ -144,6 +151,12 @@ export class Player extends SimpleHumanoid {
 
 
     update(dt: number, container: GameObjectsContainer) {
+
+        if (this.controller.esc) {
+            console.log("CREATING ESCAPE ELEMENT BCZ WHY NOT");
+            container.add(new PauseMenu());
+        }
+
         this.container = container;
         const p = new Point(
             this.controller.x,

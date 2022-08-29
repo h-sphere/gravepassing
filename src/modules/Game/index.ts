@@ -22,6 +22,7 @@ import { SIZE } from "../Color/Image";
 import { LabScene } from "../Scene/LabScene";
 import { HellScene } from "../Scene/HellScene";
 import { HubScene } from "../Scene/HubScene";
+import { InterGO, Interruptor } from "../Interruptor/Interruptor";
 
 const ZOOM_SPEED = 1;
 
@@ -36,6 +37,8 @@ export class Game {
     public sceneSettings: SceneSettings;
     public MULTIPLIER = 1;
     public UNIT_SIZE = 1;
+
+    public interruptorManager: Interruptor = new Interruptor();
 
     constructor(private canvas: HTMLCanvasElement, private w: number, h: number) {
 
@@ -79,6 +82,7 @@ export class Game {
         this.sceneSettings = scene.register(this.gameObjects);
 
         this.player = new Player();
+        this.player.setGame(this); // FIXME: do it properly maybe?
         this.gameObjects.add(this.player);
         this.camera.follow(this.player);
 
@@ -87,24 +91,33 @@ export class Game {
 
     render() {
         const tDiff = Date.now() - this.lastRenderTime;
+        this.interruptorManager.update(this.player.controller);
+        if (this.interruptorManager.isRunning) {
+            console.log("MANAGER IS RUNNING");
+            // this.interruptorManager.render();
+
+        } else {
+            this.gameObjects.getAll().forEach(g => {
+                g.update(tDiff, this.gameObjects);
+            });
+    
+            this.gameObjects.update();
+    
+            // this.camera.zoom = Math.max(0.1, this.camera.zoom + tDiff * ZOOM_SPEED * this.controller.wheel / 1000);
+            this.renderer.render(this.camera, this.gameObjects, tDiff, this);
+        }
         
-        this.gameObjects.getAll().forEach(g => {
-            g.update(tDiff, this.gameObjects);
-        });
-
-        this.gameObjects.update();
-
-        // this.camera.zoom = Math.max(0.1, this.camera.zoom + tDiff * ZOOM_SPEED * this.controller.wheel / 1000);
-        this.renderer.render(this.camera, this.gameObjects, tDiff, this);
-        this.lastRenderTime = Date.now();
 
         // this.qtRender.renderQuadtree((this.gameObjects as unknown as QuadTreeContainer).tree);
-
+        this.lastRenderTime = Date.now(); // time still marches on tho.
         requestAnimationFrame(() => this.render());
     }
 
+registerInterruptor(i: InterGO) {
+    this.interruptorManager.add(i);
+}
+
     start() {
-        this.controller = new KeyboardController();
         console.log('Start Game');
         this.lastRenderTime = Date.now();
         this.render();

@@ -24,6 +24,7 @@ export class RectangleObject extends withTags(EmptyClass) implements GameObject,
     parentBBExclude: boolean = false;
     zIndex?: number | undefined;
     toLines(): Line[] {
+        // FIXME: we probably dont need this.
         const bb = this.getBoundingBox();
         return [
             new Line(bb.p1, bb.p1.add(bb.width, 0)),
@@ -31,10 +32,6 @@ export class RectangleObject extends withTags(EmptyClass) implements GameObject,
             new Line(bb.p2, bb.p1.add(0, bb.height)),
             new Line(bb.p1, bb.p1.add(0, bb.height))
         ]
-    }
-
-    getRenderInstructions(): Renderable[] {
-        return [this];
     }
     update(dt: number, container: GameObjectsContainer): void {
         

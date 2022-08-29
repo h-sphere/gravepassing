@@ -7,7 +7,6 @@ import { WithCenter, withTags } from "./mixins";
 
 export interface GameObject {
     parentBBExclude: boolean;
-    getRenderInstructions(): Renderable[];
     getTags(): string[];
     hasTag(t: string): boolean;
     update(dt: number, container: GameObjectsContainer): void;
@@ -18,6 +17,9 @@ export interface GameObject {
     isHidden: boolean;
     zIndex?: number;
     toLines(): Line[];
+
+    // SHOULD THAT BE ENOUGH?
+    render(ctx: CanvasRenderingContext2D, gameBB: Rectangle, unitToPx: number): void; 
 }
 
 export class GameObjectGroup implements GameObject, WithCenter {
@@ -52,11 +54,6 @@ export class GameObjectGroup implements GameObject, WithCenter {
         this.objects = this.objects.filter(o => o !== go);
     }
 
-    getRenderInstructions(): Renderable[] {
-        return [];
-        // return this.objects.map(o => o.getRenderInstructions()).flat();
-    }
-
     protected addTag(t: string) {
         this._tags.push(t);
     }
@@ -70,6 +67,10 @@ export class GameObjectGroup implements GameObject, WithCenter {
     }
 
     isGlobal: boolean = false;
+
+    render(ctx: CanvasRenderingContext2D, gameBB: Rectangle, unitToPx: number) {
+        // FIXME: RENDER GROUP PROPERLY?
+    }
 }
 
 export interface Renderable {
@@ -83,10 +84,6 @@ export class RenderableLine extends withTags(Line) implements GameObject, Render
     }
     parentBBExclude: boolean = false;
     zIndex?: number | undefined;
-    getRenderInstructions(): Renderable[] {
-        return [this];
-    }
-
     update() {}
 
     static fromLine(l: Line, width: number = 3, color: Texture = Color.RED) {
@@ -104,17 +101,6 @@ export class RenderableLine extends withTags(Line) implements GameObject, Render
     }
 }
 
-// export class RenderableGradientLine extends RenderableLine {
-//     constructor(p1: Point, p2: Point, public width: number = 3, public gradientStart: string, public gradientStop: string) {
-//         super(p1, p2, width);
-//     }
-
-//     getRenderInstructions(): Renderable[] {
-//         return [gradientLineInstruction(this.p1, this.p2, this.width, this.gradientStart, this.gradientStop)]
-//     }
-// }
-
-
 export class WallGameObject extends RenderableLine {
     constructor(p1: Point, p2: Point, width: number = 3, color: Texture = Color.RED) {
         super(p1, p2, width, color);
@@ -126,9 +112,6 @@ export class RenderablePoint extends withTags(Point) implements GameObject, Rend
     parentBBExclude = false;
     constructor(x: number, y: number, public radius: number = 0.1, public color: Texture = Color.RED) {
         super(x, y);
-    }
-    getRenderInstructions(): Renderable[] {
-        return [this];
     }
 
     toLines(): Line[] {

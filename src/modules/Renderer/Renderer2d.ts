@@ -15,6 +15,7 @@ import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
 import { SimpleHumanoid } from "../GameObjects/Humanoid";
 import { Light } from "../GameObjects/Light";
 import { withLight, WithLightIface } from "../GameObjects/mixins";
+import { PauseMenu } from "../GameObjects/PauseMenu";
 import { Player } from "../GameObjects/Player";
 import { RectangleObject } from "../GameObjects/Rectangle";
 import { RenderableSquaredPoint } from "../GameObjects/SquaredPoint";
@@ -154,6 +155,7 @@ export class Renderer2d implements Renderer {
     // }
 
     private renderRectangle(rect: RectangleObject, lights: Light[]) {
+        // THIS SHOULD NOT KNOW ANYTHING ABOUT THE TEXTURE. IT SHOULD BE RECTANGLE THAT CALLS TEXTURE ITSELF.
         if (rect.isHidden) {
             return;
         }
@@ -341,6 +343,21 @@ export class Renderer2d implements Renderer {
         this.ctx.stroke();
     }
 
+    renderPauseMenu(obj: PauseMenu) {
+        console.log("RENDER PAUSE MENU");
+        const r = obj.getBoundingBox();
+        
+        let p1 = this.getPositionOnScreen(r.p1);
+        let p2 = this.getPositionOnScreen(r.p2);
+        if (obj.isGlobal) {
+            // Displaying in screenc coordinates
+            p1 = this.getPositionOnScreen(this.bb.p1.add(r.p1.x, r.p1.y));
+            p2 = this.getPositionOnScreen(this.bb.p1.add(r.p2.x, r.p2.y));
+        }
+
+        obj.newRender(this.ctx, ...p1, p2[0]-p1[0], p2[1]-p1[1]);
+    }
+
 
     render(camera: Camera, gameObjects: GameObjectsContainer, dt: number, game: Game) {
         this.center = camera.center;
@@ -350,7 +367,16 @@ export class Renderer2d implements Renderer {
         if (this.gridEnabled) {
             this.renderGrid();
         }
-        const objects = gameObjects.getObjectsInArea(boundingBox).sort((a,b) => a.getBoundingBox().center.y-b.getBoundingBox().center.y) //.sort((a, b) => (a.zIndex || 10) - (b.zIndex || 10));
+        const objects = gameObjects.getObjectsInArea(boundingBox)
+        .sort((a,b) => {
+            if (a.isGlobal) {
+                return 1;
+            }
+            if (b.isGlobal) {
+                return -1;
+            }
+            return a.getBoundingBox().center.y-b.getBoundingBox().center.y
+         });
         const obstructions = gameObjects.getObjectsInArea(boundingBox, TAG.OBSTACLE).map(o => o.toLines()).flat();
         const lights = objects.filter(o => o instanceof Light) as Light[];
         this.renderDitheredLight(lights, obstructions); 
@@ -358,6 +384,8 @@ export class Renderer2d implements Renderer {
         for (const obj of objects) {
                 if (obj instanceof RectangleObject) {
                     this.renderRectangle(obj, lights);
+                } if (obj instanceof PauseMenu) {
+                    this.renderPauseMenu(obj);
                 } else {
                     // console.log("UNKNOWN", obj);
                 }
@@ -389,6 +417,7 @@ export class Renderer2d implements Renderer {
     }
 
     renderHUD(game: Game) {
+        // FIXME: should it be separate GO?
         const u = this.getUnitSize();
         const c = this.ctx;
         const x = u / 4;
