@@ -3,16 +3,12 @@ import { getLinesIntersection } from "../../utils/math";
 import { E } from "../Assets/Emojis";
 import { Camera } from "../Camera";
 import { Color } from "../Color/Color";
-import { CombinedEmoji, DirectionableTexture, Emoji, } from "../Color/Sprite";
-import { NewTexture } from "../Color/Texture";
 import { TAG } from "../constants/tags";
 import { Game } from "../Game";
-import { UsableItem } from "../GameObjects/Bullet";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
 import { Light } from "../GameObjects/Light";
 import { PauseMenu } from "../GameObjects/PauseMenu";
-import { RectangleObject } from "../GameObjects/Rectangle";
-import { TextTexture } from "../GameObjects/TextModule";
+import { Interruptor } from "../Interruptor/Interruptor";
 import { Line, Point, Rectangle } from "../Primitives";
 import { SceneSettings } from "../Scene/Scene";
 import { Renderer } from "./Renderer";
@@ -58,10 +54,6 @@ export class Renderer2d implements Renderer {
     }
 
     getPositionOnScreen(p: Point): [number, number] {
-        const minX = this.bb.p1.x;
-        const midX = this.center.x;
-        const maxY = this.bb.p1.y;
-        const minY = this.bb.p2.y;
         const x = (this.center.x - p.x)
         const y = (this.center.y - p.y);
         // const y2 = y - (maxY - p.y) * (maxY - p.y) * 0.01; // Math.abs(x) * 0.25 * Math.abs(y);
@@ -85,37 +77,6 @@ export class Renderer2d implements Renderer {
         // const color = settings.backgroundColor || '#1d4d36';
         settings.ground.render(this.ctx, this.getBoundingBox(), settings, this.game);
     }
-
-    // private renderRectangle(rect: RectangleObject, lights: Light[]) {
-    //     // THIS SHOULD NOT KNOW ANYTHING ABOUT THE TEXTURE. IT SHOULD BE RECTANGLE THAT CALLS TEXTURE ITSELF.
-    //     if (rect.isHidden) {
-    //         return;
-    //     }
-    //     const r = rect.getBoundingBox();
-    //     this.ctx.beginPath();
-
-    //     let p1 = this.getPositionOnScreen(r.p1);
-    //     let p2 = this.getPositionOnScreen(r.p2);
-
-    //     if (rect.isGlobal) {
-    //         // Displaying in screenc coordinates
-    //         p1 = this.getPositionOnScreen(this.bb.p1.add(r.p1.x, r.p1.y));
-    //         p2 = this.getPositionOnScreen(this.bb.p1.add(r.p2.x, r.p2.y));
-    //     }
-
-    //     if (
-    //         rect.texture instanceof Emoji ||
-    //         rect.texture instanceof CombinedEmoji ||
-    //         rect.texture instanceof DirectionableTexture ||
-    //         rect.texture instanceof TextTexture
-    //         )
-    //          {
-    //         (rect.texture as NewTexture).newRender(this.ctx, ...p1, p2[0]-p1[0], p2[1]-p1[1]);
-
-    //     } else {
-    //         console.log(rect);
-    //     }
-    // }
 
     renderGrid() {
         // FIXME: this can be removed probably.
@@ -191,33 +152,26 @@ export class Renderer2d implements Renderer {
         this.ctx.lineTo(...this.getPositionOnScreen(line.p2));
         this.ctx.stroke();
     }
+    camera!: Camera;
 
-    renderPauseMenu(obj: PauseMenu) {
-        // FIXME: just use regular renderer.
-        console.log("RENDER PAUSE MENU");
-        const r = obj.getBoundingBox();
-        
-        let p1 = this.getPositionOnScreen(r.p1);
-        let p2 = this.getPositionOnScreen(r.p2);
-        if (obj.isGlobal) {
-            // Displaying in screenc coordinates
-            p1 = this.getPositionOnScreen(this.bb.p1.add(r.p1.x, r.p1.y));
-            p2 = this.getPositionOnScreen(this.bb.p1.add(r.p2.x, r.p2.y));
-        }
-
-        obj.newRender(this.ctx, ...p1, p2[0]-p1[0], p2[1]-p1[1]);
+    setCamera(camera: Camera) {
+        this.camera = camera;
+        this.center = camera.center;
     }
 
-
-    render(camera: Camera, gameObjects: GameObjectsContainer, dt: number, game: Game) {
-        this.center = camera.center;
+    prepareFrame() {
+        this.center = this.camera.center;
         const boundingBox = this.getBoundingBox();
         this.bb = boundingBox;
+    }
+
+    render(camera: Camera, gameObjects: GameObjectsContainer, dt: number, game: Game) {
+        this.prepareFrame();
         this.renderBackground(game.sceneSettings);
         if (this.gridEnabled) {
             this.renderGrid();
         }
-        const objects = gameObjects.getObjectsInArea(boundingBox)
+        const objects = gameObjects.getObjectsInArea(this.bb)
         .sort((a,b) => {
             if (a.isGlobal) {
                 return 1;
@@ -227,7 +181,7 @@ export class Renderer2d implements Renderer {
             }
             return a.getBoundingBox().center.y-b.getBoundingBox().center.y
          });
-        const obstructions = gameObjects.getObjectsInArea(boundingBox, TAG.OBSTACLE).map(o => o.getBoundingBox().toLines()).flat();
+        const obstructions = gameObjects.getObjectsInArea(this.bb, TAG.OBSTACLE).map(o => o.getBoundingBox().toLines()).flat();
         const lights = objects.filter(o => o instanceof Light) as Light[];
         this.renderDitheredLight(lights, obstructions); 
         
@@ -338,6 +292,13 @@ export class Renderer2d implements Renderer {
 
     postCanvas!: HTMLCanvasElement;
     pattern!: CanvasPattern;
+
+    renderInterruptorManager(man: Interruptor) {
+        this.prepareFrame();
+        man.render(this.ctx, this.bb, (p: Point) => this.getPositionOnScreen(p));
+    }
+    
+
     renderPostEffects() {
         if (this.game.MULTIPLIER < 2) {
             // NO SPACE FOR POST PROCESSING

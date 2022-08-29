@@ -1,21 +1,33 @@
 import { Dither, Ground } from "../Color/Sprite";
+import { Game } from "../Game";
 import { GameObject } from "../GameObjects/GameObject";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
+import { Point } from "../Primitives";
 
 export interface SceneSettings {
     backgroundColor: string;
     ground: Ground;
     hudBackground: string;
     getDither: (n) => Dither;
+    pCenter: Point;
 }
 
 export class Scene {
+
+    stopMusic() {
+
+    }
     protected gameObjects: Set<GameObject> = new Set();
     constructor() {
 
     }
 
-    register(container: GameObjectsContainer): SceneSettings {
+    addObjects(game: Game) {
+
+    }
+
+    register(container: GameObjectsContainer, game: Game): SceneSettings {
+        this.addObjects(game);
         this.gameObjects.forEach(g => container.add(g));
         return {
             backgroundColor: "hsla(173,39%,47%)",

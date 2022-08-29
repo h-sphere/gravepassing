@@ -22,6 +22,10 @@ export class RectangleObject extends withTags(EmptyClass) implements GameObject,
         }
     }
     render(ctx: CanvasRenderingContext2D, gameBB: Rectangle, getPosOnScreen: GetPosFn): void {
+        // console.log(ctx, gameBB, getPosOnScreen);
+        if (!gameBB) {
+            return;
+        }
         if (this.isHidden) {
             return;
         }
@@ -36,8 +40,6 @@ export class RectangleObject extends withTags(EmptyClass) implements GameObject,
             p1 = getPosOnScreen(gameBB.p1.add(r.p1.x, r.p1.y));
             p2 = getPosOnScreen(gameBB.p1.add(r.p2.x, r.p2.y));
         }
-
-        console.log("TEXTURE", this.texture);
 
         this.texture.render(ctx, ...p1, p2[0]-p1[0], p2[1]-p1[1]);
 

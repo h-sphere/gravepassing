@@ -30,7 +30,7 @@ export class Game {
     private ctx!: CanvasRenderingContext2D;
     private camera: Camera;
     public gameObjects: GameObjectsContainer;
-    private renderer: Renderer;
+    private renderer: Renderer2d;
     private lastRenderTime: number = 0;
     public player: Player;
 
@@ -38,7 +38,11 @@ export class Game {
     public MULTIPLIER = 1;
     public UNIT_SIZE = 1;
 
+    public difficulty: number = 2;
+
     public interruptorManager: Interruptor = new Interruptor();
+
+    currentScene?: Scene;
 
     constructor(private canvas: HTMLCanvasElement, private w: number, h: number) {
 
@@ -57,26 +61,41 @@ export class Game {
         fn();
         // window.onresize = fn;
 
+        this.restart();
+        this.loadScene(new CementeryScene());
+    }
+
+    loadScene(scene: Scene) {
+        if (this.currentScene) {
+            this.currentScene.stopMusic();
+        }
+
+        this.sceneSettings = scene.register(this.gameObjects, this);
+        this.currentScene = scene;
+        this.player.center = this.sceneSettings.pCenter;
+    }
+
+    restart() {
         this.camera = new Camera(this.ctx);
         this.gameObjects = new QuadTreeContainer();
-        this.renderer = new Renderer2d(this.ctx, canvas.width, canvas.height, this);
+        this.renderer = new Renderer2d(this.ctx, this.canvas.width, this.canvas.height, this);
         // const scene = new CementeryScene();
-        const scene = new LabScene();
-        this.sceneSettings = scene.register(this.gameObjects);
 
         this.player = new Player();
         this.player.setGame(this); // FIXME: do it properly maybe?
         this.gameObjects.add(this.player);
         this.camera.follow(this.player);
+        this.renderer.setCamera(this.camera);
     }
 
     render() {
         const tDiff = Date.now() - this.lastRenderTime;
-        this.interruptorManager.update(this.player.controller);
+        this.interruptorManager.update(this.player.controller, this);
         if (this.interruptorManager.isRunning) {
-            console.log("MANAGER IS RUNNING");
-            // this.interruptorManager.render();
-
+            this.interruptorManager.updateInter(tDiff);
+            this.gameObjects.update();
+            this.renderer.render(this.camera, this.gameObjects, tDiff, this);
+            this.renderer.renderInterruptorManager(this.interruptorManager);
         } else {
             this.gameObjects.getAll().forEach(g => {
                 g.update(tDiff, this.gameObjects);
@@ -84,7 +103,6 @@ export class Game {
     
             this.gameObjects.update();
     
-            // this.camera.zoom = Math.max(0.1, this.camera.zoom + tDiff * ZOOM_SPEED * this.controller.wheel / 1000);
             this.renderer.render(this.camera, this.gameObjects, tDiff, this);
         }
         

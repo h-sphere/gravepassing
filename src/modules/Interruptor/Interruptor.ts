@@ -1,17 +1,19 @@
 import { NewTexture } from "../Color/Texture";
 import { KeyboardController } from "../Controller/KeyboardController";
-import { GameObject } from "../GameObjects/GameObject";
+import { Game } from "../Game";
+import { GameObject, GetPosFn } from "../GameObjects/GameObject";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
+import { Rectangle } from "../Primitives";
 
 export interface Interruptable {
-    next(): Promise<boolean>;
-    start(controller: KeyboardController): void;
+    onResolution(fn: () => void): void;
+    start(controller: KeyboardController, game: Game): void;
     hasEnded: boolean;
     
     // should take same update like regular game objects.
 }
 
-export type InterGO = Interruptable & GameObject & NewTexture;
+export type InterGO = Interruptable & GameObject;
 
 export class Interruptor {
     isRunning = false;
@@ -23,11 +25,12 @@ export class Interruptor {
 
     isActive: boolean = false;
 
-    update(controller: KeyboardController) {
+    update(controller: KeyboardController, game: Game) {
         if (!this.isRunning && this._inters.length) {
             // we should start the first one
+            this.isRunning = true;
             const inter = this._inters[0];
-            inter.start(controller);
+            inter.start(controller, game);
         }
 
         if (this.isRunning) {
@@ -38,16 +41,16 @@ export class Interruptor {
             if (inter.hasEnded) {
                 this._inters = this._inters.slice(1);
                 this.isRunning = false;
-                this.update(controller);
+                this.update(controller, game);
             }
         }
     }
 
-    render(ctx: CanvasRenderingContext2D) {
-        if (this.isRunning) {
-            this._inters[0].update(-1, null);
-// that's for tomorrow's Kacper.
-            // this._inters[0].newRender(ctx);
-        }
+    updateInter(dt: number) {
+        this.isRunning && this._inters[0].update(dt, null);
+    }
+
+    render(ctx: CanvasRenderingContext2D, bb: Rectangle, fn: GetPosFn) {
+        this.isRunning && this._inters[0].render(ctx, bb, fn);
     }
 }

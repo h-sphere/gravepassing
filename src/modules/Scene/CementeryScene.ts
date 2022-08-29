@@ -213,6 +213,7 @@ export class CementeryScene extends Scene {
             ground: new Ground(ground, 5234),
             hudBackground: 'rgb(30,30,50)',
             getDither: Dither.generateDithers(16, [5, 46, 32]),
+            pCenter: Point.ORIGIN,
         }
     }
 }

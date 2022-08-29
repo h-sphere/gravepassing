@@ -1,6 +1,9 @@
 import { SIZE } from "../Color/Image";
 import { CombinedEmoji } from "../Color/Sprite";
 import { NewTexture } from "../Color/Texture";
+import { KeyboardController } from "../Controller/KeyboardController";
+import { Game } from "../Game";
+import { Interruptable } from "../Interruptor/Interruptor";
 import { Point, Rectangle } from "../Primitives";
 import { GameObject, GameObjectGroup } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
@@ -10,6 +13,11 @@ import { RectangleObject } from "./Rectangle";
 export class TextTexture implements NewTexture {
     canvas
     constructor(protected text: string[], public w: number , public h: number, private bg: string, private txtcol: string = 'white') {
+        this.generate();
+    }
+
+    updateTexts(text: string[]) {
+        this.text = text;
         this.generate();
     }
 
@@ -53,17 +61,40 @@ export class TextTexture implements NewTexture {
     }
 }
 
-export class TextGameObject extends RectangleObject {
+export class TextGameObject extends RectangleObject implements Interruptable {
     isGlobal: boolean = true;
     
     autoHide = 2000;
+
+    res?: () => void;
 
     constructor(text: string[], p: Point, private w: number, private h: number, private autoremove: boolean = false, bg: string = "black", textcolor: string = 'white') {
         super(p, new TextTexture(text, 2*w, 2*h, bg, textcolor));
         this.rectangle = new Rectangle(p, p.add(w, h));
     }
+    onResolution(fn: () => void): void {
+        this.res = fn;
+    }
+    controller!: KeyboardController;
+    game!: Game;
+    isStartedAsInterrutable: boolean = false;
+    start(controller: KeyboardController, game: Game): void {
+        this.isStartedAsInterrutable = true;
+        this.controller = controller;
+        this.game = game;
+    }
+    hasEnded: boolean = false;
 
+    cooloff = 500;
     update(dt: number, container: GameObjectsContainer): void {
+        if (this.isStartedAsInterrutable) {
+            this.cooloff -= dt;
+            if (this.controller.fire && this.cooloff < 0) {
+                this.hasEnded = true;
+                this.res && this.res();
+            }
+            return;
+        }
         if (!this.autoremove) {
             return;
         }
@@ -74,7 +105,7 @@ export class TextGameObject extends RectangleObject {
                 container.remove(this);
                 return;
             }
-            this.texture.setOpacity(Math.floor(opacity*5)/5);
+            (this.texture as TextTexture).setOpacity(Math.floor(opacity*5)/5);
         }
     }
 }

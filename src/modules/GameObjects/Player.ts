@@ -118,7 +118,7 @@ export class Player extends SimpleHumanoid {
 
     game: Game;
     setGame(game: Game) {
-        this.game = game;
+        this.game = game;``
     }
 
     addItem(type: string) {
@@ -146,15 +146,23 @@ export class Player extends SimpleHumanoid {
     }
 
     die(container: GameObjectsContainer) {
-        container.add(new TextGameObject(["You died", "BETTER LUCK NEXT TIME"], new Point(1, 4), 8, 1.5, false));
+
+        const youDie = new TextGameObject(["You died", "BETTER LUCK NEXT TIME"], new Point(1, 4), 8, 1.5, false);
+        this.game.interruptorManager.add(youDie);
+        youDie.onResolution(() => {
+            this.game.restart();
+        })
     }
 
 
+    inputCooloff = 0;
     update(dt: number, container: GameObjectsContainer) {
+        this.inputCooloff -= dt;
 
-        if (this.controller.esc) {
+        if (this.controller.esc && this.inputCooloff < 0) {
             console.log("CREATING ESCAPE ELEMENT BCZ WHY NOT");
-            container.add(new PauseMenu());
+            this.game.interruptorManager.add(new PauseMenu());
+            this.inputCooloff = 300;
         }
 
         this.container = container;

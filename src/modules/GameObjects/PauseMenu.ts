@@ -1,38 +1,84 @@
+import { SIZE } from "../Color/Image";
 import { NewTexture } from "../Color/Texture";
 import { KeyboardController } from "../Controller/KeyboardController";
+import { Game } from "../Game";
 import { Interruptable, Interruptor } from "../Interruptor/Interruptor";
 import { Point, Rectangle, Line } from "../Primitives";
-import { GameObject, GameObject, GameObjectGroup, Renderable } from "./GameObject";
+import { GameObject, GameObject, GameObjectGroup, GetPosFn, Renderable } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { EmptyClass, withTags } from "./mixins";
 import { TextGameObject, TextTexture } from "./TextModule";
 
-export class PauseMenu extends withTags(EmptyClass) implements GameObject, Interruptable, NewTexture {
+const difficultyToString = (d: number): string => {
+    if (d === 0) {
+        return "EASY";
+    } else if (d === 1) {
+        return "NORMAL"
+    } else {
+        return "HARD"; 
+    }
+}
+
+const diffText = (d: number) => "Change difficulty [" + difficultyToString(d) + "]";
+
+export class PauseMenu extends withTags(EmptyClass) implements GameObject, Interruptable {
     pauseText = new TextTexture(["PAUSED"], 3, 1, 'rgba(0,0,0,0)');
     options = [
         new TextTexture(["Resume"], 4, 1, 'rgba(0,0,0,0)'),
-        new TextTexture(["Change Difficulty: [HARD]"], 10, 1, 'rgba(0,0,0,0)')
+        new TextTexture([diffText(2)], 10, 1, 'rgba(0,0,0,0)')
     ]
     current = 0;
-    newRender(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
-        console.log(x, y, w, h);
+    render(ctx: CanvasRenderingContext2D, bb: Rectangle, fn: GetPosFn) {
         ctx.fillStyle = "#101424";
-        ctx.fillRect(x, y, w, h);
-        const u = w / 10; // we know it's 10. - we can fix it later
-        this.pauseText.newRender(ctx, u, u, 3*u, u);
+        const width = fn(bb.p2)[0];
+        const u = width / 10;
+        ctx.fillRect(0, 0, width, width);
+        this.pauseText.render(ctx, u, u, this.pauseText.w*u/2, u*this.pauseText.h/2);
         this.options.forEach((opt, i) => {
             if (this.current === i) {
                 ctx.fillStyle = "rgba(30, 100, 40, 0.7)";
                 ctx.fillRect(u, (2+i/2)*u, u*opt.w/2, u*opt.h/2);
             }
-            opt.newRender(ctx, u, (2.1+i/2)*u, u*opt.w/2, u*opt.h/2);
+            opt.render(ctx, u, (2.1+i/2)*u, u*opt.w/2, u*opt.h/2);
         })
     }
     isHidden: boolean = false;
     parentBBExclude: boolean = false;
     center: Point = Point.ORIGIN;
+    cooloff = 300;
     update(dt: number, container: GameObjectsContainer): void {
-        console.log("UPDATING MENU?");
+        this.cooloff -= dt;
+        if (this.cooloff > 0) {
+            return;
+        }
+        if (this.controller?.esc) {
+            console.log("ENDED");
+            this.hasEnded = true;
+        }
+        if (this.controller?.y > 0) {
+            this.current = (this.current + 1) % this.options.length;
+            this.cooloff = 200;
+            return;
+        }
+        if (this.controller?.y < 0) {
+            this.current = this.current === 0 ? this.options.length -1 : this.current - 1;
+            this.cooloff = 200;
+            return;
+        }
+
+        if (this.controller?.fire) {
+            this.cooloff = 500;
+            switch (this.current) {
+                case 0:
+                    this.hasEnded = true;
+                    break;
+                case 1:
+                    console.log("CHANGING DIFFICULTY");
+                    this.game.difficulty = (this.game.difficulty + 1) % 3; // FIXME: more difficulties
+                    this.options[1].updateTexts([diffText(this.game.difficulty)])
+                    break;
+            }
+        }
     }
     getBoundingBox(): Rectangle {
         return new Rectangle(Point.ORIGIN, new Point(10, 10));
@@ -44,8 +90,11 @@ export class PauseMenu extends withTags(EmptyClass) implements GameObject, Inter
         return Promise.reject();
     }
     controller?: KeyboardController;
-    start(controller: KeyboardController): void {
+    game!: Game;
+    start(controller: KeyboardController, game: Game): void {
         this.controller = controller;
+        this.game = game;
+        this.options[1].updateTexts([diffText(this.game.difficulty)])
     }
     hasEnded: boolean = false;
 }
