@@ -29,10 +29,6 @@ export class PauseMenu extends withTags(EmptyClass) implements GameObject, Inter
         })
     }
     isHidden: boolean = false;
-    toLines(): Line[] {
-        // NOT NEEDED ANYMORE
-        throw new Error("Method not implemented.");
-    }
     parentBBExclude: boolean = false;
     center: Point = Point.ORIGIN;
     update(dt: number, container: GameObjectsContainer): void {

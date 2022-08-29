@@ -24,10 +24,10 @@ export class Light extends withTags(EmptyClass) implements GameObject, WithCente
         this._center = center;
         this._tags.push(TAG.LIGHT);
     }
-    parentBBExclude: boolean = false;
-    toLines(): Line[] {
-        return [];
+    render(ctx: CanvasRenderingContext2D, gameBB: Rectangle): void {
+        // empty.
     }
+    parentBBExclude: boolean = false;
     getBoundingBox(): Rectangle {
         return new Rectangle(
             this.center.add(-this.distance, -this.distance),

@@ -1,7 +1,7 @@
-import { Audio, getAudio } from "../Audio/AudioManager";
+import { getAudio } from "../Audio/AudioManager";
 import { Emoji } from "../Color/Sprite";
 import { Point, Rectangle } from "../Primitives";
-import { GameObject, GameObjectGroup } from "./GameObject";
+import { GameObjectGroup } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { SimpleHumanoid } from "./Humanoid";
 import { withMovement } from "./mixins";
@@ -70,4 +70,6 @@ export class Bullet extends UsableItem {
         }
         this.o.rectangle.moveTo(this.center);
     }
+
+    isHidden = false;
 }

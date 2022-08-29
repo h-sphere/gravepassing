@@ -112,7 +112,7 @@ export class Enemy extends SimpleHumanoid {
                 playerSpotted = true;
             } else {
                 const obst = container.getObjectsInArea(bb.expand(3), TAG.OBSTACLE);
-                const bareer = obst.map(o => o.toLines()).flat().find(o => !!getLinesIntersection(o, line));
+                const bareer = obst.map(o => o.getBoundingBox().toLines()).flat().find(o => !!getLinesIntersection(o, line));
                 playerSpotted = !bareer;
             }
         }

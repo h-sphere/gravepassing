@@ -1,10 +1,8 @@
-import { Texture } from "./Texture";
+import { NewTexture } from "./Texture";
 
 export const SIZE = 16;
-
-
-
-export class Image implements Texture {
+// FIXME: probably can be removed all together.
+export class Image implements NewTexture {
     protected static canvas: HTMLCanvasElement;
     protected static _ctx: CanvasRenderingContext2D;
     protected static pointer: [number, number] = [0, 0];
@@ -14,7 +12,7 @@ export class Image implements Texture {
 
     public flip: boolean = false;
 
-    protected bmp: ImageBitmap;
+    protected bmp?: ImageBitmap;
 
     protected pos: [number, number];
 
@@ -47,10 +45,6 @@ export class Image implements Texture {
     }
 
     constructor(protected w: number = SIZE, protected h: number = SIZE) {
-        // this.canvas = document.createElement('canvas');
-        // this.canvas.width = SIZE;
-        // this.canvas.height = SIZE;
-        // this.canvas.className = 'top';
         this.pos = Image.getSpriteSpot(w, h);
 
     }
@@ -79,7 +73,8 @@ export class Image implements Texture {
     }
 
 
-    render(ctx: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number): string | CanvasGradient | CanvasPattern {
+    render(ctx: CanvasRenderingContext2D, x1: number, y1: number, w: number, h: number): string | CanvasGradient | CanvasPattern {
+        // THIS IS STILL BEING USED AS OLD RENDER!
         this.gen();
         if (!this.bmp) {
             return 'transparent';
@@ -88,11 +83,9 @@ export class Image implements Texture {
         
         // Can be probably done with create image bitmap.
         const matrix = new DOMMatrix();
-        const width = (x2 - x1) / this.w;
-        const height = (y2 - y1) / this.h;
         let m = matrix
             .translate(x1, y1)
-            .scale(width, height);
+            .scale(w / this.w, h / this.h);
         if (this.flip) {
             m = m.translate(this.w / 2, this.h / 2)
             .scale(-1, 1)

@@ -27,11 +27,11 @@ import { InterGO, Interruptor } from "../Interruptor/Interruptor";
 const ZOOM_SPEED = 1;
 
 export class Game {
-    private ctx: CanvasRenderingContext2D;
+    private ctx!: CanvasRenderingContext2D;
     private camera: Camera;
     public gameObjects: GameObjectsContainer;
     private renderer: Renderer;
-    private lastRenderTime: number;
+    private lastRenderTime: number = 0;
     public player: Player;
 
     public sceneSettings: SceneSettings;
@@ -60,23 +60,6 @@ export class Game {
         this.camera = new Camera(this.ctx);
         this.gameObjects = new QuadTreeContainer();
         this.renderer = new Renderer2d(this.ctx, canvas.width, canvas.height, this);
-
-        // const light = new MovingLight(Point.ORIGIN.add(5, 5), 0.2, 15, Color.YELLOW, new Point(50, 0), 10);
-        // this.gameObjects.add(light);
-        // this.gameObjects.add(new AmbientLight(0.4));
-        // this.gameObjects.add(new RenderablePoint(50, 50, 10, Color.RED));
-        // this.gameObjects.add(new RenderableLine(new Point(50, 40), new Point(50, 60), 5, new Color(54, 100, 50)));
-        // this.gameObjects.add(new WallGameObject(new Point(-20, -5), new Point(20, -10)));
-        // this.gameObjects.add(new WallGameObject(new Point(-30, -10), new Point(30, 0)));
-        // this.gameObjects.add(new WallGameObject(new Point(2, 2), new Point(10, 3), 3, Color.GREEN));
-        // this.gameObjects.add(new WallGameObject(new Point(-4, 8), new Point(0, 0.01), 3, Color.BLUE));
-        // for(let i=0;i<200;i++) {
-        //     this.gameObjects.add(new WallGameObject(
-        //         new Point(Math.random() * 200 - 100, Math.random() * 200 - 100),
-        //         new Point(Math.random() * 200 - 100, Math.random() * 200 - 100)
-        //     ));
-        // }
-
         // const scene = new CementeryScene();
         const scene = new LabScene();
         this.sceneSettings = scene.register(this.gameObjects);
@@ -85,8 +68,6 @@ export class Game {
         this.player.setGame(this); // FIXME: do it properly maybe?
         this.gameObjects.add(this.player);
         this.camera.follow(this.player);
-
-        // this.qtRender = new QuadTreeRenderer(document.querySelector<HTMLCanvasElement>('#quadtreevis')!);
     }
 
     render() {

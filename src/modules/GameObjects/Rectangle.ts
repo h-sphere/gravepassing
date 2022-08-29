@@ -1,9 +1,10 @@
 import { CombinedEmoji, DirectionableTexture, Emoji } from "../Color/Sprite";
-import { NewTexture, Texture } from "../Color/Texture";
+import { NewTexture } from "../Color/Texture";
 import { Line, Point, Rectangle } from "../Primitives";
-import { GameObject, Renderable } from "./GameObject";
+import { GameObject, GetPosFn, Renderable } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { EmptyClass, withTags } from "./mixins";
+import type { TextTexture } from "./TextModule";
 
 export class RectangleObject extends withTags(EmptyClass) implements GameObject, Renderable {
 
@@ -20,19 +21,43 @@ export class RectangleObject extends withTags(EmptyClass) implements GameObject,
             }
         }
     }
+    render(ctx: CanvasRenderingContext2D, gameBB: Rectangle, getPosOnScreen: GetPosFn): void {
+        if (this.isHidden) {
+            return;
+        }
+        const r = this.getBoundingBox();
+        ctx.beginPath();
+
+        let p1 = getPosOnScreen(r.p1);
+        let p2 = getPosOnScreen(r.p2);
+
+        if (this.isGlobal) {
+            // Displaying in screenc coordinates
+            p1 = getPosOnScreen(gameBB.p1.add(r.p1.x, r.p1.y));
+            p2 = getPosOnScreen(gameBB.p1.add(r.p2.x, r.p2.y));
+        }
+
+        console.log("TEXTURE", this.texture);
+
+        this.texture.render(ctx, ...p1, p2[0]-p1[0], p2[1]-p1[1]);
+
+        // if (
+        //     this.texture instanceof Emoji ||
+        //     this.texture instanceof CombinedEmoji ||
+        //     this.texture instanceof DirectionableTexture ||
+        //     this.texture instanceof TextTexture
+        //     )
+        //      {
+        //     (this.texture as NewTexture).newRender(ctx, ...p1, p2[0]-p1[0], p2[1]-p1[1]);
+
+        // } else {
+        //     console.log(this);
+        // }
+
+    }
     isHidden: boolean = false;
     parentBBExclude: boolean = false;
     zIndex?: number | undefined;
-    toLines(): Line[] {
-        // FIXME: we probably dont need this.
-        const bb = this.getBoundingBox();
-        return [
-            new Line(bb.p1, bb.p1.add(bb.width, 0)),
-            new Line(bb.p1.add(bb.width, 0), bb.p2),
-            new Line(bb.p2, bb.p1.add(0, bb.height)),
-            new Line(bb.p1, bb.p1.add(0, bb.height))
-        ]
-    }
     update(dt: number, container: GameObjectsContainer): void {
         
     }
@@ -49,5 +74,5 @@ export class RectangleObject extends withTags(EmptyClass) implements GameObject,
     getBoundingBox(): Rectangle {
         return this.rectangle;
     }
-    isGlobal: boolean;
+    isGlobal: boolean = false;
 }

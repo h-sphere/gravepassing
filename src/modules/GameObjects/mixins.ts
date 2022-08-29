@@ -20,7 +20,7 @@ type Mixin<T> = (constructor: Constructable<T>) => new (...args: any[]) => T;
 //     return Cl;
 // }
 
-type MethodsToOmit = 'getRenderInstructions' | 'update' | 'getBoundingBox' | 'isGlobal' | 'toLines';
+type MethodsToOmit = 'update' | 'getBoundingBox' | 'isGlobal';
 
 export function withTags<T extends Constructable>(constructor: T) {
     return class extends constructor implements Omit<GameObject, MethodsToOmit> {
@@ -114,7 +114,7 @@ export function withMovement<T extends Constructable<WithCenter>>(constructor: T
                 this.center = this.center.add(0.05, 0);
             }
 
-            const obstacles = container.getObjectsInArea(combined, TAG.OBSTACLE).map(o => o.toLines()).flat();
+            const obstacles = container.getObjectsInArea(combined, TAG.OBSTACLE).map(o => o.getBoundingBox().toLines()).flat();
             
             if(obstacles.length) {
                 // push back just slightly so the user does not intersect anymore

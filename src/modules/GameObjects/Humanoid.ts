@@ -6,7 +6,7 @@ import { KeyboardController } from "../Controller/KeyboardController";
 import { Line, Point, Rectangle } from "../Primitives";
 import { Bullet } from "./Bullet";
 import { Enemy } from "./Enemy";
-import { GameObject, GameObjectGroup, Renderable, RenderableLine, RenderablePoint } from "./GameObject";
+import { GameObject, GameObjectGroup } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { Light, TargetLight } from "./Light";
 import { EmptyClass, Rotation, withMovement, withRotation, withTags } from "./mixins";
@@ -49,14 +49,6 @@ class SimpleHumanoidPref extends GameObjectGroup {
         this.add(this.light);
     }
     zIndex?: number | undefined;
-    toLines(): Line[] {
-        return [
-            new Line(this.center, this.center.add(1, 0))
-        ]
-    }
-    // getBoundingBox(): Rectangle {
-    //     return this.go.getBoundingBox();
-    // }
 
     private _obstacles: GameObject[] = [];
     get obstacles(): GameObject[] {

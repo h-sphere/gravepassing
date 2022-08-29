@@ -1,6 +1,6 @@
-import { Texture } from "./Texture";
+import { NewTexture } from "./Texture";
 
-export class Color implements Texture {
+export class Color implements NewTexture {
     constructor(public h: number, public s: number, public l: number) {
 
     }

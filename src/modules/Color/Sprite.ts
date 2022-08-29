@@ -1,7 +1,6 @@
 import { Image as ImageTexture, SIZE } from "./Image";
 import { Color } from "./Color";
-import { NewTexture, Texture } from "./Texture";
-import { withLight } from "../GameObjects/mixins";
+import { NewTexture } from "./Texture";
 import { Point, Rectangle } from "../Primitives";
 import { Directional, E } from "../Assets/Emojis";
 import { SceneSettings } from "../Scene/Scene";
@@ -9,12 +8,6 @@ import { Game } from "../Game";
 import { TAG } from "../constants/tags";
 import { RectangleObject } from "../GameObjects/Rectangle";
 import { Enemy } from "../GameObjects/Enemy";
-
-// export interface EmojiSettings {
-//     emoji: string,
-//     size: number,
-//     pos: number[]
-// }
 
 export class DirectionableTexture implements NewTexture {
     private direction ='left';
@@ -32,8 +25,8 @@ export class DirectionableTexture implements NewTexture {
         }
     }
 
-    newRender(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
-        return this.getEmoji().newRender(ctx, x, y, w, h);
+    render(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
+        return this.getEmoji().render(ctx, x, y, w, h);
     }
 
     collisionBoundingBox(): Rectangle {
@@ -52,33 +45,7 @@ export class DirectionableTexture implements NewTexture {
         }
     }
 
-    // render(ctx: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number): string | CanvasGradient | CanvasPattern {
-    //     switch (this.direction) {
-    //         case 'left': return this.left.render(ctx, x1, y1, x2, y2);
-    //         case 'down': return this.down.render(ctx, x1, y1, x2, y2);
-    //         case 'up': return this.up.render(ctx, x1, y1, x2, y2);
-    //         default: return this.left.render(ctx, x1, y1, x2, y2);
-    //     }
-    // }
-
 }
-
-// export class CombinedEmoji extends ImageTexture {
-//     constructor (private settings: EmojiSettings[], scale = 1) {
-//         super(SIZE * scale, SIZE * scale);
-//         this.generate();
-//     }
-
-//     protected generate() {
-//         this.ctx.textBaseline = "top";
-//         this.ctx.fillStyle = "white";
-//         this.settings.forEach((e) => {
-//             const size = e.size || 10;
-//             this.ctx.font = `${size}px Arial`;
-//             this.ctx.fillText(e.emoji, this.pos[0] + e.pos[0], this.pos[1] + e.pos[1])
-//         })
-//     }
-// }
 
 export interface EmojiSet {
     emoji: string;
@@ -156,7 +123,7 @@ export class CombinedEmoji implements NewTexture {
         return this._boundingBox;
     }
 
-    newRender(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
+    render(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
 
         try {
         ctx.drawImage(this.canvas, 0, 0, this.canvas.width, this.canvas.height, x, y, w, h);
@@ -246,7 +213,7 @@ export class AnimatedEmoji extends CombinedEmoji {
         }
     }
 
-    newRender(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number): void {
+    render(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number): void {
         const c = this.canvases[this._n];
         try {
             ctx.drawImage(c, 0, 0, c.width, c.height, x, y, w, h);
@@ -311,44 +278,6 @@ export class Dither extends ImageTexture {
         }
     }
 }
-// Dither.generateDithers();
-
-// export class Sprite extends ImageTexture {
-//     static img: HTMLImageElement;
-//     static loaded: boolean = false;
-
-
-//     static getImage(): HTMLImageElement {
-//         if (this.img) {
-//             return this.img;
-//         }
-//         this.img = new Image();
-//         this.img.src = image;
-//         this.img.onload = () => this.loaded = true;
-//         return this.img;
-//     }
-
-//     constructor(protected x: number, protected y: number) {
-//         super();
-//         Sprite.getImage();
-//     }
-
-//     protected generate(): void {
-//         this.ctx.drawImage(Sprite.getImage(), this.x * SIZE, this.y * SIZE, SIZE, SIZE, this.pos[0], this.pos[1], SIZE, SIZE);
-//     }
-
-//     render(ctx: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number): string | CanvasGradient | CanvasPattern {
-//         if(!Sprite.loaded) {
-//             return 'red';
-//         }
-//         return super.render(ctx, x1, y1, x2, y2);
-//     }
-
-// }
-
-// export class SpriteWithLight extends withLight(Sprite) {
-// }
-
 
 const FN = (x, y, S) => (Math.sin(432.432*S + x * y - 3*y+Math.cos(x-y))+1)/2;
 
@@ -381,7 +310,7 @@ export class Ground {
             this.emojis.forEach(e => {
                 if (p > e.range[0] && p < e.range[1]) {
                     if (!e.asGameObject) {
-                        e.emoji.newRender(ctx, oX *m, oY *m, m, m);
+                        e.emoji.render(ctx, oX *m, oY *m, m, m);
                     } else {
                         if (!areGenerated) {
                             console.log("TAG GEN")

@@ -39,7 +39,7 @@ export class TextTexture implements NewTexture {
         // .then(b => this.bmp = b);
 
     }
-    newRender(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
+    render(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
         // FIXME: move bg drawing here so it's easier to change in menu items.
         ctx.globalAlpha = this.opacity;
         ctx.drawImage(this.canvas, 0, 0, this.canvas.width, this.canvas.height, x, y, w , h);
