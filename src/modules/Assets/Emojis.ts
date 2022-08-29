@@ -1,13 +1,6 @@
 import { AnimatedEmoji, CombinedEmoji, Emoji, EmojiSet } from "../Color/Sprite";
 
 const S = 1;
-
-const base: EmojiSet[] = [
-    { emoji: "👖", pos: [S * 4, S * 10], size: S * 5},
-    { emoji: "🧧", pos: [S *4, S * 5], size: S * 5},
-    { emoji: "👱", pos: [S * 4, 0], size: S * 5},
-];
-
 const glasses = {emoji: "🕶", pos: [S * 4 + 1, S - 1], size: S * 4};
 const singleGlass = { emoji: "⬛️", pos: [S * 5, S * 1], size: S * 1};
 const singleRightGlass = { emoji: "⬛️", pos: [8, 1], size: S * 1};
@@ -18,13 +11,6 @@ export interface Directional {
     left: CombinedEmoji;
     right: CombinedEmoji;
 }
-
-/**
- * 
- *         { emoji: pants || "👖", pos: [4, 10], size: 5},
-        { emoji: body || "🧧", pos: [4, 5], size: 5},
-        { emoji: head || "👱", pos: [4, 0], size: 5}
- */
 
 const renderLegs = (s: number, steps: number, c: HTMLCanvasElement) => {
     const ctx = c.getContext('2d')!;
@@ -40,7 +26,7 @@ const renderLegs = (s: number, steps: number, c: HTMLCanvasElement) => {
     }
 }
 
-const createDirectional = (head?, body?, pants?, shirtShift = 0, pantShift = 0): Directional => {
+const createDirectional = (head?: string, body?: string, pants?: string, shirtShift = 0, pantShift = 0): Directional => {
     const base = [
         { emoji: pants || "👖", pos: [4, 10], size: 5, hueShift: pantShift},
         { emoji: body || "🧧", pos: [4, 5], size: 5, hueShift: shirtShift },
@@ -54,16 +40,14 @@ const createDirectional = (head?, body?, pants?, shirtShift = 0, pantShift = 0):
     }
 }
 
-/*
-
-const base: EmojiSettings[] = [
-    { emoji: "🧧", pos: [4, 5], size: 5},
-    { emoji: "👱", pos: [4, 0], size: 5},
-    { emoji: "👖", pos: [4, 10], size: 5},
-];
-*/
-
 export const E = {
+    factory: new CombinedEmoji([
+        { emoji: "🏢", size: 30, pos: [0, 15]},
+        { emoji: "☢️", size: 8, pos: [10, 24]},
+        { emoji: "🦴", size: 8, pos: [2, 40]},
+        { emoji: "💀", size: 8, pos: [20, 40]},
+        { emoji: "📡", size: 10, pos: [16, 6]}
+    ], 3),
     playerDir: createDirectional(),
     pigManDir: createDirectional("🐷"),
     frogMan: createDirectional("🦋"),
@@ -71,15 +55,15 @@ export const E = {
     robot: createDirectional("🤖", "👔", "⛓"),
     health: new Emoji("❤️", 6, 1, 0, 5),
     healthOff: new Emoji("🤍", 6, 1, 0, 5),
+    bullet: new Emoji("🔅", 4, 1, 6, 6),
+    explamation: new Emoji("❗️", 6, 1),
+    h_over: new Emoji("♥️", 4, 1),
     item: new CombinedEmoji([
-        // { emoji: "🔲", size: 16, pos: [0, 0]},
         { emoji: "💣", size: 6, pos: [1, 3]},
     ]),
     item2: new CombinedEmoji([
-        // { emoji: "🔲", size: 16, pos: [0, 0]},
         { emoji: "🔥", size: 6, pos: [0, 2]},
     ]),
-    t: new Emoji("🦷", 6, 1, 0, 3),
     itemBg: new CombinedEmoji([
         { emoji: "🟩", size: 8, pos: [0, 2]}
     ], 1, 'rgba(255,0,0,0.6)'),
@@ -89,8 +73,8 @@ export const E = {
     goal: {
         top: new Emoji("⬆", 16, 1, 0, 4, 'rgba(255,255,255,0.8)'),
         down: new Emoji("⬇", 16, 1, 0, 4, 'rgba(255,255,255,0.8)'),
-        left: new Emoji("⬅", 16, 1, 0, 4, 'rgba(255,255,255,0.8)'),
-        right: new Emoji("➡", 16, 1, 0, 4, 'rgba(255,255,255,0.8)')
+        left: new Emoji("⬅", 10, 1, 0, 6, 'rgba(255,255,255,0.8)'),
+        right: new Emoji("➡", 10, 1, 0, 6, 'rgba(255,255,255,0.8)')
 
     },
 }

@@ -1,3 +1,4 @@
+import { E } from "../Assets/Emojis";
 import { getAudio } from "../Audio/AudioManager";
 import { Emoji } from "../Color/Sprite";
 import { Point, Rectangle } from "../Primitives";
@@ -27,7 +28,7 @@ export class Bullet extends UsableItem {
     constructor(p: Point, private direction: Point, private lifeSpan = 100, private targetTag: string) {
         super();
         this.center = p;
-        this.o = new RectangleObject(p, new Emoji("🔅", 4, 1, 6, 6));
+        this.o = new RectangleObject(p, E.bullet);
         this.add(this.o);
 
         // FIXME: remove duplication

@@ -20,6 +20,7 @@ export class Enemy extends SimpleHumanoid {
         super(d, 3, 0.5);
         this.center = p;
         this.addTag(TAG.ENEMY);
+        // FIXME: combine into single emo.
         const e: EmojiSet = {
             emoji: "♥️",
             size: 4,
@@ -42,6 +43,7 @@ export class Enemy extends SimpleHumanoid {
             }
             ctx.fillRect(steps*3,0, -(steps-step)*3, canvas.height);
         });
+        this.hitPoints.doNotRenderOnGlobalCanvas = true;
 
         const obj = new RectangleObject(Point.ORIGIN, this.hitPoints);
         obj.parentBBExclude = true;
@@ -49,7 +51,7 @@ export class Enemy extends SimpleHumanoid {
         this.pointsObj = obj;
         this.hitPoints.setFrame(this.life);
 
-        const markEmoji = new Emoji("❗️", 6, 1);
+        const markEmoji = E.explamation;
         const obj2 = new RectangleObject(Point.ORIGIN, markEmoji);
         obj2.parentBBExclude = true;
         this.add(obj2);

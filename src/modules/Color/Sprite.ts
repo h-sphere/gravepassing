@@ -1,4 +1,3 @@
-import { Image as ImageTexture, SIZE } from "./Image";
 import { Color } from "./Color";
 import { NewTexture } from "./Texture";
 import { Point, Rectangle } from "../Primitives";
@@ -8,6 +7,7 @@ import { Game } from "../Game";
 import { TAG } from "../constants/tags";
 import { RectangleObject } from "../GameObjects/Rectangle";
 import { Enemy } from "../GameObjects/Enemy";
+import { SIZE } from "./Image";
 
 export class DirectionableTexture implements NewTexture {
     private direction ='left';
@@ -56,40 +56,60 @@ export interface EmojiSet {
 
 export class CombinedEmoji implements NewTexture {
     constructor(private emojis: EmojiSet[], private scale: number = 1, private color = 'white') {
-        // super(SIZE*scale, SIZE*scale);
-        this.generate();
-        // setTimeout(() => {
-        //     // hack to make inherited classes have time to set constructor variables.
-        //     this.generate();
-        // });
+        this.generate()
     }
-    canvas;
-    bmp;
-    _boundingBox: Rectangle;
+    canvas!: HTMLCanvasElement;
+    bmp!: ImageBitmap;
+    _boundingBox!: Rectangle;
+
+    doNotRenderOnGlobalCanvas = false;
 
     toGameObject(p: Point, scale: number = 1): RectangleObject {
         return new RectangleObject(p, this, [], scale);
+    }
+
+    static lastX = 0;
+
+    static getGlobalCanvasPos(width: number) {
+        const x = this.lastX;
+        this.lastX += width;
+        return x;
+    }
+
+    private globalCanvasPosition = -1;
+    renderOnGlobalCanvas() {
+        if (this.doNotRenderOnGlobalCanvas) {
+            return;
+        }
+        if (this.globalCanvasPosition < 0) { 
+            this.globalCanvasPosition = CombinedEmoji.getGlobalCanvasPos(SIZE*this.scale);
+        }
+        console.log("RENDERING ON", this.globalCanvasPosition);
+        const globalCanvas = document.querySelector<HTMLCanvasElement>('#emojiMap');
+        const ctx = globalCanvas!.getContext('2d')!;
+        ctx.drawImage(this.canvas, this.globalCanvasPosition, 0);
+        
     }
 
 
     protected postProcessing() {
         
     }
+    isGenerated = false;
 
     protected generate(...props: any[]): void {
-
+        this.isGenerated = true;
         const c = document.createElement('canvas');
         c.width = this.scale * SIZE;
         c.height = this.scale * SIZE;
         const ct = c.getContext('2d')!;
-        let p1, p2;
+        let p1: Point, p2: Point;
         const ZOOM_FACTOR = 1/16; // FIXME: is that alright?
         const div = document.createElement('div');
 
         this.emojis.forEach(e => {
             div.style.fontSize=e.size + 'px';
             div.innerText = e.emoji;
-
 
             ct.font = `${e.size}px Arial`
             ct.fillStyle = this.color;
@@ -110,13 +130,14 @@ export class CombinedEmoji implements NewTexture {
             ct.fillText(e.emoji, e.pos[0], e.pos[1]);
             ct.filter = '';
         });
-        this._boundingBox = new Rectangle(p1, p2);
+        this._boundingBox = new Rectangle(p1!, p2!);
         this.canvas = c;
         this.postProcessing();
 
         // OMFG, why does this help?
         createImageBitmap(ct.getImageData(0, 0, c.width, c.height))
         .then(b => this.bmp = b);
+        this.renderOnGlobalCanvas();
     }
 
     collisionBoundingBox(): Rectangle {
@@ -124,44 +145,17 @@ export class CombinedEmoji implements NewTexture {
     }
 
     render(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
-
+        !this.isGenerated && this.generate();
         try {
         ctx.drawImage(this.canvas, 0, 0, this.canvas.width, this.canvas.height, x, y, w, h);
         } catch (e) {
             console.log("ERROR", e);
         }
     }
-
-    // render(ctx: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number): string | CanvasGradient | CanvasPattern {
-    //     return 'red';
-    //     // this.generate();
-
-    //     // // console.log(this.imageData)
-    //     // // ctx.putImageData(this.imageData, x1, x2);
-    //     // ctx.drawImage(this.canvas, 
-    //     // return 'red';
-
-    //     // const pattern = this.ctx.createPattern(this.bmp, this.repeat)!;
-        
-    //     // // Can be probably done with create image bitmap.
-    //     // const matrix = new DOMMatrix();
-    //     // const width = (x2 - x1) / this.w;
-    //     // const height = (y2 - y1) / this.h;
-    //     // let m = matrix
-    //     //     .translate(x1, y1)
-    //     //     .scale(width, height);
-    //     // if (this.flip) {
-    //     //     m = m.translate(this.w / 2, this.h / 2)
-    //     //     .scale(-1, 1)
-    //     //     .translate(-this.w / 2, -this.h / 2);
-    //     // }
-    //     // pattern.setTransform(m);
-    //     // return pattern;
-    // }
 }
 
 export class AnimatedEmoji extends CombinedEmoji {
-    constructor(emojis, scale, color, private steps: number = 3, private stepFn: (step: number, steps: number, canvas: HTMLCanvasElement) => void) {
+    constructor(emojis: EmojiSet[], scale: number, color: string, private steps: number = 3, private stepFn: (step: number, steps: number, canvas: HTMLCanvasElement) => void) {
         super(emojis, scale, color);
         setTimeout(() => {
             // hack to make inherited classes have time to set constructor variables.
@@ -177,7 +171,6 @@ export class AnimatedEmoji extends CombinedEmoji {
         }
         super.generate();
         for(let i=0;i<steps;i++) {
-            // copy context here.
             const canvas = document.createElement('canvas');
             canvas.width = this.canvas.width;
             canvas.height = this.canvas.height;
@@ -185,12 +178,8 @@ export class AnimatedEmoji extends CombinedEmoji {
             ctx.drawImage(this.canvas, 0, 0, canvas.width, canvas.height);
             this.stepFn(i, steps, canvas);
             this.canvases.push(canvas);
-
-            // OMFG, why does this help?
             createImageBitmap(ctx.getImageData(0, 0, canvas.width, canvas.height))
             .then(b => this.bmp = b);
-            
-            // FIXME: Optimisation here.
         }
     }
     private isStarted = false;
@@ -239,7 +228,7 @@ export class Emoji extends CombinedEmoji {
 
 const D_STEP = 11;
 
-const c = (n, steps) => Math.round(n * (steps - 1))
+const c = (n: number, steps: number) => Math.round(n * (steps - 1))
 export class Dither implements NewTexture {
 
     static generateDithers(steps: number = D_STEP, color: number[] = [44, 100, 94]) {
@@ -275,10 +264,8 @@ export class Dither implements NewTexture {
         createImageBitmap(this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height))
     }
     protected generate(): void {
-        console.log("GENERATE", this.l);
         this.ctx.clearRect(0, 0, SIZE, SIZE);
         this.ctx.fillStyle = 'rgb('+this.c.join(',') + ', ' + (1-this.l/1.2-0.2) + ')';
-        console.log(this.ctx.fillStyle);
         this.ctx.fillRect(0,0, 2, 2);
         this.generateBmp();
         if (this.l > 0.95) {
@@ -327,7 +314,6 @@ export class Ground {
                         e.emoji.render(ctx, oX *m, oY *m, m, m);
                     } else {
                         if (!areGenerated) {
-                            console.log("TAG GEN")
                             const obj = new RectangleObject(new Point(x, y), e.emoji, [TAG.GENERATED, TAG.OBSTACLE]);
                             game.gameObjects.add(obj);           
                             generatedAnything = true;                 
@@ -340,10 +326,7 @@ export class Ground {
         // GENERATE GAME OBJECTS IF NEEDED.
         if (generatedAnything) { // making sure we don't generate infinitly enemies on empty patches.
             const g = FN(bb.p1.x+0.424, bb.p1.y+0.2, this.seed+4324);
-            console.log("G", g);
             const generatingNr = Math.round(g * 5);
-            
-            console.log("GENERATING", generatingNr);
             for(let i=0;i<generatingNr;i++) {
                 const s = game.settings;
                 

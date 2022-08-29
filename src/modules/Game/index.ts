@@ -1,41 +1,25 @@
 import { Camera } from "../Camera";
-import { Color } from "../Color/Color";
-import { TAG } from "../constants/tags";
-import { KeyboardController } from "../Controller/KeyboardController";
-import { ArrayGameObjectsContainer } from "../GameObjects/ArrayContainer";
-import { RenderableLine, RenderablePoint, WallGameObject } from "../GameObjects/GameObject";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
-import { GameObject } from "../GameObjects/GameObject";
-import { AmbientLight, Light } from "../GameObjects/Light";
 import { Player } from "../GameObjects/Player";
-import { Point, Rectangle } from "../Primitives";
-import { Renderer } from "../Renderer/Renderer";
 import { Renderer2d } from "../Renderer/Renderer2d";
-import { MovingLight } from "../Special/MovingLight";
-import { QuadTree } from "../../utils/QuadTree";
-import { QuadTreeRenderer } from "../../utils/QuadTreeRenderer";
 import { QuadTreeContainer } from "../GameObjects/QuadTreeContainer";
-import { LightingScene } from "../Scene/LightingScene";
 import { CementeryScene } from "../Scene/CementeryScene";
 import { Scene, SceneSettings } from "../Scene/Scene";
 import { SIZE } from "../Color/Image";
-import { LabScene } from "../Scene/LabScene";
-import { HellScene } from "../Scene/HellScene";
-import { HubScene } from "../Scene/HubScene";
 import { InterGO, Interruptor } from "../Interruptor/Interruptor";
-import { BombCollectableItem, Item } from "../GameObjects/Item";
+import { Item } from "../GameObjects/Item";
 
 const ZOOM_SPEED = 1;
 
 export class Game {
     private ctx!: CanvasRenderingContext2D;
-    private camera: Camera;
-    public gameObjects: GameObjectsContainer;
-    private renderer: Renderer2d;
+    private camera!: Camera;
+    public gameObject!: GameObjectsContainer;
+    private renderer!: Renderer2d;
     private lastRenderTime: number = 0;
-    public player: Player;
+    public player!: Player;
 
-    public sceneSettings: SceneSettings;
+    public sceneSettings!: SceneSettings;
     public MULTIPLIER = 1;
     public UNIT_SIZE = 1;
 
@@ -92,6 +76,7 @@ export class Game {
     }
 
     currentStage = 0;
+    gameObjects!: QuadTreeContainer;
 
     restart() {
         this.camera = new Camera(this.ctx);

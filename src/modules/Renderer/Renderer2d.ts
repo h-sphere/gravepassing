@@ -7,7 +7,6 @@ import { TAG } from "../constants/tags";
 import { Game } from "../Game";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
 import { Light } from "../GameObjects/Light";
-import { PauseMenu } from "../GameObjects/PauseMenu";
 import { Interruptor } from "../Interruptor/Interruptor";
 import { Line, Point, Rectangle } from "../Primitives";
 import { SceneSettings } from "../Scene/Scene";
@@ -56,9 +55,6 @@ export class Renderer2d implements Renderer {
     getPositionOnScreen(p: Point): [number, number] {
         const x = (this.center.x - p.x)
         const y = (this.center.y - p.y);
-        // const y2 = y - (maxY - p.y) * (maxY - p.y) * 0.01; // Math.abs(x) * 0.25 * Math.abs(y);
-        // const x2 = x - (maxY - p.y) * (midX - p.x) * 0.02;
-        // const xSizePerPixel = this.getSizePerPixel() / (Math.abs(maxY - p.y) / 10);
         const ySizePerPixel = this.getSizePerPixel();
         const xSizePerPixel = this.getSizePerPixel();
 
@@ -74,30 +70,7 @@ export class Renderer2d implements Renderer {
 
         const point = this.getPositionOnScreen(new Point(Math.floor(this.bb.p1.x), Math.floor(this.bb.p1.y)));
         const unitSize = 1 / this.getSizePerPixel();
-        // const color = settings.backgroundColor || '#1d4d36';
         settings.ground.render(this.ctx, this.getBoundingBox(), settings, this.game);
-    }
-
-    renderGrid() {
-        // FIXME: this can be removed probably.
-        const rect = this.getBoundingBox();
-        for (let i = Math.ceil(rect.p1.x); i <= rect.p2.x; i++) {
-            for (let j = Math.ceil(rect.p1.y); j <= rect.p2.y; j++) {
-                this.ctx.beginPath();
-                const [x, y] = this.getPositionOnScreen(new Point(i, j));
-                this.ctx.fillStyle = '#555';
-                this.ctx.arc(x, y, 1, 0, 2 * Math.PI);
-                this.ctx.fill();
-            }
-        }
-    }
-
-    renderFps(fps: number) {
-        this.ctx.fillStyle = "#FFF";
-        const text = `${Math.floor(fps)} fps`;
-        this.ctx.font = "20px Papyrus";
-        const size = this.ctx.measureText(text);
-        this.ctx.fillText(text, this.width - size.width - 20, 20 + size.fontBoundingBoxAscent);
     }
 
     renderDitheredLight(lights: Light[], obstructions: Line[]) {
@@ -167,9 +140,6 @@ export class Renderer2d implements Renderer {
     render(camera: Camera, gameObjects: GameObjectsContainer, dt: number, game: Game) {
         this.prepareFrame();
         this.renderBackground(game.sceneSettings);
-        if (this.gridEnabled) {
-            this.renderGrid();
-        }
         const objects = gameObjects.getObjectsInArea(this.bb)
         .sort((a,b) => {
             if (a.isGlobal) {
@@ -191,31 +161,15 @@ export class Renderer2d implements Renderer {
                 this.bb,
                 (p: Point) => this.getPositionOnScreen(p)
             );
-
-                // if (obj instanceof RectangleObject) {
-                //     this.renderRectangle(obj, lights);
-                // } if (obj instanceof PauseMenu) {
-                //     this.renderPauseMenu(obj);
-                // } else {
-                //     // console.log("UNKNOWN", obj);
+                // if (this.boundingBoxEnable) {
+                //     this.ctx.strokeStyle = "rgba(255,0,0,0.6)";
+                //     this.ctx.lineWidth = 1;
+                //     const bb = obj.getBoundingBox();
+                //     const p = this.getPositionOnScreen(bb.p1);
+                //     const p2 = this.getPositionOnScreen(bb.p2);
+                //     this.ctx.strokeRect(p[0], p[1], p2[0] - p[0], p2[1] - p[1]);
                 // }
-
-                if (this.boundingBoxEnable) {
-                    this.ctx.strokeStyle = "rgba(255,0,0,0.6)";
-                    this.ctx.lineWidth = 1;
-                    const bb = obj.getBoundingBox();
-                    const p = this.getPositionOnScreen(bb.p1);
-                    const p2 = this.getPositionOnScreen(bb.p2);
-                    this.ctx.strokeRect(p[0], p[1], p2[0] - p[0], p2[1] - p[1]);
-                }
-
-            
         }
-
-        if (this.fpsEnable) {
-            this.renderFps(this.gatherFps(1000 / dt));
-        }
-
         this.renderHUD(game);
         this.renderPostEffects();
     }
@@ -280,11 +234,7 @@ export class Renderer2d implements Renderer {
         this.ctx.fillStyle = "rgb(30, 30, 200)"
         this.ctx.fillRect(7*u, y+2.5*q,wid*game.player.lvlProgress, q/4);
 
-        console.log('OBJ', this.game.objective);
-
-
         if(game.objective) {
-            // console.log("WEVE GOT OBJECTIVE");
             const xDiff = game.objective.center.x - game.player.center.x ;
             const yDiff =  game.objective.center.y - game.player.center.y;
             console.log('diffz', xDiff, yDiff);
@@ -305,16 +255,7 @@ export class Renderer2d implements Renderer {
 
                 }
             }
-
-            // GOAL LIGHT
-            // E.goal.top.render(this.ctx, 4.5*u, u/4, u, u);
-            // E.goal.down.newRender(this.ctx, 4.5*u, 6.25*u, u, u);
-            // E.goal.left.render(this.ctx, u/4, 3*u, u, u);
-            // E.goal.right.newRender(this.ctx, 8.5*u, 3*u, u, u);
         }
-        
-
-
     }
 
     postCanvas!: HTMLCanvasElement;
@@ -325,7 +266,6 @@ export class Renderer2d implements Renderer {
         man.render(this.ctx, this.bb, (p: Point) => this.getPositionOnScreen(p));
     }
     
-
     renderPostEffects() {
         if (this.game.MULTIPLIER < 2) {
             // NO SPACE FOR POST PROCESSING
@@ -380,17 +320,5 @@ export class Renderer2d implements Renderer {
 
         this.ctx.globalCompositeOperation = "source-over";
         this.ctx.globalAlpha = 1;
-    }
-
-
-    private fps: number[] = [];
-
-    gatherFps(fps: number): number {
-        // FIXME: to be removed.
-        this.fps = [fps, ...this.fps];
-        if (this.fps.length > 100) {
-            this.fps = this.fps.slice(0, 100);
-        }
-        return Math.floor(this.fps.reduce((a, b) => a + b) / this.fps.length);
     }
 }

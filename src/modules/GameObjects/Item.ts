@@ -1,3 +1,4 @@
+import { E } from "../Assets/Emojis";
 import { getAudio } from "../Audio/AudioManager";
 import { CombinedEmoji, Emoji } from "../Color/Sprite";
 import { TAG } from "../constants/tags";
@@ -66,13 +67,7 @@ export class Factory extends Item {
         const point = new Point(Math.random(), Math.random()).normalize().mul(60, 100);
 
         // random position here
-        super(point, new CombinedEmoji([
-            { emoji: "🏢", size: 30, pos: [0, 15]},
-            { emoji: "☢️", size: 8, pos: [10, 24]},
-            { emoji: "🦴", size: 8, pos: [2, 40]},
-            { emoji: "💀", size: 8, pos: [20, 40]},
-            { emoji: "📡", size: 10, pos: [16, 6]}
-        ], 3), 3);
+        super(point, E.factory, 3);
     }
 
     onAdd(player: Player) {

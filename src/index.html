@@ -1,33 +1,12 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <style>
-            body {
-                background: black;
-            }
-            #game {
-                position: absolute;
-                top: 50%; left: 50%;
-                transform: translate(-50%, -50%);
-            }
-
-            #quadtreevis {
-                display: none;
-                position: absolute;
-                bottom: 0; right: 0;
-                border: 1px solid black;
-            }
-
-            .top {
-                position: absolute;
-                z-index: 11;
-            }
-
-        </style>
+<!DOCTYPE html><style>
+@font-face { font-family: emoji; src: url(//xem.github.io/unicode13/Twemoji.ttf) }
+body { background:#000;}
+#game {position: absolute;top: 50%; left: 50%;transform: translate(-50%, -50%);}
+</style>
     </head>
     <body>
         <canvas id="game" width="800" height="600"></canvas>
-        <canvas id="quadtreevis" width="300" height="300"></canvas>
+        <canvas id="emojiMap" width="2000" height="64"></canvas>
         <script src="./game.ts" type="module"></script>
     </body>
 </html>
