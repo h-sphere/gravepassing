@@ -21,11 +21,14 @@ const difficultyToString = (d: number): string => {
 
 const diffText = (d: number) => "Change difficulty [" + difficultyToString(d) + "]";
 
+const post = "Post-processing";
+
 export class PauseMenu extends withTags(EmptyClass) implements GameObject, Interruptable {
     pauseText = new TextTexture(["PAUSED"], 3, 1, 'rgba(0,0,0,0)');
     options = [
         new TextTexture(["Resume"], 4, 1, 'rgba(0,0,0,0)'),
-        new TextTexture([diffText(2)], 10, 1, 'rgba(0,0,0,0)')
+        new TextTexture([diffText(2)], 10, 1, 'rgba(0,0,0,0)'),
+        new TextTexture([], 10, 1, "rgba(0,0,0,0)"),
     ]
     current = 0;
     render(ctx: CanvasRenderingContext2D, bb: Rectangle, fn: GetPosFn) {
@@ -68,18 +71,32 @@ export class PauseMenu extends withTags(EmptyClass) implements GameObject, Inter
 
         if (this.controller?.fire) {
             this.cooloff = 500;
+            const set = this.game.settings;
             switch (this.current) {
                 case 0:
                     this.hasEnded = true;
                     break;
                 case 1:
-                    console.log("CHANGING DIFFICULTY");
-                    this.game.difficulty = (this.game.difficulty + 1) % 3; // FIXME: more difficulties
-                    this.options[1].updateTexts([diffText(this.game.difficulty)])
+                    set.difficulty = (set.difficulty + 1) % 3; // FIXME: more difficulties
+                    break;
+                case 2:
+                    set.post = !set.post;
                     break;
             }
+            this.saveSettings()
+            this.setOptions();
         }
     }
+    saveSettings() {
+        window.localStorage.setItem('hsph_set', JSON.stringify(this.game.settings));
+    }
+
+    setOptions() {
+        const set = this.game.settings;
+        this.options[1].updateTexts([diffText(set.difficulty)])
+        this.options[2].updateTexts([post + "[" + (set.post ? 'ON' : 'OFF') +"]"]);
+    }
+
     getBoundingBox(): Rectangle {
         return new Rectangle(Point.ORIGIN, new Point(10, 10));
     }
@@ -94,7 +111,7 @@ export class PauseMenu extends withTags(EmptyClass) implements GameObject, Inter
     start(controller: KeyboardController, game: Game): void {
         this.controller = controller;
         this.game = game;
-        this.options[1].updateTexts([diffText(this.game.difficulty)])
+        this.setOptions();
     }
     hasEnded: boolean = false;
 }

@@ -8,7 +8,7 @@ import { TAG } from "../constants/tags";
 import { Game } from "../Game";
 import { Enemy } from "../GameObjects/Enemy";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
-import { Item } from "../GameObjects/Item";
+import { Factory, Item } from "../GameObjects/Item";
 import { AmbientLight } from "../GameObjects/Light";
 import { RectangleObject } from "../GameObjects/Rectangle";
 import { TextGameObject, TextModal } from "../GameObjects/TextModule";
@@ -17,7 +17,7 @@ import { LabScene } from "./LabScene";
 import { Scene, SceneSettings } from "./Scene";
 
 const T = {
-    NOTE: () => new TextModal(["You find a note.", "We did it, we finally discovered solution for ∞ energy.","- Zod Radok, CAU"]),
+    NOTE: () => new TextModal(["You find a note.", "We did it, we finally discovered solution for infinite energy.","- Pietro B., CAU"]),
     NOTE_2: () => new TextModal(["Another Note", "All the monsters seems to gather in from the CAU factory."]),
     NOTE_3: () => new TextModal(["You find coordinates of CAU factory."]),
 }
@@ -58,7 +58,20 @@ export class CementeryScene extends Scene {
         game.gameObjects.add(new AmbientLight(0.23));
 
 
-        game.interruptorManager.add(new TextModal(["HELLO WORLD"]))
+        game.interruptorManager.add(new TextModal([
+            "You wake up alone on a cementery",
+            "From the distance you hear terrible noises.",
+            "You remember the horror of yesterday",
+            "Screams, animals and people turning into monsters",
+            "all you can do now is to fight for your life.",
+            "",
+            "press [space] to continue"
+        ]));
+        game.interruptorManager.add(new TextModal([
+            "Use arrows to move",
+            "Use [space] to fire",
+            "use [Q] and [W] to toggle through your items"
+        ]));
         
         
     }
@@ -139,8 +152,13 @@ export class CementeryScene extends Scene {
             stages: [
                 { lvl: 2, res: (g => g.interruptorManager.add(T.NOTE()))},
                 { lvl: 3, res: (g => g.interruptorManager.add(T.NOTE_2()))},
-                { lvl: 5, res: (g => g.interruptorManager.add(T.NOTE_3()))},
-                { lvl: 7, res: (g => g.loadScene(new LabScene))}
+                { lvl: 4, res: (g => {
+                    g.interruptorManager.add(T.NOTE_3());
+                    const f = new Factory(g.player.center);
+                    g.gameObjects.add(f);
+                    g.setObjective(f);
+                })
+                }
             ]
         }
     }

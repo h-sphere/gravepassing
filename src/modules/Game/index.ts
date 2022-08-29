@@ -23,6 +23,7 @@ import { LabScene } from "../Scene/LabScene";
 import { HellScene } from "../Scene/HellScene";
 import { HubScene } from "../Scene/HubScene";
 import { InterGO, Interruptor } from "../Interruptor/Interruptor";
+import { BombCollectableItem, Item } from "../GameObjects/Item";
 
 const ZOOM_SPEED = 1;
 
@@ -38,7 +39,10 @@ export class Game {
     public MULTIPLIER = 1;
     public UNIT_SIZE = 1;
 
-    public difficulty: number = 2;
+    public settings = {
+        difficulty: 2,
+        post: false,
+    }
 
     public interruptorManager: Interruptor = new Interruptor();
 
@@ -49,20 +53,21 @@ export class Game {
         const fn = () => {
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
-            console.log('FXN');
-            console.log('FXN SIZES', windowWidth, windowHeight)
             this.MULTIPLIER = Math.floor(Math.min(windowWidth, windowHeight) / (w * SIZE));
             this.UNIT_SIZE = SIZE * this.MULTIPLIER
             this.canvas.width = SIZE * w * this.MULTIPLIER;
             this.canvas.height = SIZE * h * this.MULTIPLIER;
             this.ctx = canvas.getContext('2d')!;
-            console.log('FXN NEW MULT', this.MULTIPLIER);
         };
         fn();
         // window.onresize = fn;
 
         this.restart();
         this.loadScene(new CementeryScene());
+        try {
+            this.settings = JSON.parse(window.localStorage.getItem('hsph_set') || '');
+        } catch (e) {
+        }
     }
 
     loadScene(scene: Scene, withRestart: boolean = false) {
@@ -77,6 +82,13 @@ export class Game {
         this.sceneSettings = scene.register(this.gameObjects, this);
         this.currentScene = scene;
         this.player.center = this.sceneSettings.pCenter;
+        this.objective = undefined;
+    }
+
+    objective?: Item;
+
+    setObjective(c: Item) {
+        this.objective = c;
     }
 
     currentStage = 0;
@@ -85,7 +97,6 @@ export class Game {
         this.camera = new Camera(this.ctx);
         this.gameObjects = new QuadTreeContainer();
         this.renderer = new Renderer2d(this.ctx, this.canvas.width, this.canvas.height, this);
-        // const scene = new CementeryScene();
 
         this.player = new Player();
         this.player.setGame(this); // FIXME: do it properly maybe?

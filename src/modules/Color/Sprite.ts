@@ -67,8 +67,8 @@ export class CombinedEmoji implements NewTexture {
     bmp;
     _boundingBox: Rectangle;
 
-    toGameObject(p: Point): RectangleObject {
-        return new RectangleObject(p, this);
+    toGameObject(p: Point, scale: number = 1): RectangleObject {
+        return new RectangleObject(p, this, [], scale);
     }
 
 
@@ -101,7 +101,7 @@ export class CombinedEmoji implements NewTexture {
             const x = ct.measureText(e.emoji)
             if (!p1 || !p2) {
                 p1 = new Point(e.pos[0], e.pos[1]);
-                p2 = new Point(e.pos[0] + x.width, e.pos[1] + x.actualBoundingBoxDescent).mul(1/16);
+                p2 = new Point(e.pos[0] + x.width, e.pos[1] + x.actualBoundingBoxDescent).mul(1/SIZE);
             } else {
                 p1 = new Point(Math.min(e.pos[0], p1.x), Math.min(e.pos[1], p1.y));
                 p2 = new Point(Math.max(e.pos[0] + x.width, p2.x), Math.max(e.pos[1] + x.actualBoundingBoxAscent, p2.y)).mul(1/16);
@@ -342,12 +342,22 @@ export class Ground {
             const g = FN(bb.p1.x+0.424, bb.p1.y+0.2, this.seed+4324);
             console.log("G", g);
             const generatingNr = Math.round(g * 5);
+            
             console.log("GENERATING", generatingNr);
             for(let i=0;i<generatingNr;i++) {
+                const s = game.settings;
+                
+                // Base on difficulty
+                const value = s.difficulty * 50+50;
+                let lifes = s.difficulty + 1;
+                if (Math.random() < s.difficulty * 0.1) {
+                    lifes++;
+                }
+
                 const p = bb.p1.add(Math.random()*bb.width, Math.random()*bb.height);
                 game.gameObjects.add(new Enemy(
                     Math.random() < 0.2 ? E.robot : (Math.random() > 0.5) ? E.cowMan : E.frogMan,
-                100, p));
+                    value, p, lifes));
             }
         }
     }

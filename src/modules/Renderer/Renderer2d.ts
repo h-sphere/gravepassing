@@ -279,13 +279,41 @@ export class Renderer2d implements Renderer {
         this.ctx.fillRect(7*u, y+2.5*q, wid, q/4);
         this.ctx.fillStyle = "rgb(30, 30, 200)"
         this.ctx.fillRect(7*u, y+2.5*q,wid*game.player.lvlProgress, q/4);
+
+        console.log('OBJ', this.game.objective);
+
+
+        if(game.objective) {
+            // console.log("WEVE GOT OBJECTIVE");
+            const xDiff = game.objective.center.x - game.player.center.x ;
+            const yDiff =  game.objective.center.y - game.player.center.y;
+            console.log('diffz', xDiff, yDiff);
+            if (Math.abs(xDiff) > 5) {
+                if (xDiff < 0) {
+                    E.goal.left.render(this.ctx, u/4, 3*u, u, u);
+                } else {
+                    E.goal.right.render(this.ctx, 8.5*u, 3*u, u, u);
+
+                }
+            }
+
+            if (Math.abs(yDiff) > 5) {
+                if (yDiff < 0) {
+                    E.goal.top.render(this.ctx, 4.5*u, u/4, u, u);
+                } else {
+                    E.goal.down.render(this.ctx, 4.5*u, 6.25*u, u, u);
+
+                }
+            }
+
+            // GOAL LIGHT
+            // E.goal.top.render(this.ctx, 4.5*u, u/4, u, u);
+            // E.goal.down.newRender(this.ctx, 4.5*u, 6.25*u, u, u);
+            // E.goal.left.render(this.ctx, u/4, 3*u, u, u);
+            // E.goal.right.newRender(this.ctx, 8.5*u, 3*u, u, u);
+        }
         
 
-        // GOAL LIGHT
-        E.goal.top.render(this.ctx, 4.5*u, u/4, u, u);
-        // E.goal.down.newRender(this.ctx, 4.5*u, 6.25*u, u, u);
-        E.goal.left.render(this.ctx, u/4, 3*u, u, u);
-        // E.goal.right.newRender(this.ctx, 8.5*u, 3*u, u, u);
 
     }
 
@@ -301,6 +329,10 @@ export class Renderer2d implements Renderer {
     renderPostEffects() {
         if (this.game.MULTIPLIER < 2) {
             // NO SPACE FOR POST PROCESSING
+            return;
+        }
+
+        if (!this.game.settings.post) {
             return;
         }
 

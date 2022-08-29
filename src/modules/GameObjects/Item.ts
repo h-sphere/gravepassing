@@ -1,17 +1,18 @@
 import { getAudio } from "../Audio/AudioManager";
 import { CombinedEmoji, Emoji } from "../Color/Sprite";
 import { TAG } from "../constants/tags";
-import { Point } from "../Primitives";
+import { Point, Rectangle } from "../Primitives";
+import { LabScene } from "../Scene/LabScene";
 import { GameObjectGroup } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { Player } from "./Player";
 
 export class Item extends GameObjectGroup {
     isHidden = false;
-    constructor(public p: Point, icon: CombinedEmoji) {
+    constructor(public p: Point, icon: CombinedEmoji, scale: number = 1) {
         super();
         this.center = p;
-        this.add(icon.toGameObject(p));
+        this.add(icon.toGameObject(p, scale));
     }
 
     onAdd(player: Player) {
@@ -55,5 +56,26 @@ export class BombCollectableItem extends Item {
 
     onAdd(player: Player): void {
         player.addItem('bomb');
+    }
+}
+
+export class Factory extends Item {
+    constructor(p: Point) {
+        console.log("GENERATING OBJECTIVE");
+        
+        const point = new Point(Math.random(), Math.random()).normalize().mul(60, 100);
+
+        // random position here
+        super(point, new CombinedEmoji([
+            { emoji: "🏢", size: 30, pos: [0, 15]},
+            { emoji: "☢️", size: 8, pos: [10, 24]},
+            { emoji: "🦴", size: 8, pos: [2, 40]},
+            { emoji: "💀", size: 8, pos: [20, 40]},
+            { emoji: "📡", size: 10, pos: [16, 6]}
+        ], 3), 3);
+    }
+
+    onAdd(player: Player) {
+        player.game.loadScene(new LabScene, false);
     }
 }

@@ -6,7 +6,7 @@ import { Game } from "../Game";
 import { WallGameObject } from "../GameObjects/GameObject";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
 import { AmbientLight } from "../GameObjects/Light";
-import { TextGameObject } from "../GameObjects/TextModule";
+import { TextGameObject, TextModal } from "../GameObjects/TextModule";
 import { Point } from "../Primitives";
 import { Scene, SceneSettings } from "./Scene";
 
@@ -44,21 +44,12 @@ export class LabScene extends Scene {
 
     addObjects(game: Game): void {
         const textBlock = Point.ORIGIN.add(0.5, 5.5);
-
         this.gameObjects.add(new AmbientLight(0.3));
-        game.interruptorManager.add(new TextGameObject([
-            "You wake up alone on a cementery",
-            "From the distance you hear terrible noises.",
-            "You suddenly remember the horror of yesterday",
-            "Screams, animals and people turning into",
-            "monsters.",
-            "all you can do now is to fight for your life."
-        ], textBlock, 9 ,2));
-        game.interruptorManager.add(new TextGameObject([
-            "Use arrows to move",
-            "Use [space] to fire",
-            "use [Q] and [W] to toggle through your items"
-        ], textBlock, 9, 2));
+        game.interruptorManager.add(new TextModal([
+            "You enter dark corridors of endless office space",
+            "You see all employees being deformed by unknown force",
+            "You need to continue the fight",
+        ]))
     }
 
     register(container: GameObjectsContainer, game): SceneSettings {
