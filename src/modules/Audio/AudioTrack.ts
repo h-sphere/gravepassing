@@ -33,9 +33,12 @@ export class AudioTrack {
         }
     }
 
+    gains: GainNode[] = [];
+
     stop() {
         // FIXME: ramp music.
         this.isStoped = true;
+        this.gains.forEach(g => g.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 1.5));
     }
 
     private makeSynth() {
@@ -45,6 +48,7 @@ export class AudioTrack {
         const osc = ctx.createOscillator();
         const fil = ctx.createBiquadFilter();
         const gain = ctx.createGain();
+        this.gains.push(gain);
 
         const t = ctx.currentTime;
 
@@ -66,6 +70,7 @@ export class AudioTrack {
             del.connect(delAten);
             delAten.connect(ctx.destination);
             delAten.gain.setValueAtTime(this.synth.delay.gain, t);
+            this.gains.push(delAten);
         }
 
         this.osc = osc;

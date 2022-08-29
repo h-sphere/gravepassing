@@ -44,6 +44,10 @@ export class Image implements NewTexture {
         return Image._ctx;
     }
 
+    getSprite() {
+
+    }
+
     constructor(protected w: number = SIZE, protected h: number = SIZE) {
         this.pos = Image.getSpriteSpot(w, h);
 
@@ -74,7 +78,6 @@ export class Image implements NewTexture {
 
 
     render(ctx: CanvasRenderingContext2D, x1: number, y1: number, w: number, h: number): string | CanvasGradient | CanvasPattern {
-        // THIS IS STILL BEING USED AS OLD RENDER!
         this.gen();
         if (!this.bmp) {
             return 'transparent';

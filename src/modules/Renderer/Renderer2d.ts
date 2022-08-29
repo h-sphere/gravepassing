@@ -138,8 +138,7 @@ export class Renderer2d implements Renderer {
                 this.ctx.globalAlpha = 1;
                 const l = lightIntensityAtPoint(new Point(i,j), lightsFiltered);
                 const d = this.game.sceneSettings.getDither(l);
-                this.ctx.fillStyle = d.render(this.ctx, ...pos, w, h);
-                this.ctx.fillRect(...pos, w, h);
+                d.render(this.ctx, ...pos, w, h);
             }
         }
     }

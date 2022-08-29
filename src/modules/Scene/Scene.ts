@@ -4,15 +4,21 @@ import { GameObject } from "../GameObjects/GameObject";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
 import { Point } from "../Primitives";
 
+interface Stage {
+    lvl: number,
+    res: (game: Game) => void;
+}
+
 export interface SceneSettings {
     backgroundColor: string;
     ground: Ground;
     hudBackground: string;
     getDither: (n) => Dither;
     pCenter: Point;
+    stages: Stage[];
 }
 
-export class Scene {
+export abstract class Scene {
 
     stopMusic() {
 
@@ -34,6 +40,8 @@ export class Scene {
             ground: new Ground([], 123),
             hudBackground: 'orange',
             getDither: Dither.generateDithers(32),
+            pCenter: Point.ORIGIN,
+            stages: [],
         }
     }
 

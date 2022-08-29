@@ -6,6 +6,8 @@ import { TAG } from "../constants/tags";
 import { KeyboardController } from "../Controller/KeyboardController";
 import { Game } from "../Game";
 import { Point, Rectangle } from "../Primitives";
+import { CementeryScene } from "../Scene/CementeryScene";
+import { LabScene } from "../Scene/LabScene";
 import { Bomb } from "./Bomb";
 import { Bullet, UsableItem } from "./Bullet";
 import { Enemy } from "./Enemy";
@@ -61,7 +63,7 @@ class BombInventoryItem extends InventoryItem {
     }
 }
 
-const lvlToXp = (lvl: number) => (lvl-1)*(lvl-1)*300;
+const lvlToXp = (lvl: number) => (lvl-1)*(lvl-1)*100;
 
 
 export class Player extends SimpleHumanoid {
@@ -150,7 +152,7 @@ export class Player extends SimpleHumanoid {
         const youDie = new TextGameObject(["You died", "BETTER LUCK NEXT TIME"], new Point(1, 4), 8, 1.5, false);
         this.game.interruptorManager.add(youDie);
         youDie.onResolution(() => {
-            this.game.restart();
+            this.game.loadScene(new CementeryScene, true);
         })
     }
 

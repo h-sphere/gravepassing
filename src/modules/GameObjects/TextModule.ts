@@ -121,3 +121,10 @@ export class InGameTextGO extends TextGameObject {
         this.rectangle = this.rectangle.moveBy(new Point(0, -dt*0.2/1000));
     }
 }
+
+export class TextModal extends TextGameObject {
+    constructor(t: string[]) {
+        const textBlock = Point.ORIGIN.add(0.5, 5.5);
+        super(t, textBlock, 9 ,2)
+    }
+}

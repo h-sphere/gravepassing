@@ -78,7 +78,8 @@ export class LabScene extends Scene {
             hudBackground: 'rgb(30, 20, 50)',
             backgroundColor: "rgba(110, 110, 160)",
             getDither: Dither.generateDithers(30, [100, 70, 130]),
-            pCenter: new Point(0, -20)
+            pCenter: new Point(0, -20),
+            stages: [],
         };
     }
 }

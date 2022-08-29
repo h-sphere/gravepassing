@@ -65,15 +65,21 @@ export class Game {
         this.loadScene(new CementeryScene());
     }
 
-    loadScene(scene: Scene) {
+    loadScene(scene: Scene, withRestart: boolean = false) {
         if (this.currentScene) {
             this.currentScene.stopMusic();
+        }
+
+        if (withRestart) {
+            this.restart();
         }
 
         this.sceneSettings = scene.register(this.gameObjects, this);
         this.currentScene = scene;
         this.player.center = this.sceneSettings.pCenter;
     }
+
+    currentStage = 0;
 
     restart() {
         this.camera = new Camera(this.ctx);
@@ -86,9 +92,22 @@ export class Game {
         this.gameObjects.add(this.player);
         this.camera.follow(this.player);
         this.renderer.setCamera(this.camera);
+        this.currentStage = 0;
     }
 
     render() {
+
+        const stgI = this.currentStage;
+        if (stgI < this.sceneSettings.stages.length) {
+
+            const stg = this.sceneSettings.stages[stgI];
+            if (stg.lvl <= this.player.lvl) {
+                console.log("PROGRESSING TO NEXT STAGE");
+                this.currentStage++;
+                stg.res(this);
+            }
+        }
+        
         const tDiff = Date.now() - this.lastRenderTime;
         this.interruptorManager.update(this.player.controller, this);
         if (this.interruptorManager.isRunning) {

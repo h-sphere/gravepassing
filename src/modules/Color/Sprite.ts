@@ -235,20 +235,12 @@ export class Emoji extends CombinedEmoji {
     }
 }
 
-// export class EmojiWithLight extends withLight(Emoji) { }
-
 
 
 const D_STEP = 11;
 
 const c = (n, steps) => Math.round(n * (steps - 1))
-export class Dither extends ImageTexture {
-    
-    // private static d;
-
-    // static getDither(n: number): Dither {
-    //     return this.d[c(n)];
-    // }
+export class Dither implements NewTexture {
 
     static generateDithers(steps: number = D_STEP, color: number[] = [44, 100, 94]) {
         const dithers: Dither[] = [];
@@ -259,20 +251,43 @@ export class Dither extends ImageTexture {
         return (n: number) => dithers[c(n, steps)];
     }
 
+    ctx: CanvasRenderingContext2D;
+    canvas: HTMLCanvasElement;
+
     private constructor(private l: number, private s: number, private c: number[]) {
-        super();
+        this.canvas = document.createElement('canvas');
+        this.canvas.width = SIZE;
+        this.canvas.height = SIZE;
+        this.ctx = this.canvas.getContext('2d')!;
         this.generate();
+        // document.body.appendChild(this.canvas);
+    }
+    render(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number): void {
+        // ctx.fillStyle = "red"; 
+        // ctx.fillRect(x,y,w,h);
+        try {
+            ctx.drawImage(this.canvas, 0, 0, this.canvas.width, this.canvas.height, x, y, w, h);
+        } catch (e) {
+            console.log("ERROR", e);
+        }
+    }
+    protected generateBmp() {
+        createImageBitmap(this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height))
     }
     protected generate(): void {
-        this.ctx.clearRect(this.pos[0], this.pos[1], SIZE, SIZE);
+        console.log("GENERATE", this.l);
+        this.ctx.clearRect(0, 0, SIZE, SIZE);
         this.ctx.fillStyle = 'rgb('+this.c.join(',') + ', ' + (1-this.l/1.2-0.2) + ')';
-        // if (this.l > 0.95) {
-        //     return;
-        // }
-        for(let i=0;i<SIZE;i++) {
+        console.log(this.ctx.fillStyle);
+        this.ctx.fillRect(0,0, 2, 2);
+        this.generateBmp();
+        if (this.l > 0.95) {
+            return;
+        }
+        for(let i=0;i<SIZE;i++) { 
             for(let j=0;j<SIZE;j++) {
                 if ((c(Math.abs(i*i + j*j), this.s) % (this.s)) >= c(this.l, this.s)) {
-                    this.ctx.fillRect(this.pos[0] + i, this.pos[1] + j, 1, 1);
+                    this.ctx.fillRect(i, j, 1, 1);
                 }
             }
         }
@@ -304,7 +319,6 @@ export class Ground {
         bb.forEachCell((x, y, oX, oY) => {
             const p = FN(x,y, this.seed || 231);
             ctx.fillStyle = s.backgroundColor || 'hsla(173,39%,47%)';
-            ctx.strokeStyle = "red";
             ctx.fillRect(oX*m, oY*m, m, m);
 
             this.emojis.forEach(e => {
