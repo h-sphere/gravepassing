@@ -1,21 +1,12 @@
 import { Directional, E } from "../Assets/Emojis";
 import { Color } from "../Color/Color";
 import { DirectionableTexture } from "../Color/Sprite";
-import { TAG } from "../constants/tags";
-import { KeyboardController } from "../Controller/KeyboardController";
-import { Line, Point, Rectangle } from "../Primitives";
-import { Bullet } from "./Bullet";
-import { Enemy } from "./Enemy";
+import { Point, Rectangle } from "../Primitives";
 import { GameObject, GameObjectGroup } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
-import { Light, TargetLight } from "./Light";
-import { EmptyClass, Rotation, withMovement, withRotation, withTags } from "./mixins";
+import { Light } from "./Light";
+import { withMovement, withRotation } from "./mixins";
 import { RectangleObject } from "./Rectangle";
-
-import { ConicRenderableSquaredPoint } from "./SquaredPoint";
-
-
-const ROTATION_VELOCITY = Math.PI;
 
 class SimpleHumanoidPref extends GameObjectGroup {
     center: Point;
@@ -38,10 +29,7 @@ class SimpleHumanoidPref extends GameObjectGroup {
         this.light = new Light(
             this.center,
             intensity,
-            distance,
-            Color.WHITE,
-            // Math.PI/ 3,
-            // 0,
+            distance
         )
         this.light.parentBBExclude = true;
 

@@ -100,10 +100,10 @@ export class Renderer2d implements Renderer {
                 
                 // Extra colouring
                 lightsFiltered.forEach(l => {
-                    if (l.color.render() !== Color.WHITE.render()) {
+                    if (l.color!== "#FFF") {
                         this.ctx.globalCompositeOperation = "overlay"
                         this.ctx.globalAlpha = lightIntensityAtPoint(new Point(i, j), [l]);
-                        this.ctx.fillStyle = l.color.render();
+                        this.ctx.fillStyle = l.color;
                         this.ctx.fillRect(...pos, w, h);
                     }
                 });

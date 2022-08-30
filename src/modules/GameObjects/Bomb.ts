@@ -37,7 +37,6 @@ export class Bomb extends UsableItem {
         if (this.lifeSpan <= 0 && !this.exploded) {
             this.exploded = true;
             // EXPLODE.
-            console.log("EXPLODING");
             getAudio('bomb').play(true);
 
             const l = new Light(

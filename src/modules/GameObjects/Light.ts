@@ -19,7 +19,7 @@ export class Light extends withTags(EmptyClass) implements GameObject, WithCente
     set center(v: Point) {
         this._center = v;
     }
-    constructor(center: Point, public intensity: number, public distance: number, public color: Color = Color.WHITE) {
+    constructor(center: Point, public intensity: number, public distance: number, public color: string = "#FFF") {
         super();
         this._center = center;
         this._tags.push(TAG.LIGHT);
@@ -45,30 +45,6 @@ export class Light extends withTags(EmptyClass) implements GameObject, WithCente
     }
 
     update(t: number) {}
-
-    isGlobal = false;
-}
-
-export class TargetLight extends Light {
-    constructor(center: Point, intensity, distance, color: Color = Color.WHITE, public angle: number = Math.PI * 2 / 3, public direction: number = 0) {
-        super(center, intensity, distance, color);
-    }
-
-    getBoundingBox(): Rectangle {
-        return new Rectangle(
-            this.center.add(-this.distance, -this.distance),
-            this.center.add(this.distance, this.distance),
-        );
-    }
-
-    // getIntensityAtPoint(p: Point) {
-    //     const angle = Math.atan2(p.y - this.center.y, p.x - this.center.x);
-    //     if (Math.abs(getAngularDistance(this.direction, angle)) < this.angle / 2) {
-    //         return super.getIntensityAtPoint(p);
-    //     }
-    //     return 0;
-    // }
-
 
     isGlobal = false;
 }
