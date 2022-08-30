@@ -27,7 +27,7 @@ export class Shot extends AudioEffect {
     }
 }
 
-export class Bomb extends AudioEffect {
+export class BombAudioEffect extends AudioEffect {
     play(explode: boolean) {
         this.osc.type = 'triangle';
         this.osc.frequency.setValueAtTime(150, this.ctx.currentTime);

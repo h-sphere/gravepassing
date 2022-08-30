@@ -1,5 +1,5 @@
 import { E } from "../Assets/Emojis";
-import { getAudio } from "../Audio/AudioManager";
+import { Shot } from "../Audio/AudioEffect";
 import { Emoji } from "../Color/Sprite";
 import { Point, Rectangle } from "../Primitives";
 import { GameObjectGroup } from "./GameObject";
@@ -33,7 +33,7 @@ export class Bullet extends UsableItem {
 
         // FIXME: remove duplication
         this.o.rectangle.moveTo(this.center);
-        getAudio('shot').play();
+        (new Shot).play();
     }
 
     getBoundingBox(): Rectangle {
