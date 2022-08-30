@@ -1,18 +1,7 @@
-import { E } from "../Assets/Emojis";
-
-const makeRandoms = (n) => {
-    const nums: number[] = [];
-    for(let i=0;i<n;i++) {
-        nums.push(Math.random());
-    }
-    return nums;
-}
-
 export class AudioEffect {
     ctx: AudioContext;
     osc: OscillatorNode;
     constructor() {
-        console.log("SETTING UP")
         this.ctx = new window.AudioContext();
         this.osc = this.ctx.createOscillator();
         this.osc.connect(this.ctx.destination);
@@ -20,7 +9,6 @@ export class AudioEffect {
     }
 
     setup() {
-        console.log("OSC SETUPPP");
         this.osc.type = 'triangle';
         this.osc.frequency.setValueAtTime(0, 0);
         this.osc.start();

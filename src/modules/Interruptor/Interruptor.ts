@@ -1,12 +1,10 @@
-import { NewTexture } from "../Color/Texture";
 import { KeyboardController } from "../Controller/KeyboardController";
 import { Game } from "../Game";
 import { GameObject, GetPosFn } from "../GameObjects/GameObject";
-import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
 import { Rectangle } from "../Primitives";
 
 export interface Interruptable {
-    onResolution(fn: () => void): void;
+    onResolution?(fn: () => void): void;
     start(controller: KeyboardController, game: Game): void;
     hasEnded: boolean;
     
@@ -47,7 +45,7 @@ export class Interruptor {
     }
 
     updateInter(dt: number) {
-        this.isRunning && this._inters[0].update(dt, null);
+        this.isRunning && this._inters[0].update(dt, null!);
     }
 
     render(ctx: CanvasRenderingContext2D, bb: Rectangle, fn: GetPosFn) {

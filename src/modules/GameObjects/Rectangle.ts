@@ -1,10 +1,9 @@
-import { CombinedEmoji, DirectionableTexture, Emoji } from "../Color/Sprite";
+import { DirectionableTexture } from "../Color/Sprite";
 import { NewTexture } from "../Color/Texture";
-import { Line, Point, Rectangle } from "../Primitives";
+import { Point, Rectangle } from "../Primitives";
 import { GameObject, GetPosFn, Renderable } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { EmptyClass, withTags } from "./mixins";
-import type { TextTexture } from "./TextModule";
 
 export class RectangleObject extends withTags(EmptyClass) implements GameObject, Renderable {
 
@@ -42,20 +41,6 @@ export class RectangleObject extends withTags(EmptyClass) implements GameObject,
         }
 
         this.texture.render(ctx, ...p1, p2[0]-p1[0], p2[1]-p1[1]);
-
-        // if (
-        //     this.texture instanceof Emoji ||
-        //     this.texture instanceof CombinedEmoji ||
-        //     this.texture instanceof DirectionableTexture ||
-        //     this.texture instanceof TextTexture
-        //     )
-        //      {
-        //     (this.texture as NewTexture).newRender(ctx, ...p1, p2[0]-p1[0], p2[1]-p1[1]);
-
-        // } else {
-        //     console.log(this);
-        // }
-
     }
     isHidden: boolean = false;
     parentBBExclude: boolean = false;
@@ -66,9 +51,7 @@ export class RectangleObject extends withTags(EmptyClass) implements GameObject,
 
     collisionBoundingBox() {
         if (this.texture instanceof DirectionableTexture) { // OR EMOJI
-            // console.log("MOVING?")
-            // console.log("BB", this.texture.getBoundingBox());
-            return this.texture.collisionBoundingBox()//.moveBy(this.rectangle.center); //this.rectangle;
+            return this.texture.collisionBoundingBox(); // FIXME: do not use collision bb - it's always BB.
         }
         return this.rectangle;
     }

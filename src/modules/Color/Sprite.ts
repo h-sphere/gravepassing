@@ -83,7 +83,6 @@ export class CombinedEmoji implements NewTexture {
         if (this.globalCanvasPosition < 0) { 
             this.globalCanvasPosition = CombinedEmoji.getGlobalCanvasPos(SIZE*this.scale);
         }
-        console.log("RENDERING ON", this.globalCanvasPosition);
         const globalCanvas = document.querySelector<HTMLCanvasElement>('#emojiMap');
         const ctx = globalCanvas!.getContext('2d')!;
         ctx.drawImage(this.canvas, this.globalCanvasPosition, 0);
@@ -103,7 +102,6 @@ export class CombinedEmoji implements NewTexture {
         c.height = this.scale * SIZE;
         const ct = c.getContext('2d')!;
         let p1: Point, p2: Point;
-        const ZOOM_FACTOR = 1/16; // FIXME: is that alright?
         const div = document.createElement('div');
 
         this.emojis.forEach(e => {
@@ -113,9 +111,6 @@ export class CombinedEmoji implements NewTexture {
             ct.font = `${e.size}px Arial`
             ct.fillStyle = this.color;
             ct.textBaseline = "top";
-            // ct.fillRect(0, 0, c.width, c.height);
-            // const t = this.ctx.measureText(e.emoji);
-            // ct.fillRect(0, 0, c.width, c.height);
             ct.filter = 'hue-rotate('+(e.hueShift||0) + 'deg)';
             const x = ct.measureText(e.emoji)
             if (!p1 || !p2) {
@@ -251,8 +246,6 @@ export class Dither implements NewTexture {
         // document.body.appendChild(this.canvas);
     }
     render(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number): void {
-        // ctx.fillStyle = "red"; 
-        // ctx.fillRect(x,y,w,h);
         try {
             ctx.drawImage(this.canvas, 0, 0, this.canvas.width, this.canvas.height, x, y, w, h);
         } catch (e) {
@@ -280,7 +273,7 @@ export class Dither implements NewTexture {
     }
 }
 
-const FN = (x, y, S) => (Math.sin(432.432*S + x * y - 3*y+Math.cos(x-y))+1)/2;
+const FN = (x: number, y: number, S: number) => (Math.sin(432.432*S + x * y - 3*y+Math.cos(x-y))+1)/2;
 
 export interface EmojiList {
     emoji: Emoji,
@@ -300,7 +293,7 @@ export class Ground {
         const m = SIZE * game.MULTIPLIER;
         bb.forEachCell((x, y, oX, oY) => {
             const p = FN(x,y, this.seed || 231);
-            ctx.fillStyle = s.backgroundColor || color;
+            ctx.fillStyle = s.backgroundColor || this.color;
             ctx.fillRect(oX*m, oY*m, m, m);
 
             this.emojis.forEach(e => {

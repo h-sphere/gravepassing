@@ -1,5 +1,4 @@
-import { Directional, E } from "../Assets/Emojis";
-import { Color } from "../Color/Color";
+import { Directional } from "../Assets/Emojis";
 import { DirectionableTexture } from "../Color/Sprite";
 import { Point, Rectangle } from "../Primitives";
 import { GameObject, GameObjectGroup } from "./GameObject";

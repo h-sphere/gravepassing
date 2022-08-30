@@ -1,5 +1,7 @@
 
-type Callback = (diff: number) => void;
+// FIXME: REWORK IT.
+
+
 
 type AxisDirection = -1 | 0 | 1;
 
@@ -92,7 +94,7 @@ export class KeyboardController {
             }
         });
 
-        let handler = null;
+        let handler: any = null;
 
         document.addEventListener('wheel', e => {
             this._wheel = e.deltaY;

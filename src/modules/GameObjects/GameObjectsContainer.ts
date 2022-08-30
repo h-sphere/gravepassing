@@ -1,6 +1,5 @@
 import { Rectangle } from "../Primitives";
 import { GameObject } from "./GameObject";
-import { Constructable } from "./mixins";
 
 export interface GameObjectsContainer {
     getObjectsInArea(rect: Rectangle, t?: string): GameObject[];
@@ -10,5 +9,5 @@ export interface GameObjectsContainer {
 
     getAll(): GameObject[];
 
-    update();
+    update(): void;
 }

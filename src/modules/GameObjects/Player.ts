@@ -1,17 +1,14 @@
 import { E } from "../Assets/Emojis";
-import { Audio, getAudio } from "../Audio/AudioManager";
+import { getAudio } from "../Audio/AudioManager";
 import { Emoji } from "../Color/Sprite";
 import { NewTexture } from "../Color/Texture";
 import { TAG } from "../constants/tags";
 import { KeyboardController } from "../Controller/KeyboardController";
 import { Game } from "../Game";
-import { Point, Rectangle } from "../Primitives";
+import { Point } from "../Primitives";
 import { CementeryScene } from "../Scene/CementeryScene";
-import { LabScene } from "../Scene/LabScene";
 import { Bomb } from "./Bomb";
 import { Bullet, UsableItem } from "./Bullet";
-import { Enemy } from "./Enemy";
-import { GameObject } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { SimpleHumanoid } from "./Humanoid";
 import { PauseMenu } from "./PauseMenu";
@@ -20,19 +17,13 @@ import { InGameTextGO, TextGameObject, TextTexture } from "./TextModule";
 const MOVEMENT_VELOCITY = 0.005;
 
 class InventoryItem {
-
-    private _cb: (() => void)[] = [];
     isDisposable: boolean = true;
     public amount: number = 0;
     public cooldown = 300;
     icon: Emoji = E.item2; // FIXME: naming
 
-    use(user: Player, container: GameObjectsContainer, tag: string): UsableItem[] {
+    use(user: Player, container: GameObjectsContainer, tag: TAG): UsableItem[] {
         return [];
-    }
-
-    onDelete(cb) {
-        this._cb.push(cb);
     }
 
     shouldBeDeleted() {
@@ -74,10 +65,10 @@ export class Player extends SimpleHumanoid {
     private _xp: number = 0;
     public lvl: number = 1;
     public lvlProgress: number = 0;
-    public xpTexture: NewTexture  ;
-    public lvlTexture: NewTexture;
+    public xpTexture!: NewTexture  ;
+    public lvlTexture!: NewTexture;
 
-    container: GameObjectsContainer;
+    container!: GameObjectsContainer;
 
     get xp() {
         return this._xp;
@@ -99,8 +90,6 @@ export class Player extends SimpleHumanoid {
             this.container.add(txt)
         }
         this.lvlProgress = (this._xp - lowerT) / (upperT - lowerT);
-        console.log("PROGRESS", this.lvlProgress);
-        
         this.lvlTexture = new TextTexture(["LVL "+this.lvl], 2, 1, "rgba(0,0,0,0)");
     }
 
@@ -117,9 +106,9 @@ export class Player extends SimpleHumanoid {
         this.items.push(new BombInventoryItem());
     }
 
-    game: Game;
+    game!: Game;
     setGame(game: Game) {
-        this.game = game;``
+        this.game = game;
     }
 
     addItem(type: string) {
@@ -142,13 +131,12 @@ export class Player extends SimpleHumanoid {
     }
 
     getHit(container: GameObjectsContainer) {
-        console.log("PLAYER GOT HIT");
         super.getHit(container);
     }
 
     die(container: GameObjectsContainer) {
 
-        const youDie = new TextGameObject(["You died", "BETTER LUCK NEXT TIME"], new Point(1, 4), 8, 1.5, false);
+        const youDie = new TextGameObject(["You died"], new Point(1, 4), 8, 1.5, false);
         this.game.interruptorManager.add(youDie);
         youDie.onResolution(() => {
             this.game.loadScene(new CementeryScene, true);

@@ -1,8 +1,7 @@
 import { AudioTrack } from "../Audio/AudioTrack";
 import { Song } from "../Audio/Song";
-import { Color } from "../Color/Color";
 import { Dither, Emoji, Ground } from "../Color/Sprite";
-import { WallGameObject } from "../GameObjects/GameObject";
+import { Game } from "../Game";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
 import { AmbientLight } from "../GameObjects/Light";
 import { Point } from "../Primitives";
@@ -35,10 +34,11 @@ export class HellScene extends Scene {
                 bpm*8, 1,
                 power, { type: 'square'}
             ),
+        ]);
     }
 
-    register(container: GameObjectsContainer): SceneSettings {
-        super.register(container);
+    register(container: GameObjectsContainer, game: Game): SceneSettings {
+        super.register(container, game);
         return {
             ground: new Ground([
                 { emoji: new Emoji("💀", 12, 1), range: [0.999, 1] },
@@ -50,6 +50,8 @@ export class HellScene extends Scene {
             hudBackground: '#470100',
             backgroundColor: "rgba(100, 10, 10)",
             getDither: Dither.generateDithers(10, [200, 34, 24]),
+            pCenter: Point.ORIGIN,
+            stages: [],
         };
     }
 }

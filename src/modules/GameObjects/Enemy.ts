@@ -2,8 +2,7 @@ import { getLinesIntersection } from "../../utils/math";
 import { Directional, E } from "../Assets/Emojis";
 import { AnimatedEmoji, Emoji, EmojiSet } from "../Color/Sprite";
 import { TAG } from "../constants/tags";
-import { Line, Point, Rectangle } from "../Primitives";
-import { GameObject, GameObjectGroup } from "./GameObject";
+import { Line, Point } from "../Primitives";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { SimpleHumanoid } from "./Humanoid";
 import { BombCollectableItem, LifeCollectableItem } from "./Item";
@@ -73,7 +72,7 @@ export class Enemy extends SimpleHumanoid {
     
     directionMoveFirst = 'x';
 
-    getHit(container) {
+    getHit(container: GameObjectsContainer) {
         super.getHit(container);
         this.hitPoints.setFrame(this.life);
         // update hit points above
@@ -95,7 +94,7 @@ export class Enemy extends SimpleHumanoid {
 
 
     // FIXME: probably do it in a nicer way.
-    container: GameObjectsContainer;
+    container!: GameObjectsContainer;
 
 
     update(dt: number, container: GameObjectsContainer): void {

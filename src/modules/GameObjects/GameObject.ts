@@ -1,9 +1,6 @@
-import { Color } from "../Color/Color";
-import { Texture } from "../Color/Texture";
-import { TAG } from "../constants/tags";
-import { Line, Point, Rectangle } from "../Primitives";
+import { Point, Rectangle } from "../Primitives";
 import { GameObjectsContainer } from "./GameObjectsContainer";
-import { WithCenter, withTags } from "./mixins";
+import { WithCenter } from "./mixins";
 
 export type GetPosFn = (p:Point) => [number, number];
 
@@ -24,7 +21,7 @@ export interface GameObject {
 export class GameObjectGroup implements GameObject, WithCenter {
     parentBBExclude: boolean = false;
     isHidden = false;
-    center: Point;
+    center!: Point;
     private _tags: string[] = [];
     update(dt: number, container: GameObjectsContainer): void {
         throw new Error("Method not implemented.");

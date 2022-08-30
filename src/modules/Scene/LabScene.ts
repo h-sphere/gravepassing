@@ -1,23 +1,16 @@
 import { AudioTrack } from "../Audio/AudioTrack";
 import { Song } from "../Audio/Song";
-import { Color } from "../Color/Color";
 import { Dither, Emoji, Ground } from "../Color/Sprite";
 import { Game } from "../Game";
-import { WallGameObject } from "../GameObjects/GameObject";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
 import { AmbientLight } from "../GameObjects/Light";
-import { TextGameObject, TextModal } from "../GameObjects/TextModule";
+import { TextModal } from "../GameObjects/TextModule";
 import { Point } from "../Primitives";
 import { Scene, SceneSettings } from "./Scene";
 
 const bpm = 60;
 
 export class LabScene extends Scene {
-    constructor() {
-        super();
-        
-    }
-
     song = new Song([
         new AudioTrack(bpm*2, 0.5, "0<H<", {
             type: 'sine',
@@ -52,7 +45,7 @@ export class LabScene extends Scene {
         ]))
     }
 
-    register(container: GameObjectsContainer, game): SceneSettings {
+    register(container: GameObjectsContainer, game: Game): SceneSettings {
         super.register(container, game);
         this.song.play();
 

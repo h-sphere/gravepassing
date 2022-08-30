@@ -13,7 +13,7 @@ export interface SceneSettings {
     backgroundColor: string;
     ground: Ground;
     hudBackground: string;
-    getDither: (n) => Dither;
+    getDither: (n: number) => Dither;
     pCenter: Point;
     stages: Stage[];
 }

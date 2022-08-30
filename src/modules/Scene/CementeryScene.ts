@@ -1,19 +1,12 @@
-import { E } from "../Assets/Emojis";
 import { AudioTrack } from "../Audio/AudioTrack";
 import { Song } from "../Audio/Song";
-import { Color } from "../Color/Color";
-import { Image, SIZE } from "../Color/Image";
 import { CombinedEmoji, Dither, Emoji, EmojiList, EmojiSet, Ground } from "../Color/Sprite";
-import { TAG } from "../constants/tags";
 import { Game } from "../Game";
-import { Enemy } from "../GameObjects/Enemy";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
-import { Factory, Item } from "../GameObjects/Item";
+import { Factory } from "../GameObjects/Item";
 import { AmbientLight } from "../GameObjects/Light";
-import { RectangleObject } from "../GameObjects/Rectangle";
-import { TextGameObject, TextModal } from "../GameObjects/TextModule";
-import { Point, Rectangle } from "../Primitives";
-import { LabScene } from "./LabScene";
+import { TextModal } from "../GameObjects/TextModule";
+import { Point } from "../Primitives";
 import { Scene, SceneSettings } from "./Scene";
 
 const T = {

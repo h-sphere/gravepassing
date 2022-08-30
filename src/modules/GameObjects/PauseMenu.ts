@@ -1,13 +1,11 @@
-import { SIZE } from "../Color/Image";
-import { NewTexture } from "../Color/Texture";
 import { KeyboardController } from "../Controller/KeyboardController";
 import { Game } from "../Game";
-import { Interruptable, Interruptor } from "../Interruptor/Interruptor";
-import { Point, Rectangle, Line } from "../Primitives";
-import { GameObject, GameObject, GameObjectGroup, GetPosFn, Renderable } from "./GameObject";
+import { Interruptable } from "../Interruptor/Interruptor";
+import { Point, Rectangle } from "../Primitives";
+import { GameObject, GetPosFn } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { EmptyClass, withTags } from "./mixins";
-import { TextGameObject, TextTexture } from "./TextModule";
+import { TextTexture } from "./TextModule";
 
 const difficultyToString = (d: number): string => {
     if (d === 0) {
@@ -58,12 +56,12 @@ export class PauseMenu extends withTags(EmptyClass) implements GameObject, Inter
             console.log("ENDED");
             this.hasEnded = true;
         }
-        if (this.controller?.y > 0) {
+        if (this.controller!.y > 0) {
             this.current = (this.current + 1) % this.options.length;
             this.cooloff = 200;
             return;
         }
-        if (this.controller?.y < 0) {
+        if (this.controller!.y < 0) {
             this.current = this.current === 0 ? this.options.length -1 : this.current - 1;
             this.cooloff = 200;
             return;

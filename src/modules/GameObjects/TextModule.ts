@@ -1,17 +1,15 @@
 import { SIZE } from "../Color/Image";
-import { CombinedEmoji } from "../Color/Sprite";
 import { NewTexture } from "../Color/Texture";
 import { KeyboardController } from "../Controller/KeyboardController";
 import { Game } from "../Game";
 import { Interruptable } from "../Interruptor/Interruptor";
 import { Point, Rectangle } from "../Primitives";
-import { GameObject, GameObjectGroup } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { RectangleObject } from "./Rectangle";
 
 
 export class TextTexture implements NewTexture {
-    canvas
+    canvas!: HTMLCanvasElement;
     constructor(protected text: string[], public w: number , public h: number, private bg?: string , private txtcol: string = '#FFF') {
         this.generate();
     }

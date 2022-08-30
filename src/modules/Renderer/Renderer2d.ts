@@ -2,7 +2,6 @@ import { lightIntensityAtPoint } from "../../utils/lightIntesity";
 import { getLinesIntersection } from "../../utils/math";
 import { E } from "../Assets/Emojis";
 import { Camera } from "../Camera";
-import { Color } from "../Color/Color";
 import { TAG } from "../constants/tags";
 import { Game } from "../Game";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";

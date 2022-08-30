@@ -17,8 +17,8 @@ export class AudioTrack {
         document.addEventListener('keydown', fn);
     }
 
-    private osc: OscillatorNode;
-    private ctx: AudioContext;
+    private osc!: OscillatorNode;
+    private ctx!: AudioContext;
 
     public start(ctx: AudioContext) {
         this.ctx = ctx;

@@ -1,11 +1,8 @@
-import { distance, getAngularDistance, isAngleInRange } from "../../utils/math";
-import { Color } from "../Color/Color";
+import { distance } from "../../utils/math";
 import { TAG } from "../constants/tags";
-import { Line, Point, Rectangle } from "../Primitives";
-import { GameObject, Renderable, RenderablePoint } from "./GameObject";
+import { Point, Rectangle } from "../Primitives";
+import { GameObject, Renderable } from "./GameObject";
 import { EmptyClass, WithCenter, withTags } from "./mixins";
-import { ColorGradient } from "../Color/Gradient";
-import { ConicRenderableSquaredPoint, RenderableSquaredPoint } from "./SquaredPoint";
 
 export class Light extends withTags(EmptyClass) implements GameObject, WithCenter, Renderable {
     zIndex = 1;
@@ -37,7 +34,6 @@ export class Light extends withTags(EmptyClass) implements GameObject, WithCente
 
     getIntensityAtPoint(p: Point): number {
         const d = distance(this.center, p);
-        // console.log(this.distance);
         if (d > this.distance) {
             return 0;
         }
@@ -49,6 +45,8 @@ export class Light extends withTags(EmptyClass) implements GameObject, WithCente
     isGlobal = false;
 }
 
+
+// FIXME: instead of this we can have minimal light set in dither.
 export class AmbientLight extends Light {
     constructor(intensity: number) {
         super(Point.ORIGIN, intensity, Infinity);
@@ -59,8 +57,4 @@ export class AmbientLight extends Light {
     }
 
     isGlobal = true;
-
-    // getBoundingBox(): Rectangle {
-    //     return new Rectangle(new Point(-10000, -10000), new Point(10000, 10000));
-    // }
 }

@@ -1,9 +1,7 @@
 import { Bomb, Collected, EnemyKilled, Shot,  } from "./AudioEffect";
-import { AudioTrack } from "./AudioTrack";
 
-let tracks = null;
-
-export const getAudio = (x) => {
+let tracks: any = null;
+export const getAudio = (x: string) => {
     if (!tracks) {
         tracks = {
             "shot": new Shot(),

@@ -7,7 +7,7 @@ export class QuadTreeContainer implements GameObjectsContainer {
 
     private objects: Set<GameObject> = new Set();
     private globalObjects: Set<GameObject> = new Set();
-    private quadTree: QuadTree;
+    private quadTree!: QuadTree;
     private limit = 40;
 
     constructor() {
