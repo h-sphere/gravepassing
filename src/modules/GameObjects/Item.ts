@@ -1,5 +1,6 @@
 import { E } from "../Assets/Emojis";
 import { Collected } from "../Audio/AudioEffect";
+import { AudioManager } from "../Audio/AudioManager";
 import { CombinedEmoji, Emoji } from "../Color/Sprite";
 import { TAG } from "../constants/tags";
 import { Point, Rectangle } from "../Primitives";
@@ -31,7 +32,7 @@ export class Item extends GameObjectGroup {
 
         const player = players[0];
         this.onAdd(player as unknown as Player);
-        (new Collected).play()
+        AudioManager.get().collect.play();
         container.remove(this);
     }
 }

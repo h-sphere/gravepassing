@@ -10,9 +10,8 @@ import { Point } from "../Primitives";
 import { Scene, SceneSettings } from "./Scene";
 
 const T = {
-    NOTE: () => new TextModal(["You find a note.", "We did it, we finally discovered solution for infinite energy.","- Pietro B., CAU"]),
-    NOTE_2: () => new TextModal(["Another Note", "All the monsters seems to gather in from the CAU factory."]),
-    NOTE_3: () => new TextModal(["You find coordinates of CAU factory."]),
+    NOTE: () => new TextModal(["You find a note. Fight zombies to learn where they came from."]),
+    NOTE_2: () => new TextModal(["You find the location of the factory zombies came from."]),
 }
 
 
@@ -52,10 +51,9 @@ export class CementeryScene extends Scene {
 
 
         game.interruptorManager.add(new TextModal([
-            "You wake up alone on a cementery",
-            "From the distance you hear terrible noises.",
+            "You wake up",
+            "You hear noises.",
             "You remember the horror of yesterday",
-            "Screams, animals and people turning into monsters",
             "all you can do now is to fight for your life.",
             "",
             "press [space] to continue"
@@ -144,9 +142,8 @@ export class CementeryScene extends Scene {
             pCenter: Point.ORIGIN.add(50, 20),
             stages: [
                 { lvl: 2, res: (g => g.interruptorManager.add(T.NOTE()))},
-                { lvl: 3, res: (g => g.interruptorManager.add(T.NOTE_2()))},
-                { lvl: 4, res: (g => {
-                    g.interruptorManager.add(T.NOTE_3());
+                { lvl: 5, res: (g => {
+                    g.interruptorManager.add(T.NOTE_2());
                     const f = new Factory(g.player.center);
                     g.gameObjects.add(f);
                     g.setObjective(f);

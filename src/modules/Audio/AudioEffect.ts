@@ -18,7 +18,7 @@ export class AudioEffect {
     }
 }
 
-export class Shot extends AudioEffect {
+export class ShotAudioEffect extends AudioEffect {
     play(): void {
         this.osc.frequency.setValueAtTime(200, this.ctx.currentTime)
         this.osc.frequency.setValueAtTime(400, this.ctx.currentTime + 0.05)
@@ -41,7 +41,7 @@ export class BombAudioEffect extends AudioEffect {
     }
 }
 
-export class Collected extends AudioEffect {
+export class CollectedAudioEffect extends AudioEffect {
     play() {
         this.osc.type = 'square';
         const t = this.ctx.currentTime;
@@ -54,7 +54,7 @@ export class Collected extends AudioEffect {
     }
 }
 
-export class EnemyKilled extends AudioEffect {
+export class EnemyKilledAudioEffect extends AudioEffect {
     play() {
         this.osc.type = 'square';
         const t = this.ctx.currentTime;

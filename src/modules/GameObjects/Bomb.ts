@@ -1,4 +1,5 @@
 import { BombAudioEffect } from "../Audio/AudioEffect";
+import { AudioManager } from "../Audio/AudioManager";
 import { Emoji } from "../Color/Sprite";
 import { Point } from "../Primitives";
 import { UsableItem } from "./Bullet";
@@ -20,7 +21,7 @@ export class Bomb extends UsableItem {
 
         // FIXME: remove duplication
         this.o.rectangle.moveTo(this.center);
-        (new BombAudioEffect).play(false);
+        AudioManager.get().bomb.play(false);
     }
 
     update(dt: number, container: GameObjectsContainer): void {
@@ -30,7 +31,7 @@ export class Bomb extends UsableItem {
         if (this.lifeSpan <= 0 && !this.exploded) {
             this.exploded = true;
             // EXPLODE.
-            (new BombAudioEffect).play(true)
+            AudioManager.get().bomb.play(true);
 
             const l = new Light(
                 this.center,
