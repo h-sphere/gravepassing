@@ -1,112 +1,44 @@
 
 // FIXME: REWORK IT.
+type ValueOf<T> = T[keyof T];
+const keys = {
+    'ArrowUp': "u",
+    'ArrowDown': "d",
+    'ArrowLeft': "l",
+    'ArrowRight': "r",
+    'q': 'q',
+    'w': 'w',
+    ' ': 'f',
+    'Escape': 'e'
+ } as const;
 
-
-
-type AxisDirection = -1 | 0 | 1;
-
+type T = Record<ValueOf<typeof keys>, number> ;
 
 export class KeyboardController {
-    private _x: AxisDirection = 0;
-    private _y: AxisDirection = 0;
-
-    private _wheel: number = 0;
-
-    private _fire: number = 0;
-
-    public esc: number = 0;
-    public get x() {
-        return this._x;
-    }
-
-    public get y() {
-        return this._y;
-    }
-    
-    public get wheel() {
-        return this._wheel;
-    }
-
-    public get fire() {
-        return this._fire;
-    }
-    
-    public selection: number = 0;
+    v: T = Object.values(keys).reduce((a,b) => ({...a, [b]: 0}), {}) as unknown as T;
 
     constructor() {
-        this.attach();
+        document.addEventListener('keydown', e => {
+            if (keys[e.key as keyof typeof keys]) {
+                this.v[keys[e.key as keyof typeof keys] as ValueOf<typeof keys>] = 1;
+            }
+        });
+        document.addEventListener('keyup', e => {
+            if (keys[e.key as keyof typeof keys]) {
+                this.v[keys[e.key as keyof typeof keys] as ValueOf<typeof keys>] = 0;
+            }
+        });
     }
 
-    private attach() {
-        document.addEventListener('keydown', e => {
-            let p = true;;
-            switch (e.key) {
-                case 'ArrowUp':
-                    this._y = -1;
-                    break;
-                case 'ArrowDown':
-                    this._y = 1;
-                    break;
-                case 'ArrowLeft':
-                    this._x = -1;
-                    break;
-                case 'ArrowRight':
-                    this._x = 1;
-                    break;
-                case 'q':
-                    this.selection = -1;
-                    break;
-                case 'w':
-                    this.selection = 1;
-                    break;
-                case ' ':
-                    this._fire = 1;
-                    break;
-                case 'Escape':
-                    this.esc = 1;
-                    break;
-                default:
-                    console.log("COMBINATION NOT FOUND", e.key);
-                    p = false;
-            }
-            p && e.preventDefault();
-        });
+    get x() {
+        return this.v.r ? -1 : this.v.l ? 1 : 0;
+    }
 
-        document.addEventListener('keyup', e => {
-            e.preventDefault();
-            switch (e.key) {
-                case 'ArrowUp':
-                case 'ArrowDown':
-                    this._y = 0;
-                    break;
-                case 'ArrowLeft':
-                case 'ArrowRight':
-                    this._x = 0;
-                    break;
-                case 'q':
-                case 'w':
-                    this.selection = 0;
-                    break;
-                case ' ':
-                    this._fire = 0;
-                case 'Escape':
-                    this.esc = 0;
-            }
-        });
+    get y() {
+        return this.v.u ? -1 : this.v.d ? 1 : 0;
+    }
 
-        let handler: any = null;
-
-        document.addEventListener('wheel', e => {
-            this._wheel = e.deltaY;
-            // console.log(this._wheel);
-            if (handler) {
-                clearTimeout(handler);
-                handler = null;
-            }
-            handler = setTimeout(() => {
-                this._wheel = 0;
-                handler = null;
-            }, 100);
-        })
+    get s() {
+        return this.v.q ? -1 : this.v.w ? 1 : 0;
     }
 }

@@ -1,7 +1,5 @@
 import { E } from "../Assets/Emojis";
-import { Shot } from "../Audio/AudioEffect";
 import { AudioManager } from "../Audio/AudioManager";
-import { Emoji } from "../Color/Sprite";
 import { Point, Rectangle } from "../Primitives";
 import { GameObjectGroup } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";

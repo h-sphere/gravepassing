@@ -1,5 +1,4 @@
 import { E } from "../Assets/Emojis";
-import { EnemyKilled } from "../Audio/AudioEffect";
 import { AudioManager } from "../Audio/AudioManager";
 import { Emoji } from "../Color/Sprite";
 import { NewTexture } from "../Color/Texture";
@@ -149,7 +148,7 @@ export class Player extends SimpleHumanoid {
     update(dt: number, container: GameObjectsContainer) {
         this.inputCooloff -= dt;
 
-        if (this.controller.esc && this.inputCooloff < 0) {
+        if (this.controller.v.e && this.inputCooloff < 0) {
             console.log("CREATING ESCAPE ELEMENT BCZ WHY NOT");
             this.game.interruptorManager.add(new PauseMenu());
             this.inputCooloff = 300;
@@ -163,17 +162,17 @@ export class Player extends SimpleHumanoid {
 
         this.fireCooldown -= dt;
 
-        if (!this.controller.selection) {
+        if (!this.controller.s) {
             this.isSelectionDirty = false;
         } else if (!this.isSelectionDirty) {
-            this.selected = this.selected + this.controller.selection;
+            this.selected = this.selected + this.controller.s;
             if (this.selected < 0) {
                 this.selected = this.items.length - 1;
             }
             this.isSelectionDirty = true;
         }
 
-        if (this.controller.fire && this.fireCooldown <= 0) {
+        if (this.controller.v.f && this.fireCooldown <= 0) {
             this.fireCooldown = 300;
             const inventory = this.items[this.selected];
             const go = inventory.use(this, container, TAG.ENEMY);
@@ -186,7 +185,6 @@ export class Player extends SimpleHumanoid {
             go.forEach(g => {
                 container.add(g);
                 g.onHit(t => {
-                    console.log("HIT", t, t.life, t.value);
                     if (t.life <= 0) {
                         this.xp += t.value;
                         AudioManager.get().killed.play();

@@ -1,9 +1,8 @@
 import { E } from "../Assets/Emojis";
-import { Collected } from "../Audio/AudioEffect";
 import { AudioManager } from "../Audio/AudioManager";
 import { CombinedEmoji, Emoji } from "../Color/Sprite";
 import { TAG } from "../constants/tags";
-import { Point, Rectangle } from "../Primitives";
+import { Point } from "../Primitives";
 import { LabScene } from "../Scene/LabScene";
 import { GameObjectGroup } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";

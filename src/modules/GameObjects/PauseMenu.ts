@@ -52,7 +52,7 @@ export class PauseMenu extends withTags(EmptyClass) implements GameObject, Inter
         if (this.cooloff > 0) {
             return;
         }
-        if (this.controller?.esc) {
+        if (this.controller?.v.e) {
             console.log("ENDED");
             this.hasEnded = true;
         }
@@ -67,7 +67,7 @@ export class PauseMenu extends withTags(EmptyClass) implements GameObject, Inter
             return;
         }
 
-        if (this.controller?.fire) {
+        if (this.controller?.v.e) {
             this.cooloff = 500;
             const set = this.game.settings;
             switch (this.current) {
@@ -75,7 +75,7 @@ export class PauseMenu extends withTags(EmptyClass) implements GameObject, Inter
                     this.hasEnded = true;
                     break;
                 case 1:
-                    set.difficulty = (set.difficulty + 1) % 3; // FIXME: more difficulties
+                    set.difficulty = (set.difficulty + 1) % 3;
                     break;
                 case 2:
                     set.post = !set.post;
@@ -100,10 +100,6 @@ export class PauseMenu extends withTags(EmptyClass) implements GameObject, Inter
     }
     zIndex?: number | undefined = 1000;
     isGlobal: boolean = true;
-    next(): Promise<boolean> {
-        // I THINK WE DONT NEED THAT AT ALL
-        return Promise.reject();
-    }
     controller?: KeyboardController;
     game!: Game;
     start(controller: KeyboardController, game: Game): void {
