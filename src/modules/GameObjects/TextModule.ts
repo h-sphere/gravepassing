@@ -12,7 +12,7 @@ import { RectangleObject } from "./Rectangle";
 
 export class TextTexture implements NewTexture {
     canvas
-    constructor(protected text: string[], public w: number , public h: number, private bg: string, private txtcol: string = 'white') {
+    constructor(protected text: string[], public w: number , public h: number, private bg?: string , private txtcol: string = '#FFF') {
         this.generate();
     }
 
@@ -29,13 +29,11 @@ export class TextTexture implements NewTexture {
         this.canvas.width = w;
         this.canvas.height = h;
         const ctx = this.canvas.getContext('2d')!;
-        ctx.fillStyle = this.bg;
+        ctx.fillStyle = this.bg || '#0000';
         ctx.fillRect(0, 0, w, h);
         ctx.fillStyle = this.txtcol;
         ctx.textAlign = "start";
-        // ctx.scale(1, 3);
         ctx.font = "7px 'papyrus'";
-        // FIXME: measure somehow the padding required.
         ctx.textBaseline = "top"
         ctx.imageSmoothingEnabled = false;
         this.text.forEach((text, i) => {

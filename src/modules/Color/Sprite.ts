@@ -1,4 +1,3 @@
-import { Color } from "./Color";
 import { NewTexture } from "./Texture";
 import { Point, Rectangle } from "../Primitives";
 import { Directional, E } from "../Assets/Emojis";
@@ -290,11 +289,7 @@ export interface EmojiList {
 }
 
 export class Ground {
-    private color = new Color(173,39,0.47);
-    private grass = new Emoji("🌱", 4, 1);
-    private grave = new Emoji("🪦", 12, 1);
-    private cross = new Emoji("✝", 16, 1);
-    private directions = new Emoji("🪨", 10, 1);
+    private color = "#49A79C";
     constructor(private emojis: EmojiList[] = [], private seed: number) {
     }
     render(ctx: CanvasRenderingContext2D, bb: Rectangle, s: SceneSettings, game: Game): void {
@@ -305,7 +300,7 @@ export class Ground {
         const m = SIZE * game.MULTIPLIER;
         bb.forEachCell((x, y, oX, oY) => {
             const p = FN(x,y, this.seed || 231);
-            ctx.fillStyle = s.backgroundColor || 'hsla(173,39%,47%)';
+            ctx.fillStyle = s.backgroundColor || color;
             ctx.fillRect(oX*m, oY*m, m, m);
 
             this.emojis.forEach(e => {

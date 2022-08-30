@@ -1,5 +1,4 @@
 import { distance } from "../../utils/math";
-import { SIZE } from "../Color/Image";
 
 export class Point {
 
@@ -192,9 +191,5 @@ export class Rectangle extends Line {
             this.p2.y < r.p1.y
         );
         return !noOverlap;
-    }
-
-    toString() {
-        return `▭((${this.p1.x}, ${this.p1.y}), (${this.p2.x}, ${this.p2.y}))`;
     }
 }

@@ -1,8 +1,8 @@
-export const TAG = Object.freeze({
-    PLAYER: "player",
-    OBSTACLE: "obstacle",
-    ENEMY: "enemy",
-    INTERACTIVE: "interactive",
-    LIGHT: "light",
-    GENERATED: "generated"
-});
+export const enum TAG {
+    PLAYER = "p",
+    OBSTACLE = "o",
+    ENEMY = "e",
+    INTERACTIVE = "i",
+    LIGHT = "l",
+    GENERATED = "g"
+}

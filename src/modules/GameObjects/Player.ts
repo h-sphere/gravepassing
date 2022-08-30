@@ -92,11 +92,10 @@ export class Player extends SimpleHumanoid {
         let upperT = lvlToXp(this.lvl+1);
         if (this._xp >= upperT) {
             // Advancing level!
-            console.log("YOU LEVELED UP");
             this.lvl++;
             lowerT = lvlToXp(this.lvl);
             upperT = lvlToXp(this.lvl + 1);
-            const txt = new InGameTextGO("⬆ LVL UP", this.center, 4, 1, "rgb(190, 250, 190)");
+            const txt = new InGameTextGO("⬆ LVL UP", this.center, 4, 1, "#befabe");
             this.container.add(txt)
         }
         this.lvlProgress = (this._xp - lowerT) / (upperT - lowerT);

@@ -1,16 +1,11 @@
 import { getAudio } from "../Audio/AudioManager";
-import { Color } from "../Color/Color";
 import { Emoji } from "../Color/Sprite";
 import { Point } from "../Primitives";
 import { UsableItem } from "./Bullet";
-import { GameObject, GameObjectGroup } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { SimpleHumanoid } from "./Humanoid";
 import { Light } from "./Light";
-import { withMovement } from "./mixins";
 import { RectangleObject } from "./Rectangle";
-
-type Callback = (t: GameObject) => void;
 
 export class Bomb extends UsableItem {
     isHidden = false;
@@ -22,8 +17,6 @@ export class Bomb extends UsableItem {
         this.center = p;
         this.o = new RectangleObject(p, new Emoji("💣", 8, 1, 4, 4));
         this.add(this.o);
-
-        // FIXME: add coloured light around it.
 
         // FIXME: remove duplication
         this.o.rectangle.moveTo(this.center);
@@ -43,7 +36,7 @@ export class Bomb extends UsableItem {
                 this.center,
                 0.3,
                 3,
-                Color.YELLOW)
+                "#FF0")
             // Add light
             this.add(l);
             container.add(l);
