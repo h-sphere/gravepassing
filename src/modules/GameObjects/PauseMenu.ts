@@ -53,7 +53,6 @@ export class PauseMenu extends withTags(EmptyClass) implements GameObject, Inter
             return;
         }
         if (this.controller?.v.e) {
-            console.log("ENDED");
             this.hasEnded = true;
         }
         if (this.controller!.y > 0) {
@@ -67,7 +66,7 @@ export class PauseMenu extends withTags(EmptyClass) implements GameObject, Inter
             return;
         }
 
-        if (this.controller?.v.e) {
+        if (this.controller?.v.f) {
             this.cooloff = 500;
             const set = this.game.settings;
             switch (this.current) {

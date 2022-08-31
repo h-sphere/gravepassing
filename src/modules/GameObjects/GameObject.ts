@@ -23,9 +23,7 @@ export class GameObjectGroup implements GameObject, WithCenter {
     isHidden = false;
     center!: Point;
     private _tags: string[] = [];
-    update(dt: number, container: GameObjectsContainer): void {
-        throw new Error("Method not implemented.");
-    }
+    update(dt: number, container: GameObjectsContainer): void {}
     getBoundingBox(): Rectangle {
         const boxes = this.objects
         .filter(o => !o.parentBBExclude).map(x => x.getBoundingBox());

@@ -48,18 +48,14 @@ export class Bullet extends UsableItem {
             .filter(obj => obj.getBoundingBox().isIntersectingRectangle(this.o.getBoundingBox())); // FIXME: this can be optimised
         if (enemiesHit.length) {
             // hit only first
-            console.log('HIT', enemiesHit[0].getBoundingBox(), this.o.getBoundingBox());
             const enemy = enemiesHit[0];
             if (enemy instanceof SimpleHumanoid) {
-                console.log("CONTTTTTT");
                 enemy.getHit(container);
                 this.hit(enemy);
                 if (enemy.life <= 0) {
                     container.remove(enemiesHit[0]);
                 }
                 this.lifeSpan = 0;
-            } else {
-                console.log("UNKNOWN ENEMY TYPE", enemy);
             }
         }
         const m = this.move(dt, this.direction, BULLET_SPEED, container);

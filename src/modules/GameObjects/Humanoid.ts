@@ -96,10 +96,8 @@ export class SimpleHumanoid extends withRotation(withMovement(SimpleHumanoidPref
     life: number = 5;
 
     getHit(container: GameObjectsContainer) {
-        console.log("GET HIT CONTAINER", container);
         this.life--;
         if (this.life <= 0) {
-            console.log("I AM DED");
             this.die(container);
         }
     }

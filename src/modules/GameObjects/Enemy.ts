@@ -77,7 +77,6 @@ export class Enemy extends SimpleHumanoid {
         this.hitPoints.setFrame(this.life);
         // update hit points above
         if (this.life === 0) {
-            console.log("DIE");
             this.die();
         }
     }
@@ -85,7 +84,6 @@ export class Enemy extends SimpleHumanoid {
     die() {
         // Spawning items
         if (Math.random() < 0.5) {
-            console.log("DIED SPAWNING IN ", this.center, this.container)
             this.container?.add(new LifeCollectableItem(this.center));
         } else if (Math.random() < 0.4) {
             this.container?.add(new BombCollectableItem(this.center));

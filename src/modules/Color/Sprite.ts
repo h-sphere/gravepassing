@@ -143,7 +143,6 @@ export class CombinedEmoji implements NewTexture {
         try {
         ctx.drawImage(this.canvas, 0, 0, this.canvas.width, this.canvas.height, x, y, w, h);
         } catch (e) {
-            console.log("ERROR", e);
         }
     }
 }
@@ -201,7 +200,6 @@ export class AnimatedEmoji extends CombinedEmoji {
         try {
             ctx.drawImage(c, 0, 0, c.width, c.height, x, y, w, h);
         } catch (e) {
-            console.log("ERROR", e);
         }
     }
 
@@ -249,7 +247,6 @@ export class Dither implements NewTexture {
         try {
             ctx.drawImage(this.canvas, 0, 0, this.canvas.width, this.canvas.height, x, y, w, h);
         } catch (e) {
-            console.log("ERROR", e);
         }
     }
     protected generateBmp() {

@@ -236,7 +236,6 @@ export class Renderer2d implements Renderer {
         if(game.objective) {
             const xDiff = game.objective.center.x - game.player.center.x ;
             const yDiff =  game.objective.center.y - game.player.center.y;
-            // console.log('diffz', xDiff, yDiff);
             if (Math.abs(xDiff) > 5) {
                 if (xDiff < 0) {
                     E.goal.left.render(this.ctx, u/4, 3*u, u, u);

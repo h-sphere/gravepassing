@@ -21,7 +21,6 @@ export class RectangleObject extends withTags(EmptyClass) implements GameObject,
         }
     }
     render(ctx: CanvasRenderingContext2D, gameBB: Rectangle, getPosOnScreen: GetPosFn): void {
-        // console.log(ctx, gameBB, getPosOnScreen);
         if (!gameBB) {
             return;
         }

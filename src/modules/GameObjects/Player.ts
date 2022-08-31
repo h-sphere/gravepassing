@@ -149,7 +149,6 @@ export class Player extends SimpleHumanoid {
         this.inputCooloff -= dt;
 
         if (this.controller.v.e && this.inputCooloff < 0) {
-            console.log("CREATING ESCAPE ELEMENT BCZ WHY NOT");
             this.game.interruptorManager.add(new PauseMenu());
             this.inputCooloff = 300;
         }
@@ -192,16 +191,6 @@ export class Player extends SimpleHumanoid {
                 });
                 // FIXME: add proper on hit here.
             })
-
-            // const bullet = new Bullet(this.center, new Point(this.lastX, this.lastY), 300, TAG.ENEMY);
-            // bullet.onHit((target) => {
-            //     if (target instanceof Enemy) {
-            //         console.log("ENEMY");
-            //         this.xp += target.value;
-            //     }
-            //     console.log("BULLET HIT", target);
-            // }) 
-            // container.add(bullet); 
         }
 
         this.move(dt, p, MOVEMENT_VELOCITY, container);

@@ -98,7 +98,6 @@ export class Game {
 
             const stg = this.sceneSettings.stages[stgI];
             if (stg.lvl <= this.player.lvl) {
-                console.log("PROGRESSING TO NEXT STAGE");
                 this.currentStage++;
                 stg.res(this);
             }
@@ -132,7 +131,6 @@ registerInterruptor(i: InterGO) {
 }
 
     start() {
-        console.log('Start Game');
         this.lastRenderTime = Date.now();
         this.render();
         

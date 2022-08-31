@@ -73,18 +73,7 @@ export class CementeryScene extends Scene {
 
     register(container: GameObjectsContainer, game: Game): SceneSettings {
         super.register(container, game);
-        
         this.song.play();
-
-        console.log("CEMENT", this);
-
-
-        const grave = new CombinedEmoji([
-            { emoji: "🪦", size: 12, pos: [0, 0] },
-            { emoji: "🌱", size: 6, pos: [0, 10], hueShift: -30 },
-            { emoji: "🌱", size: 4, pos: [10, 10], hueShift: -50 },
-            { emoji: "🌱🌱🌱", size: 4, pos: [5, 10], hueShift: -20 },
-        ], 1);
 
         const cross = new CombinedEmoji([
             { emoji: "✝", size: 16, pos: [0, 0] },

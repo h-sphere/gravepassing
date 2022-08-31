@@ -17,7 +17,6 @@ export class Item extends GameObjectGroup {
     }
 
     onAdd(player: Player) {
-        console.log("ADDING");
     }
 
     update(dt: number, container: GameObjectsContainer): void {
@@ -62,8 +61,6 @@ export class BombCollectableItem extends Item {
 
 export class Factory extends Item {
     constructor(p: Point) {
-        console.log("GENERATING OBJECTIVE");
-        
         const point = new Point(Math.random(), Math.random()).normalize().mul(60, 100);
 
         // random position here

@@ -21,17 +21,19 @@ export class KeyboardController {
         document.addEventListener('keydown', e => {
             if (keys[e.key as keyof typeof keys]) {
                 this.v[keys[e.key as keyof typeof keys] as ValueOf<typeof keys>] = 1;
+                e.preventDefault();
             }
         });
         document.addEventListener('keyup', e => {
             if (keys[e.key as keyof typeof keys]) {
                 this.v[keys[e.key as keyof typeof keys] as ValueOf<typeof keys>] = 0;
+                e.preventDefault();
             }
         });
     }
 
     get x() {
-        return this.v.r ? -1 : this.v.l ? 1 : 0;
+        return this.v.r ? 1 : this.v.l ? -1 : 0;
     }
 
     get y() {

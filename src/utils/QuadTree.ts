@@ -5,7 +5,6 @@ export class QuadTree {
     objects: Set<GameObject> = new Set();
     subtrees: QuadTree[] = [];
     constructor(private _boundary: Rectangle, private limit: number = 10) {
-        // console.log('QUAD', _boundary.toString());
     }
 
     get boundary() {
@@ -55,22 +54,16 @@ export class QuadTree {
     }
 
     getInArea(boundary: Rectangle): Set<GameObject> {
-        // console.log("Getting in area", boundary.toString(), `Quad: `, this.boundary.toString());
         if (!this.boundary.isIntersectingRectangle(boundary)) {
-            // console.log("Not Found");
             return new Set();
         }
         if (this.subtrees.length) {
-            // console.log("Getting from subtree");
             const s = new Set<GameObject>();
             for (const tree of this.subTrees) {
                 tree.getInArea(boundary).forEach(obj => s.add(obj));
             }
             return s;
         }
-
-        // console.log("Leaf");
-
         const points = new Set<GameObject>();
         this.objects.forEach(obj => {
             if (boundary.isIntersectingRectangle(obj.getBoundingBox())) {
