@@ -1,3 +1,4 @@
+import { TRANSPARENT } from "../../utils/colors";
 import { KeyboardController } from "../Controller/KeyboardController";
 import { Game } from "../Game";
 import { Interruptable } from "../Interruptor/Interruptor";
@@ -22,10 +23,10 @@ const diffText = (d: number) => "Change difficulty [" + difficultyToString(d) + 
 const post = "Post-processing";
 
 export class PauseMenu extends withTags(EmptyClass) implements GameObject, Interruptable {
-    pauseText = new TextTexture(["PAUSED"], 3, 1, 'rgba(0,0,0,0)');
+    pauseText = new TextTexture(["PAUSED"], 3, 1, TRANSPARENT);
     options = [
-        new TextTexture(["Resume"], 4, 1, 'rgba(0,0,0,0)'),
-        new TextTexture([diffText(2)], 10, 1, 'rgba(0,0,0,0)'),
+        new TextTexture(["Resume"], 4, 1, TRANSPARENT),
+        new TextTexture([diffText(2)], 10, 1, TRANSPARENT),
         new TextTexture([], 10, 1, "rgba(0,0,0,0)"),
     ]
     current = 0;
