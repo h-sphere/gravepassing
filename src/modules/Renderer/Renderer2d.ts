@@ -137,6 +137,8 @@ export class Renderer2d implements Renderer {
     }
 
     render(camera: Camera, gameObjects: GameObjectsContainer, dt: number, game: Game) {
+
+        // console.log("FPS", 1000 / dt);
         this.prepareFrame();
         this.renderBackground(game.sceneSettings);
         const objects = gameObjects.getObjectsInArea(this.bb)
@@ -309,10 +311,10 @@ export class Renderer2d implements Renderer {
         this.ctx.fillRect(0, 0, this.width, this.height);
 
 
-        this.ctx.globalAlpha = 0.2;
-        this.ctx.globalCompositeOperation = "luminosity";
-        this.ctx.fillStyle = this.pattern;
-        this.ctx.fillRect(0, 0, this.width, this.height);
+        // this.ctx.globalAlpha = 0.2;
+        // this.ctx.globalCompositeOperation = "luminosity";
+        // this.ctx.fillStyle = this.pattern;
+        // this.ctx.fillRect(0, 0, this.width, this.height);
         
 
 

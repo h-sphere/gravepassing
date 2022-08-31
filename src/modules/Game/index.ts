@@ -8,6 +8,7 @@ import { Scene, SceneSettings } from "../Scene/Scene";
 import { SIZE } from "../Color/Image";
 import { InterGO, Interruptor } from "../Interruptor/Interruptor";
 import { Item } from "../GameObjects/Item";
+import { HellScene } from "../Scene/HellScene";
 
 const ZOOM_SPEED = 1;
 
@@ -104,6 +105,8 @@ export class Game {
         }
         
         const tDiff = Date.now() - this.lastRenderTime;
+        this.lastRenderTime = Date.now();
+        // THIS WAS STUPID.
         this.interruptorManager.update(this.player.controller, this);
         if (this.interruptorManager.isRunning) {
             this.interruptorManager.updateInter(tDiff);
@@ -122,7 +125,7 @@ export class Game {
         
 
         // this.qtRender.renderQuadtree((this.gameObjects as unknown as QuadTreeContainer).tree);
-        this.lastRenderTime = Date.now(); // time still marches on tho.
+        // this.lastRenderTime = Date.now(); // time still marches on tho.
         requestAnimationFrame(() => this.render());
     }
 

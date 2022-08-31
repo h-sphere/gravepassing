@@ -31,7 +31,7 @@ export class PauseMenu extends withTags(EmptyClass) implements GameObject, Inter
     ]
     current = 0;
     render(ctx: CanvasRenderingContext2D, bb: Rectangle, fn: GetPosFn) {
-        ctx.fillStyle = "#101424";
+        ctx.fillStyle = "#000A";
         const width = fn(bb.p2)[0];
         const u = width / 10;
         ctx.fillRect(0, 0, width, width);
@@ -58,17 +58,17 @@ export class PauseMenu extends withTags(EmptyClass) implements GameObject, Inter
         }
         if (this.controller!.y > 0) {
             this.current = (this.current + 1) % this.options.length;
-            this.cooloff = 200;
+            this.cooloff = 250;
             return;
         }
         if (this.controller!.y < 0) {
             this.current = this.current === 0 ? this.options.length -1 : this.current - 1;
-            this.cooloff = 200;
+            this.cooloff = 250;
             return;
         }
 
         if (this.controller?.v.f) {
-            this.cooloff = 500;
+            this.cooloff = 250;
             const set = this.game.settings;
             switch (this.current) {
                 case 0:

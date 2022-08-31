@@ -7,38 +7,64 @@ import { AmbientLight } from "../GameObjects/Light";
 import { Point } from "../Primitives";
 import { Scene, SceneSettings } from "./Scene";
 
+const bpm = 60;
+const x = [60, 72, 72, 1000, 60, 75, 75, 1000].map(x => x-12)
+.map(y => String.fromCharCode(y)).join('');
+
+const end = [60, 60, 70, 70, 1000, 1000, 1000, 1000].map(x => x-12)
+.map(y => String.fromCharCode(y)).join('');
+
+const track = x+x +end;
+
+const power = track.split('').map(x => String.fromCharCode(x.charCodeAt(0)+5)).join('');
+
+const bass = [48,48,48,48,48,48,0,48].map(x => x - 12)
+.map(y => String.fromCharCode(y)).join('');
+
+
 export class HellScene extends Scene {
     constructor() {
         super();
         this.gameObjects.add(new AmbientLight(0.3));
     }
+    song = new Song([
+        new AudioTrack(
+            bpm*8, 1,
+            track, { type: 'triangle'}
+        ),
+        new AudioTrack(
+            bpm*8, 1,
+            power, { type: 'triangle'}
+        ),
+        new AudioTrack(
+            bpm*8, 0.5, bass,
+            { type: "square" }
+        )
+    ]);
 
-    playMusic() {
-        const bpm = 60;
-        const x = [60, 72, 72, 1000, 60, 75, 75, 1000].map(x => x-12)
-        .map(y => String.fromCharCode(y)).join('');
+    stopMusic(): void {
         
-        const end = [60, 60, 70, 70, 1000, 1000, 1000, 1000].map(x => x-12)
-        .map(y => String.fromCharCode(y)).join('');
-
-        const track = x+x +end;
-
-        const power = track.split('').map(x => String.fromCharCode(x.charCodeAt(0)+5)).join('');
-
-        const LabMusic = new Song([
-            new AudioTrack(
-                bpm*8, 1,
-                track, { type: 'square'}
-            ),
-            new AudioTrack(
-                bpm*8, 1,
-                power, { type: 'square'}
-            ),
-        ]);
     }
+
+    // playMusic() {
+        
+    //     const HellMusic = new Song([
+    //         new AudioTrack(
+    //             bpm*8, 1,
+    //             track, { type: 'square'}
+    //         ),
+    //         new AudioTrack(
+    //             bpm*8, 1,
+    //             power, { type: 'square'}
+    //         ),
+    //     ]);
+    //     console.log(HellMusic);
+    //     HellMusic.play()
+    // }
 
     register(container: GameObjectsContainer, game: Game): SceneSettings {
         super.register(container, game);
+        this.song.play();
         return {
             ground: new Ground([
                 { emoji: new Emoji("💀", 12, 1), range: [0.999, 1] },
@@ -46,7 +72,7 @@ export class HellScene extends Scene {
                 { emoji: new Emoji("🪨", 10, 1, 0, 5), range: [0.2, 0.21]},
                 { emoji: new Emoji("🗿", 12, 1, 0, 2), range: [0.6, 0.61]},
                 { emoji: new Emoji("🦴", 12, 1, 0, 2), range: [0.9, 0.92]}
-            ], 534),
+            ], 12.4334),
             hudBackground: '#470100',
             backgroundColor: "rgba(100, 10, 10)",
             getDither: Dither.generateDithers(10, [200, 34, 24]),

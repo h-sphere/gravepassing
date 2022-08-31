@@ -107,14 +107,14 @@ export class TextGameObject extends RectangleObject implements Interruptable {
 }
 
 export class InGameTextGO extends TextGameObject {
-    constructor(text: string, p: Point, w: number, h: number, color: string) {
+    constructor(text: string, p: Point, w: number, h: number, color: string, private animationMultiplier: number = 1) {
         super([text], p, w, h, true, "rgba(0,0,0,0)", color);
     }
     isGlobal: boolean = false;
     autoHide = 1000;
     update(dt: number, container: GameObjectsContainer) {
         super.update(dt, container);
-        this.rectangle = this.rectangle.moveBy(new Point(0, -dt*0.2/1000));
+        this.rectangle = this.rectangle.moveBy(new Point(0, -this.animationMultiplier * dt*0.2/1000));
     }
 }
 

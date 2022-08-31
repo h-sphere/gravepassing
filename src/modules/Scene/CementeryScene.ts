@@ -1,3 +1,4 @@
+import { E } from "../Assets/Emojis";
 import { AudioTrack } from "../Audio/AudioTrack";
 import { Song } from "../Audio/Song";
 import { CombinedEmoji, Dither, Emoji, EmojiList, EmojiSet, Ground } from "../Color/Sprite";
@@ -138,7 +139,8 @@ export class CementeryScene extends Scene {
                     g.setObjective(f);
                 })
                 }
-            ]
+            ],
+            enemies: [E.cowMan, E.frogMan, E.pigMan]
         }
     }
 }

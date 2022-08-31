@@ -3,6 +3,7 @@ import { Directional, E } from "../Assets/Emojis";
 import { AnimatedEmoji, Emoji, EmojiSet } from "../Color/Sprite";
 import { TAG } from "../constants/tags";
 import { Line, Point } from "../Primitives";
+import { GameObject } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { SimpleHumanoid } from "./Humanoid";
 import { BombCollectableItem, LifeCollectableItem } from "./Item";
@@ -20,35 +21,12 @@ export class Enemy extends SimpleHumanoid {
         this.center = p;
         this.addTag(TAG.ENEMY);
         // FIXME: combine into single emo.
-        const e: EmojiSet = {
-            emoji: "♥️",
-            size: 4,
-            pos: [0, 0],
-        }
-
-        const emojis = [];
-
         for(let i=0;i<this.life;i++) {
-            emojis.push({...e, pos: [i*3, 0]})
+            const el = E.enemyH.toGameObject(Point.ORIGIN);
+            el.isHidden = true;
+            this.add(el);
+            this.lives.push(el);
         }
-
-        // FIXME: we don't want to do that for every enemy.
-        this.hitPoints = new AnimatedEmoji(emojis, 1, "red", this.life, (step, steps, canvas) => { 
-            const ctx = canvas.getContext('2d')!;
-            ctx.globalCompositeOperation = 'source-atop'
-            if (step === 0) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                return;
-            }
-            ctx.fillRect(steps*3,0, -(steps-step)*3, canvas.height);
-        });
-        this.hitPoints.doNotRenderOnGlobalCanvas = true;
-
-        const obj = new RectangleObject(Point.ORIGIN, this.hitPoints);
-        obj.parentBBExclude = true;
-        this.add(obj);
-        this.pointsObj = obj;
-        this.hitPoints.setFrame(this.life);
 
         const markEmoji = E.explamation;
         const obj2 = new RectangleObject(Point.ORIGIN, markEmoji);
@@ -63,7 +41,6 @@ export class Enemy extends SimpleHumanoid {
 
     }
 
-    hitPoints: AnimatedEmoji;
     exclamation: RectangleObject;
     pointsObj;
 
@@ -74,10 +51,12 @@ export class Enemy extends SimpleHumanoid {
 
     getHit(container: GameObjectsContainer) {
         super.getHit(container);
-        this.hitPoints.setFrame(this.life);
         // update hit points above
         if (this.life === 0) {
             this.die();
+        } else {
+            this.lives[this.life].texture = E.enemyHOff
+            this.lives.forEach(l => l.isHidden = false);
         }
     }
 
@@ -93,6 +72,8 @@ export class Enemy extends SimpleHumanoid {
 
     // FIXME: probably do it in a nicer way.
     container!: GameObjectsContainer;
+
+    private lives: RectangleObject[] = [];
 
 
     update(dt: number, container: GameObjectsContainer): void {
@@ -164,8 +145,11 @@ export class Enemy extends SimpleHumanoid {
             this.lastY = yDiff;
         }
 
-        this.pointsObj.rectangle.moveTo(this.center.add(0, -0.2));
-        this.exclamation.rectangle.moveTo(this.center.add(0.2, -0.5));
+        this.exclamation.rectangle.moveTo(this.center.add(0.2, -0.6));
+        this.lives
+        .forEach((l,i) =>
+            l.rectangle.moveTo(this.center.add(0.3*i, -0.3))
+        );
 
 
         // FIXME: check where is the player and shot only then.

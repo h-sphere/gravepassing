@@ -36,6 +36,7 @@ export class GameObjectGroup implements GameObject, WithCenter {
     private objects: GameObject[] = [];
     add(go: GameObject) {
         this.objects.push(go);
+        return go;
     }
 
     getAll(): GameObject[] {

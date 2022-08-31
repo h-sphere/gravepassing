@@ -87,7 +87,13 @@ export class Player extends SimpleHumanoid {
             lowerT = lvlToXp(this.lvl);
             upperT = lvlToXp(this.lvl + 1);
             const txt = new InGameTextGO("⬆ LVL UP", this.center, 4, 1, "#befabe");
-            this.container.add(txt)
+            this.container.add(txt);
+            const MIN_COOLDOWN = 100;
+            if (this.lvl % 2 === 0 && this.baseCooldown > MIN_COOLDOWN) {
+                const txt2 = new InGameTextGO("⬆ SHOT RATE UP", this.center.add(0.5, -0.1), 4, 1, "#FA0", 1.5);
+                this.container.add(txt2);
+                this.baseCooldown = Math.max(MIN_COOLDOWN, 0.9*this.baseCooldown);
+            }
         }
         this.lvlProgress = (this._xp - lowerT) / (upperT - lowerT);
         this.lvlTexture = new TextTexture(["LVL "+this.lvl], 2, 1, "rgba(0,0,0,0)");
@@ -143,6 +149,8 @@ export class Player extends SimpleHumanoid {
         })
     }
 
+    baseCooldown = 500;
+
 
     inputCooloff = 0;
     update(dt: number, container: GameObjectsContainer) {
@@ -172,7 +180,7 @@ export class Player extends SimpleHumanoid {
         }
 
         if (this.controller.v.f && this.fireCooldown <= 0) {
-            this.fireCooldown = 300;
+            this.fireCooldown = this.baseCooldown;
             const inventory = this.items[this.selected];
             const go = inventory.use(this, container, TAG.ENEMY);
 

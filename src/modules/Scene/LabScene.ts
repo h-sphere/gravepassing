@@ -1,3 +1,4 @@
+import { E } from "../Assets/Emojis";
 import { AudioTrack } from "../Audio/AudioTrack";
 import { Song } from "../Audio/Song";
 import { Dither, Emoji, Ground } from "../Color/Sprite";
@@ -64,6 +65,7 @@ export class LabScene extends Scene {
             getDither: Dither.generateDithers(30, [100, 70, 130]),
             pCenter: new Point(0, -20),
             stages: [],
+            enemies: [E.robotMan, E.zombie, E.zombieWoman, E.rabbit],
         };
     }
 }

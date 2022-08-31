@@ -12,7 +12,7 @@ const keys = {
     'Escape': 'e'
  } as const;
 
-type T = Record<ValueOf<typeof keys>, number> ;
+type T = Record<ValueOf<typeof keys>, number>;
 
 export class KeyboardController {
     v: T = Object.values(keys).reduce((a,b) => ({...a, [b]: 0}), {}) as unknown as T;

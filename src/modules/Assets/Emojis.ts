@@ -49,15 +49,22 @@ export const E = {
         { emoji: "📡", size: 10, pos: [16, 6]}
     ], 3),
     playerDir: createDirectional(),
-    pigManDir: createDirectional("🐷"),
+
+    pigMan: createDirectional("🐷"),
     frogMan: createDirectional("🦋"),
     cowMan: createDirectional("🐮", "👔", "👖", 180, 100),
-    robot: createDirectional("🤖", "👔", "⛓"),
+
+    robotMan: createDirectional("🤖", "👔", "⛓"),
+    zombieWoman: createDirectional("👩", "👚", "👖", 0, 30),
+    zombie: createDirectional("🐵", "🎽", "🦿"),
+    rabbit: createDirectional("🐰", "🔺", "👖", 100, 50),
+
     health: new Emoji("❤️", 6, 1, 0, 5),
-    healthOff: new Emoji("🤍", 6, 1, 0, 5),
+    healthOff: new Emoji("❤️", 6, 1, 0, 5, "", 0, 20),
+    enemyH: new Emoji("❤️", 4, 1, 0, 0),
+    enemyHOff: new Emoji("❤️", 4, 1, 0, 0, "", 0, 20),
     bullet: new Emoji("🔅", 4, 1, 6, 6),
     explamation: new Emoji("❗️", 6, 1),
-    h_over: new Emoji("♥️", 4, 1),
     item: new CombinedEmoji([
         { emoji: "💣", size: 6, pos: [1, 3]},
     ]),

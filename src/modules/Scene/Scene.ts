@@ -1,3 +1,4 @@
+import { Directional } from "../Assets/Emojis";
 import { Dither, Ground } from "../Color/Sprite";
 import { Game } from "../Game";
 import { GameObject } from "../GameObjects/GameObject";
@@ -16,6 +17,7 @@ export interface SceneSettings {
     getDither: (n: number) => Dither;
     pCenter: Point;
     stages: Stage[];
+    enemies: Directional[];
 }
 
 export abstract class Scene {

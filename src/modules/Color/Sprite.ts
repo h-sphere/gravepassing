@@ -7,6 +7,8 @@ import { TAG } from "../constants/tags";
 import { RectangleObject } from "../GameObjects/Rectangle";
 import { Enemy } from "../GameObjects/Enemy";
 import { SIZE } from "./Image";
+import { isEmojiRendering } from "./EmojiUtils";
+import { alt } from "../Assets/EmojiAlternatives";
 
 export class DirectionableTexture implements NewTexture {
     private direction ='left';
@@ -51,6 +53,7 @@ export interface EmojiSet {
     size: number;
     pos: number[];
     hueShift?: number;
+    brightness?: number;
 }
 
 export class CombinedEmoji implements NewTexture {
@@ -102,17 +105,24 @@ export class CombinedEmoji implements NewTexture {
         c.height = this.scale * SIZE;
         const ct = c.getContext('2d')!;
         let p1: Point, p2: Point;
-        const div = document.createElement('div');
-
         this.emojis.forEach(e => {
-            div.style.fontSize=e.size + 'px';
-            div.innerText = e.emoji;
-
-            ct.font = `${e.size}px Arial`
+            let em = e.emoji;
+            let pos = e.pos;
+            let size = e.size;
+            if (e.emoji in alt && !isEmojiRendering(e.emoji)) {
+                console.log(`USING ALTERNATIVE FOR ${e.emoji} -> ${alt[e.emoji]}`);
+                em = alt[e.emoji].emoji;
+                pos = alt[e.emoji].pos || pos;
+                size = (alt[e.emoji].size || 1) * size;
+                
+            }
+            ct.font = `${size}px Arial`
             ct.fillStyle = this.color;
             ct.textBaseline = "top";
-            ct.filter = 'hue-rotate('+(e.hueShift||0) + 'deg)';
-            const x = ct.measureText(e.emoji)
+            ct.filter = `hue-rotate(${e.hueShift||0}deg) brightness(${e.brightness||100}%)`;
+
+            // I THINK WE CAN REMOVE ALL THIS.
+            const x = ct.measureText(em);
             if (!p1 || !p2) {
                 p1 = new Point(e.pos[0], e.pos[1]);
                 p2 = new Point(e.pos[0] + x.width, e.pos[1] + x.actualBoundingBoxDescent).mul(1/SIZE);
@@ -121,7 +131,7 @@ export class CombinedEmoji implements NewTexture {
                 p2 = new Point(Math.max(e.pos[0] + x.width, p2.x), Math.max(e.pos[1] + x.actualBoundingBoxAscent, p2.y)).mul(1/16);
             }
 
-            ct.fillText(e.emoji, e.pos[0], e.pos[1]);
+            ct.fillText(em, pos[0], pos[1]);
             ct.filter = '';
         });
         this._boundingBox = new Rectangle(p1!, p2!);
@@ -210,8 +220,8 @@ export class AnimatedEmoji extends CombinedEmoji {
 }
 
 export class Emoji extends CombinedEmoji {
-    constructor(e: string, size: number, scale: number, x = 0, y = 0, color: string = 'white', hueShift: number = 0) {
-        super([{emoji: e, size: size, pos: [x, y], hueShift}], scale, color);
+    constructor(e: string, size: number, scale: number, x = 0, y = 0, color: string = 'white', hueShift: number = 0, brightness: number = 100) {
+        super([{emoji: e, size: size, pos: [x, y], hueShift, brightness}], scale, color);
         this.generate();
     }
 }
@@ -322,9 +332,14 @@ export class Ground {
                     lifes++;
                 }
 
+                if(game.player.lvl > 10 && Math.random() < s.difficulty * 0.1) {
+                    lifes++;
+                }
+
                 const p = bb.p1.add(Math.random()*bb.width, Math.random()*bb.height);
+                const sprite = game.sceneSettings.enemies[Math.floor(Math.random()*game.sceneSettings.enemies.length)];
                 game.gameObjects.add(new Enemy(
-                    Math.random() < 0.2 ? E.robot : (Math.random() > 0.5) ? E.cowMan : E.frogMan,
+                    sprite,
                     value, p, lifes));
             }
         }
