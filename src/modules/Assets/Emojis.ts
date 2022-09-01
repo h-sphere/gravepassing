@@ -41,6 +41,12 @@ const createDirectional = (head?: string, body?: string, pants?: string, shirtSh
 }
 
 export const E = {
+    portal: new CombinedEmoji([
+        { emoji: "✨", size: 15, pos: [0, 5]},
+        { emoji: "✨", size: 15, pos: [15, 15]},
+        { emoji: "✨", size: 15, pos: [5, 35]},
+        { emoji: "🌀", size: 30, pos: [0, 15], hueShift: 50},
+    ], 3),
     factory: new CombinedEmoji([
         { emoji: "🏢", size: 30, pos: [0, 15]},
         { emoji: "☢️", size: 8, pos: [10, 24]},

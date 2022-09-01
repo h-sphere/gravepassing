@@ -3,6 +3,7 @@ import { AudioManager } from "../Audio/AudioManager";
 import { CombinedEmoji, Emoji } from "../Color/Sprite";
 import { TAG } from "../constants/tags";
 import { Point } from "../Primitives";
+import { HellScene } from "../Scene/HellScene";
 import { LabScene } from "../Scene/LabScene";
 import { GameObjectGroup } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
@@ -64,10 +65,23 @@ export class Factory extends Item {
         const point = new Point(Math.random(), Math.random()).normalize().mul(60, 100);
 
         // random position here
-        super(point, E.factory, 3);
+        super(p.addVec(point), E.factory, 3);
     }
 
     onAdd(player: Player) {
-        player.game.loadScene(new LabScene, false);
+        player.game.loadScene(new LabScene, false, true);
+    }
+}
+
+export class HellPortal extends Item {
+    constructor(p: Point) {
+        const point = new Point(Math.random(), Math.random()).normalize().mul(60, 100);
+
+        // random position here
+        super(p.addVec(point), E.portal, 3);
+    }
+
+    onAdd(player: Player): void {
+        player.game.loadScene(new HellScene(), false, true);
     }
 }

@@ -18,9 +18,17 @@ const track = x+x +end;
 
 const power = track.split('').map(x => String.fromCharCode(x.charCodeAt(0)+5)).join('');
 
-const bass = [48,48,48,48,48,48,0,48].map(x => x - 12)
+const bass = [48,48,48,0,48,48,0,0].map(x => x - 12)
 .map(y => String.fromCharCode(y)).join('');
 
+const T = track + track + track + [60, 0, 60, 0, 0, 0, 0, 0, 48, 48, 0, 46, 44, 0, 48, 48].map(y => String.fromCharCode(y-12)).join('');
+const P = power + power + power + [72, 0, 72, 0, 72, 0, 48, 0, 0, 0, 0, 58, 39, 0, 60 ,60].map(y => String.fromCharCode(y-12)).join('');
+
+const P2x = P.split('').map((p,i) => String.fromCharCode(p.charCodeAt(0)+12)).join('');
+
+const P3x = P.split('').map((p,i) => String.fromCharCode(Math.max(48, p.charCodeAt(0)-12))).join('');
+
+const P2 = P + P + P2x + P3x;
 
 export class HellScene extends Scene {
     constructor() {
@@ -30,15 +38,19 @@ export class HellScene extends Scene {
     song = new Song([
         new AudioTrack(
             bpm*8, 1,
-            track, { type: 'triangle'}
+            T, { type: 'sawtooth', cutoff: 600, cutoffOpenRatio: 2},
         ),
         new AudioTrack(
             bpm*8, 1,
-            power, { type: 'triangle'}
+            P2, { type: 'sawtooth', cutoff: 700, cutoffOpenRatio: 5}
         ),
         new AudioTrack(
             bpm*8, 0.5, bass,
-            { type: "square" }
+            { type: "sawtooth", cutoff: 900, cutoffOpenRatio: 90, cutoffOpenDelay: 0.5 }
+        ),
+        new AudioTrack(
+            bpm*8, 0.5, bass,
+            { type: "square", cutoff: 500, cutoffOpenRatio: 5, cutoffOpenDelay: 0.5 }
         )
     ]);
 

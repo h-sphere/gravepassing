@@ -9,6 +9,7 @@ import { SIZE } from "../Color/Image";
 import { InterGO, Interruptor } from "../Interruptor/Interruptor";
 import { Item } from "../GameObjects/Item";
 import { HellScene } from "../Scene/HellScene";
+import { LabScene } from "../Scene/LabScene";
 
 const ZOOM_SPEED = 1;
 
@@ -48,16 +49,22 @@ export class Game {
         // window.onresize = fn;
 
         this.restart();
-        this.loadScene(new CementeryScene());
+        this.loadScene(new HellScene());
         try {
             this.settings = JSON.parse(window.localStorage.getItem('hsph_set') || '');
         } catch (e) {
         }
     }
 
-    loadScene(scene: Scene, withRestart: boolean = false) {
+    loadScene(scene: Scene, withRestart: boolean = false, withObstRemoval: boolean = false) {
         if (this.currentScene) {
             this.currentScene.stopMusic();
+        }
+
+        if (withObstRemoval) {
+            this.gameObjects = new QuadTreeContainer();
+            this.gameObjects.add(this.player);
+            this.camera.follow(this.player);
         }
 
         if (withRestart) {

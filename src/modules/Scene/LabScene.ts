@@ -4,12 +4,18 @@ import { Song } from "../Audio/Song";
 import { Dither, Emoji, Ground } from "../Color/Sprite";
 import { Game } from "../Game";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
+import { HellPortal } from "../GameObjects/Item";
 import { AmbientLight } from "../GameObjects/Light";
 import { TextModal } from "../GameObjects/TextModule";
 import { Point } from "../Primitives";
 import { Scene, SceneSettings } from "./Scene";
 
 const bpm = 60;
+
+const T = {
+    NOTE: () => new TextModal(["You find evidence the scientist tried to open portal to hell. You think you've heard this somewhere before."]),
+    NOTE_2: () => new TextModal(["Location of the rift to hell."]),
+}
 
 export class LabScene extends Scene {
     song = new Song([
@@ -64,7 +70,15 @@ export class LabScene extends Scene {
             backgroundColor: "rgba(110, 110, 160)",
             getDither: Dither.generateDithers(30, [100, 70, 130]),
             pCenter: new Point(0, -20),
-            stages: [],
+            stages: [
+                { lvl: 1, res: g => g.interruptorManager.add(T.NOTE())},
+                { lvl: 1, res: g => {
+                    g.interruptorManager.add(T.NOTE_2());
+                    const f = new HellPortal(g.player.center);
+                    g.gameObjects.add(f);
+                    g.setObjective(f);
+                }}
+            ],
             enemies: [E.robotMan, E.zombie, E.zombieWoman, E.rabbit],
         };
     }

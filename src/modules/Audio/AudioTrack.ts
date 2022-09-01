@@ -1,6 +1,8 @@
 interface SynthConfig {
     type: OscillatorType;
     cutoff?: number;
+    cutoffOpenRatio?: number;
+    cutoffOpenDelay?: number;
     delay?: {
         time: number,
         gain: number,
@@ -19,6 +21,8 @@ export class AudioTrack {
 
     private osc!: OscillatorNode;
     private ctx!: AudioContext;
+
+    private filter!: BiquadFilterNode;
 
     public start(ctx: AudioContext) {
         this.ctx = ctx;
@@ -47,6 +51,7 @@ export class AudioTrack {
         const ctx = this.ctx; // new window.AudioContext();
         const osc = ctx.createOscillator();
         const fil = ctx.createBiquadFilter();
+        this.filter = fil;
         const gain = ctx.createGain();
         this.gains.push(gain);
 
@@ -90,6 +95,16 @@ export class AudioTrack {
         let s = this.nextStartTime;
         if (s < 0) {
             s = this.ctx.currentTime;
+        }
+        if (this.synth.cutoff) {
+            const c = this.synth.cutoff;
+            const m = this.synth.cutoffOpenRatio || 1;
+            const d = this.synth.cutoffOpenDelay || 0;
+            const len = this.definition.length*l;
+            this.filter.frequency.cancelScheduledValues(s);
+            this.filter.frequency.setValueAtTime(this.synth.cutoff, s);
+            this.filter.frequency.setTargetAtTime(c*m, s + d * len, len);
+            // this.filter.frequency.setValueCurveAtTime([c, c*m], s, s+this.definition.length*l);
         }
         for(let i = 0; i < this.definition.length; i++) {
             const m = this.definition.charCodeAt(i);
