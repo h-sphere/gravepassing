@@ -4,7 +4,7 @@ import { Point, Rectangle } from "../Primitives";
 import { GameObject, GameObjectGroup } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { Light } from "./Light";
-import { withMovement, withRotation } from "./mixins";
+import { withMovement } from "./mixins";
 import { RectangleObject } from "./Rectangle";
 
 class SimpleHumanoidPref extends GameObjectGroup {
@@ -64,7 +64,7 @@ class SimpleHumanoidPref extends GameObjectGroup {
 
 }
 
-export class SimpleHumanoid extends withRotation(withMovement(SimpleHumanoidPref)) {
+export class SimpleHumanoid extends withMovement(SimpleHumanoidPref) {
     value = 0;
     move(dt: number, direction: Point, speed: number, container: GameObjectsContainer): boolean {
         const moved = super.move(dt, direction, speed, container);
