@@ -31,6 +31,7 @@ export class Item extends GameObjectGroup {
         this.onAdd(player as unknown as Player);
         AudioManager.get().collect.play();
         container.remove(this);
+        (player as unknown as Player).game.objective = undefined;
     }
 }
 

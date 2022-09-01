@@ -48,13 +48,6 @@ export class RectangleObject extends withTags(EmptyClass) implements GameObject,
         
     }
 
-    collisionBoundingBox() {
-        if (this.texture instanceof DirectionableTexture) { // OR EMOJI
-            return this.texture.collisionBoundingBox(); // FIXME: do not use collision bb - it's always BB.
-        }
-        return this.rectangle;
-    }
-
     getBoundingBox(): Rectangle {
         return this.rectangle;
     }

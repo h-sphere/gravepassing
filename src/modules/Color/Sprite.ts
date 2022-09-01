@@ -29,10 +29,6 @@ export class DirectionableTexture implements NewTexture {
         return this.getEmoji().render(ctx, x, y, w, h);
     }
 
-    collisionBoundingBox(): Rectangle {
-        return this.getEmoji().collisionBoundingBox();
-    }
-
     setDirection(d: string, len: number) {
         this.direction = d;
         const e = this.getEmoji();
@@ -74,37 +70,21 @@ export class CombinedEmoji implements NewTexture {
         c.width = this.scale * SIZE;
         c.height = this.scale * SIZE;
         const ct = c.getContext('2d')!;
-        let p1: Point, p2: Point;
+        // let p1: Point, p2: Point;
         this.emojis.forEach(e => {
             e = convertEmoji(e);
             ct.font = `${e.size}px Arial`
             ct.fillStyle = e.color || this.color;
             ct.textBaseline = "top";
             ct.filter = `hue-rotate(${e.hueShift||0}deg) brightness(${e.brightness||100}%)`;
-
-            // I THINK WE CAN REMOVE ALL THIS.
-            const x = ct.measureText(e.emoji);
-            if (!p1 || !p2) {
-                p1 = new Point(e.pos[0], e.pos[1]);
-                p2 = new Point(e.pos[0] + x.width, e.pos[1] + x.actualBoundingBoxDescent).mul(1/SIZE);
-            } else {
-                p1 = new Point(Math.min(e.pos[0], p1.x), Math.min(e.pos[1], p1.y));
-                p2 = new Point(Math.max(e.pos[0] + x.width, p2.x), Math.max(e.pos[1] + x.actualBoundingBoxAscent, p2.y)).mul(1/16);
-            }
-
             ct.fillText(e.emoji, e.pos[0], e.pos[1]);
             ct.filter = '';
         });
-        this._boundingBox = new Rectangle(p1!, p2!);
         this.canvas = c;
 
         // OMFG, why does this help?
         createImageBitmap(ct.getImageData(0, 0, c.width, c.height))
         .then(b => this.bmp = b);
-    }
-
-    collisionBoundingBox(): Rectangle {
-        return this._boundingBox;
     }
 
     render(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
