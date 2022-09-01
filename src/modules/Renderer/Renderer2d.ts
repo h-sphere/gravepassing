@@ -12,15 +12,8 @@ import { SceneSettings } from "../Scene/Scene";
 import { Renderer } from "./Renderer";
 
 export class Renderer2d implements Renderer {
-
-    private gridEnabled: boolean = false;
-    private fpsEnable: boolean = false;
-    private boundingBoxEnable: boolean  = true;
-
     private bb!: Rectangle;
-
     private center!: Point;
-
     constructor(private ctx: CanvasRenderingContext2D, private width: number, private height: number, private game: Game) {
         ctx.imageSmoothingEnabled = false;
     }
@@ -38,15 +31,15 @@ export class Renderer2d implements Renderer {
     }
 
     private getBoundingBox(): Rectangle {
-        const sizePerPixel = this.getSizePerPixel();
+        const s = this.getSizePerPixel();
         return new Rectangle(
             new Point(
-                this.center.x - (this.width / 2) * sizePerPixel,
-                this.center.y - (this.height / 2) * sizePerPixel
+                this.center.x - (this.width / 2) * s,
+                this.center.y - (this.height / 2) * s
             ),
             new Point(
-                this.center.x + (this.width / 2) * sizePerPixel,
-                this.center.y + (this.width / 2) * sizePerPixel,
+                this.center.x + (this.width / 2) * s,
+                this.center.y + (this.width / 2) * s,
             )
         );
     }
@@ -54,12 +47,12 @@ export class Renderer2d implements Renderer {
     getPositionOnScreen(p: Point): [number, number] {
         const x = (this.center.x - p.x)
         const y = (this.center.y - p.y);
-        const ySizePerPixel = this.getSizePerPixel();
-        const xSizePerPixel = this.getSizePerPixel();
+        const ys = this.getSizePerPixel();
+        const xs = this.getSizePerPixel();
 
         return [
-            this.width / 2 - x / xSizePerPixel,
-            this.height / 2 - y / ySizePerPixel,
+            this.width / 2 - x / xs,
+            this.height / 2 - y / ys,
         ];
     }
 
@@ -82,13 +75,9 @@ export class Renderer2d implements Renderer {
                     if (l.isGlobal) {
                         return true;
                     }
-
                     // Is light obstructed
                     const find = obstructions.find(o => getLinesIntersection(o, line));
-                    if (find) {
-                        return false;
-                    }
-                    return true;
+                    return !find;
                 });
 
                 const p = new Point(i,j);
@@ -115,7 +104,7 @@ export class Renderer2d implements Renderer {
         }
     }
 
-    renderDebugLine(line: Line, color = 'white') {
+    renderDebugLine(line: Line, color = '#FFF') {
         this.ctx.beginPath();
         this.ctx.lineWidth = 2;
         this.ctx.strokeStyle = color;
@@ -138,7 +127,6 @@ export class Renderer2d implements Renderer {
 
     render(camera: Camera, gameObjects: GameObjectsContainer, dt: number, game: Game) {
 
-        // console.log("FPS", 1000 / dt);
         this.prepareFrame();
         this.renderBackground(game.sceneSettings);
         const objects = gameObjects.getObjectsInArea(this.bb)
@@ -160,14 +148,6 @@ export class Renderer2d implements Renderer {
                 this.bb,
                 (p: Point) => this.getPositionOnScreen(p)
             );
-                // if (this.boundingBoxEnable) {
-                //     this.ctx.strokeStyle = "rgba(255,0,0,0.6)";
-                //     this.ctx.lineWidth = 1;
-                //     const bb = obj.getBoundingBox();
-                //     const p = this.getPositionOnScreen(bb.p1);
-                //     const p2 = this.getPositionOnScreen(bb.p2);
-                //     this.ctx.strokeRect(p[0], p[1], p2[0] - p[0], p2[1] - p[1]);
-                // }
         }
         this.renderHUD(game);
         this.renderPostEffects();
@@ -213,7 +193,7 @@ export class Renderer2d implements Renderer {
             }
         }
 
-        this.ctx.font = "16px Times New Roman";
+        this.ctx.font = "16px";
         this.ctx.fillStyle = "white";
 
         const text = game.player.xpTexture;

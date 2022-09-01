@@ -14,43 +14,36 @@ export const isEmojiRendering = (emoji: string) => {
         emojiCanvas.width = emojiCanvas.height = 20;
         emojiCtx = emojiCanvas.getContext('2d')!;
         emojiCtx.font = '20px Arial';
-        // document.body.appendChild(emojiCanvas);
     }
-    console.log("IS REDERING?");
     emojiCtx.clearRect(0, 0, 20, 20);
     emojiCtx.fillText(emoji, 0, 0);
     const data = emojiCtx.getImageData(0, 0, 20, 20);
-    console.log(data);
     return data.data.findIndex(e => e > 0) > 0;
 }
 
 export const convertEmoji = (e: EmojiSet) => {
     if (isKeyOf(e.emoji, alt) && !isEmojiRendering(e.emoji)) {
-        // console.log(`USING ALTERNATIVE FOR ${e.emoji} -> ${alt[e.emoji].emoji}`);
         const pos = alt[e.emoji].pos || [0,0];
         e = {
             ...e,
-            emoji: alt[e.emoji].emoji,
+            emoji: alt[e.emoji].emoji || e.emoji,
             pos: [e.pos[0] + pos[0], e.pos[1]+ pos[1]],
             size: (alt[e.emoji].size || 1) * e.size
         }
     }
-    // FIXME: system overrides here:
     if (navigator.platform.startsWith("Win") && isKeyOf(e.emoji,win)) {
-        // console.log(`Using alternative for windows ${e.emoji} -> ${win[e.emoji].emoji}`);
         const pos = win[e.emoji].pos || [0,0];
         e = {
             ...e,
-            emoji: win[e.emoji].emoji,
+            emoji: win[e.emoji].emoji || e.emoji,
             pos: [e.pos[0] + pos[0], e.pos[1]+ pos[1]],
             size: (win[e.emoji].size || 1) * e.size,
         }
     }
     if (navigator.platform.indexOf('Linux') >= 0 && isKeyOf(e.emoji, tux)) {
-        // console.log(`Using alternative for linux ${e.emoji} -> ${tux[e.emoji].emoji}`);
         e = {
             ...e,
-            emoji: tux[e.emoji].emoji,
+            emoji: tux[e.emoji].emoji || e.emoji,
             pos: tux[e.emoji].pos || e.pos,
             size: (tux[e.emoji].size || 1) * e.size,
         }

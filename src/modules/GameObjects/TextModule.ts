@@ -34,12 +34,6 @@ export class TextTexture implements NewTexture {
         ctx.font = `${this.size}px 'Verdana'`;
         ctx.textBaseline = "top"
         ctx.imageSmoothingEnabled = false;
-        if (this.bg !== "#0000") {
-            console.log(this.bg, this.text);
-            ctx.strokeStyle = "#FFFA";
-            ctx.lineWidth = 1;
-            ctx.strokeRect(0, 0, w, h);
-        }
         this.text.forEach((text, i) => {
             ctx.fillText(text.toUpperCase().split('').join(String.fromCharCode(8202)), 8, 6+i*(2+this.size));
         });

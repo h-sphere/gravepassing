@@ -7,8 +7,7 @@ import { TAG } from "../constants/tags";
 import { RectangleObject } from "../GameObjects/Rectangle";
 import { Enemy } from "../GameObjects/Enemy";
 import { SIZE } from "./Image";
-import { convertEmoji, isEmojiRendering } from "./EmojiUtils";
-import { alt } from "../Assets/EmojiAlternatives";
+import { convertEmoji } from "./EmojiUtils";
 
 export class DirectionableTexture implements NewTexture {
     private direction ='left';
@@ -64,42 +63,12 @@ export class CombinedEmoji implements NewTexture {
     canvas!: HTMLCanvasElement;
     bmp!: ImageBitmap;
     _boundingBox!: Rectangle;
-
-    doNotRenderOnGlobalCanvas = false;
-
     toGameObject(p: Point, scale: number = 1): RectangleObject {
         return new RectangleObject(p, this, [], scale);
     }
-
-    static lastX = 0;
-
-    static getGlobalCanvasPos(width: number) {
-        const x = this.lastX;
-        this.lastX += width;
-        return x;
-    }
-
-    private globalCanvasPosition = -1;
-    renderOnGlobalCanvas() {
-        // if (this.doNotRenderOnGlobalCanvas) {
-        //     return;
-        // }
-        // if (this.globalCanvasPosition < 0) { 
-        //     this.globalCanvasPosition = CombinedEmoji.getGlobalCanvasPos(SIZE*this.scale);
-        // }
-        // const globalCanvas = document.querySelector<HTMLCanvasElement>('#emojiMap');
-        // const ctx = globalCanvas!.getContext('2d')!;
-        // ctx.drawImage(this.canvas, this.globalCanvasPosition, 0);
-        
-    }
-
-
-    protected postProcessing() {
-        
-    }
     isGenerated = false;
 
-    protected generate(...props: any[]): void {
+    protected generate(..._: any[]): void {
         this.isGenerated = true;
         const c = document.createElement('canvas');
         c.width = this.scale * SIZE;
@@ -108,13 +77,6 @@ export class CombinedEmoji implements NewTexture {
         let p1: Point, p2: Point;
         this.emojis.forEach(e => {
             e = convertEmoji(e);
-            // if (e.emoji in alt && !isEmojiRendering(e.emoji)) {
-            //     console.log(`USING ALTERNATIVE FOR ${e.emoji} -> ${alt[e.emoji]}`);
-            //     em = alt[e.emoji].emoji;
-            //     pos = alt[e.emoji].pos || pos;
-            //     size = (alt[e.emoji].size || 1) * size;
-                
-            // }
             ct.font = `${e.size}px Arial`
             ct.fillStyle = e.color || this.color;
             ct.textBaseline = "top";
@@ -135,12 +97,10 @@ export class CombinedEmoji implements NewTexture {
         });
         this._boundingBox = new Rectangle(p1!, p2!);
         this.canvas = c;
-        this.postProcessing();
 
         // OMFG, why does this help?
         createImageBitmap(ct.getImageData(0, 0, c.width, c.height))
         .then(b => this.bmp = b);
-        this.renderOnGlobalCanvas();
     }
 
     collisionBoundingBox(): Rectangle {

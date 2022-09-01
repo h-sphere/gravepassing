@@ -112,8 +112,6 @@ sourceFiles.forEach(sourceFile => {
         console.log(e, i);
     }
   });
-
-  console.log();
 });
 
 // Save all changed files
