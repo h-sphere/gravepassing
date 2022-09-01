@@ -31,7 +31,6 @@ export class Item extends GameObjectGroup {
         this.onAdd(player as unknown as Player);
         AudioManager.get().collect.play();
         container.remove(this);
-        (player as unknown as Player).game.objective = undefined;
     }
 }
 
@@ -88,6 +87,7 @@ export class SwitchItem extends Item {
     }
 
     onAdd(player: Player): void {
-        player.game.interruptorManager.add(new TextModal(["You've saved humanity.", "But no one will know since you're trapped here.", "", "Nothing left but to fight hell's hordes for eternity."]))
+        player.game.interruptorManager.add(new TextModal(["You've saved humanity.", "But no one will know since you're trapped here.", "", "Nothing left but to fight hell's hordes for eternity."]));
+        player.game.objective = undefined;
     }
 }

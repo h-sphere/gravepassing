@@ -1,4 +1,4 @@
-import { DefinitionInfo, Project } from 'ts-morph';
+import { ClassDeclaration, DefinitionInfo, Project } from 'ts-morph';
 
 let name = [65, 65];
 let generateNextName = () => {
@@ -41,11 +41,10 @@ sourceFiles.forEach(sourceFile => {
   console.log('👉', sourceFile.getBaseName());
 
   // Get all interfaces in a file
-  const interfaces = sourceFile.getClasses();
+  const classes = [...sourceFile.getClasses(), ...sourceFile.getInterfaces()];
 
-  interfaces.forEach(i => {
+  classes.forEach(i => {
     try {
-        // IDog → Dog
         const name = i.getName();
         if (!name) {
             console.warn('Undefined name')
@@ -60,26 +59,29 @@ sourceFiles.forEach(sourceFile => {
         // Rename class
         console.log(name, '->', nextName);
         i.rename(nextName, {
-        renameInComments: true,
-        renameInStrings: true
+        renameInComments: false,
+        renameInStrings: false
         });
 
-        console.log('-- Static methods');
-        renameAll(i.getStaticMethods());
-        
-        console.log("--- Renaming method parameters too");
-        // rename method params
-        i.getStaticMethods().forEach(m => {
-          console.log(m.getName());
-          renameAll(m.getParameters());
-        })
+        if (i instanceof ClassDeclaration) {
 
-        console.log('-- Static Props');
-        renameAll(i.getStaticProperties());
+          console.log('-- Static methods');
+          renameAll(i.getStaticMethods());
+          
+          console.log("--- Renaming method parameters too");
+          // rename method params
+          i.getStaticMethods().forEach(m => {
+            console.log(m.getName());
+            renameAll(m.getParameters());
+          })
+
+          console.log('-- Static Props');
+          renameAll(i.getStaticProperties());
 
 
-        console.log('-- Static members');
-        renameAll(i.getStaticMembers());
+          console.log('-- Static members');
+          renameAll(i.getStaticMembers());
+        }
 
 
         console.log('--- Methods');
