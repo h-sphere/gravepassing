@@ -7,7 +7,7 @@ import { TAG } from "../constants/tags";
 import { RectangleObject } from "../GameObjects/Rectangle";
 import { Enemy } from "../GameObjects/Enemy";
 import { SIZE } from "./Image";
-import { isEmojiRendering } from "./EmojiUtils";
+import { convertEmoji, isEmojiRendering } from "./EmojiUtils";
 import { alt } from "../Assets/EmojiAlternatives";
 
 export class DirectionableTexture implements NewTexture {
@@ -54,6 +54,7 @@ export interface EmojiSet {
     pos: number[];
     hueShift?: number;
     brightness?: number;
+    color?: string;
 }
 
 export class CombinedEmoji implements NewTexture {
@@ -106,23 +107,21 @@ export class CombinedEmoji implements NewTexture {
         const ct = c.getContext('2d')!;
         let p1: Point, p2: Point;
         this.emojis.forEach(e => {
-            let em = e.emoji;
-            let pos = e.pos;
-            let size = e.size;
-            if (e.emoji in alt && !isEmojiRendering(e.emoji)) {
-                console.log(`USING ALTERNATIVE FOR ${e.emoji} -> ${alt[e.emoji]}`);
-                em = alt[e.emoji].emoji;
-                pos = alt[e.emoji].pos || pos;
-                size = (alt[e.emoji].size || 1) * size;
+            e = convertEmoji(e);
+            // if (e.emoji in alt && !isEmojiRendering(e.emoji)) {
+            //     console.log(`USING ALTERNATIVE FOR ${e.emoji} -> ${alt[e.emoji]}`);
+            //     em = alt[e.emoji].emoji;
+            //     pos = alt[e.emoji].pos || pos;
+            //     size = (alt[e.emoji].size || 1) * size;
                 
-            }
-            ct.font = `${size}px Arial`
-            ct.fillStyle = this.color;
+            // }
+            ct.font = `${e.size}px Arial`
+            ct.fillStyle = e.color || this.color;
             ct.textBaseline = "top";
             ct.filter = `hue-rotate(${e.hueShift||0}deg) brightness(${e.brightness||100}%)`;
 
             // I THINK WE CAN REMOVE ALL THIS.
-            const x = ct.measureText(em);
+            const x = ct.measureText(e.emoji);
             if (!p1 || !p2) {
                 p1 = new Point(e.pos[0], e.pos[1]);
                 p2 = new Point(e.pos[0] + x.width, e.pos[1] + x.actualBoundingBoxDescent).mul(1/SIZE);
@@ -131,7 +130,7 @@ export class CombinedEmoji implements NewTexture {
                 p2 = new Point(Math.max(e.pos[0] + x.width, p2.x), Math.max(e.pos[1] + x.actualBoundingBoxAscent, p2.y)).mul(1/16);
             }
 
-            ct.fillText(em, pos[0], pos[1]);
+            ct.fillText(e.emoji, e.pos[0], e.pos[1]);
             ct.filter = '';
         });
         this._boundingBox = new Rectangle(p1!, p2!);

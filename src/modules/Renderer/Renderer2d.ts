@@ -15,7 +15,7 @@ export class Renderer2d implements Renderer {
 
     private gridEnabled: boolean = false;
     private fpsEnable: boolean = false;
-    private boundingBoxEnable: boolean  = false;
+    private boundingBoxEnable: boolean  = true;
 
     private bb!: Rectangle;
 
@@ -154,9 +154,7 @@ export class Renderer2d implements Renderer {
         const obstructions = gameObjects.getObjectsInArea(this.bb, TAG.OBSTACLE).map(o => o.getBoundingBox().toLines()).flat();
         const lights = objects.filter(o => o instanceof Light) as Light[];
         this.renderDitheredLight(lights, obstructions); 
-        
         for (const obj of objects) {
-
             obj.render(
                 this.ctx,
                 this.bb,
@@ -203,18 +201,12 @@ export class Renderer2d implements Renderer {
 
         // item slots
         for(let i=0;i<8;i++) {
-            c.fillStyle = "rgba(0,0,0,0.3)";
+            c.fillStyle = "#000A";
             if (i===current) {
-                c.fillStyle = 'rgba(0,0,0,1)';
+                c.fillStyle = '#090F';
             }
             c.lineWidth = 5;
             c.fillRect(x + q + i * u/2+4*i, y + q / 2 + u, u/2, u/2);
-            let it = E.itemBgOff;
-
-            if (i === current) {
-                it = E.itemBg;
-            }
-            it.render(c, x + q + i * u/2+4*i, y + q / 2 + u, u, u);
 
             if (items.length > i) {
                 items[i].icon.render(c, x + q + i * u/2+4*i, y + q / 2 + u, u, u);

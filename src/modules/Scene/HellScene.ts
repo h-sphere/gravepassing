@@ -107,7 +107,7 @@ export class HellScene extends Scene {
                     g.setObjective(f);
                 }},
             ],
-            enemies: [E.robotMan, E.zombie, E.zombieWoman, E.rabbit, E.devil],
+            enemies: [E.cowMan, E.frogMan, E.pigMan, E.robotMan, E.zombie, E.zombieWoman, E.devil],
         };
     }
 }

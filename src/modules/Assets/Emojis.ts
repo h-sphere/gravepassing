@@ -1,7 +1,7 @@
 import { AnimatedEmoji, CombinedEmoji, Emoji, EmojiSet } from "../Color/Sprite";
 
 const S = 1;
-const glasses = {emoji: "🕶", pos: [S * 4 + 1, S - 1], size: S * 4};
+const glasses = {emoji: "🕶", pos: [S * 4 + 1, S - 1], size: S * 4, color: "black"};
 const singleGlass = { emoji: "⬛️", pos: [S * 5, S * 1], size: S * 1};
 const singleRightGlass = { emoji: "⬛️", pos: [8, 1], size: S * 1};
 
@@ -18,7 +18,6 @@ const renderLegs = (s: number, steps: number, c: HTMLCanvasElement) => {
         return;
     }
     ctx.fillStyle = "red";
-    // ctx.fillRect(0, 0, s, s);
     if (s/steps <= 0.5) {
         ctx.clearRect(4, 16, 3, -4*(2*s/steps))
     } else {
@@ -65,8 +64,7 @@ export const E = {
 
     robotMan: createDirectional("🤖", "👔", "⛓"),
     zombieWoman: createDirectional("👩", "👚", "👖", 0, 30),
-    zombie: createDirectional("🐵", "🎽", "🦿"),
-    rabbit: createDirectional("🐰", "🔺", "👖", 100, 50),
+    zombie: createDirectional("🐵", "👔", "🦿"),
 
     devil: createDirectional("👹", "👔", "",200,0,2),
 
@@ -84,10 +82,10 @@ export const E = {
     ]),
     itemBg: new CombinedEmoji([
         { emoji: "🟩", size: 8, pos: [0, 2]}
-    ], 1, 'rgba(255,0,0,0.6)'),
+    ], 1, "#FFFA"),
     itemBgOff:new CombinedEmoji([
         { emoji: "⬛️", size: 8, pos: [0, 2]}
-    ], 1, 'rgba(255,0,0,0.5)'),
+    ], 1, "#FFFA"),
     goal: {
         top: new Emoji("⬆️", 10, 1, 0, 6, '#FFF', 260, 120),
         down: new Emoji("⬇️", 10, 1, 0, 5, '#FFF', 260, 120),

@@ -79,7 +79,7 @@ export class LabScene extends Scene {
                     g.setObjective(f);
                 }}
             ],
-            enemies: [E.robotMan, E.zombie, E.zombieWoman, E.rabbit],
+            enemies: [E.robotMan, E.zombie, E.zombieWoman],
         };
     }
 }

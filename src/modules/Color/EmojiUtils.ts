@@ -27,24 +27,29 @@ export const isEmojiRendering = (emoji: string) => {
 export const convertEmoji = (e: EmojiSet) => {
     if (isKeyOf(e.emoji, alt) && !isEmojiRendering(e.emoji)) {
         // console.log(`USING ALTERNATIVE FOR ${e.emoji} -> ${alt[e.emoji].emoji}`);
+        const pos = alt[e.emoji].pos || [0,0];
         e = {
+            ...e,
             emoji: alt[e.emoji].emoji,
-            pos: alt[e.emoji].pos || e.pos,
+            pos: [e.pos[0] + pos[0], e.pos[1]+ pos[1]],
             size: (alt[e.emoji].size || 1) * e.size
         }
     }
     // FIXME: system overrides here:
     if (navigator.platform.startsWith("Win") && isKeyOf(e.emoji,win)) {
         // console.log(`Using alternative for windows ${e.emoji} -> ${win[e.emoji].emoji}`);
+        const pos = win[e.emoji].pos || [0,0];
         e = {
+            ...e,
             emoji: win[e.emoji].emoji,
-            pos: win[e.emoji].pos || e.pos,
+            pos: [e.pos[0] + pos[0], e.pos[1]+ pos[1]],
             size: (win[e.emoji].size || 1) * e.size,
         }
     }
     if (navigator.platform.indexOf('Linux') >= 0 && isKeyOf(e.emoji, tux)) {
         // console.log(`Using alternative for linux ${e.emoji} -> ${tux[e.emoji].emoji}`);
         e = {
+            ...e,
             emoji: tux[e.emoji].emoji,
             pos: tux[e.emoji].pos || e.pos,
             size: (tux[e.emoji].size || 1) * e.size,
