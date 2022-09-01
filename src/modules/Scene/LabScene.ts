@@ -13,7 +13,7 @@ import { Scene, SceneSettings } from "./Scene";
 const bpm = 60;
 
 const T = {
-    NOTE: () => new TextModal(["Looks like some scientist opened a portal to hell.","","Sounds familiar."]),
+    NOTE: () => new TextModal(["Looks like some scientist opened a portal to hell.","","Sound familiar?"]),
     NOTE_2: () => new TextModal(["The gate to hell is near."]),
 }
 
