@@ -14,7 +14,7 @@ export const isEmojiRendering = (emoji: string) => {
         emojiCanvas.width = emojiCanvas.height = 20;
         emojiCtx = emojiCanvas.getContext('2d')!;
         emojiCtx.font = '20px Arial';
-        document.body.appendChild(emojiCanvas);
+        // document.body.appendChild(emojiCanvas);
     }
     console.log("IS REDERING?");
     emojiCtx.clearRect(0, 0, 20, 20);

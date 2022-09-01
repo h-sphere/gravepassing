@@ -218,14 +218,14 @@ export class Renderer2d implements Renderer {
 
         const text = game.player.xpTexture;
         const lvlText = game.player.lvlTexture;
-        text.render(this.ctx, 6*u, y+2*q, u, u/2);
-        lvlText.render(this.ctx, 9*u-u/4, y+2*q, u, u/2);
+        text.render(this.ctx, 3*u, y+q, 2*u, u/2);
+        lvlText.render(this.ctx, 8.5*u-u/4, y+q, u, u/2);
 
         this.ctx.fillStyle = "rgba(0,0,0,0.5)";
-        const wid = 1.5*u
-        this.ctx.fillRect(7*u, y+2.5*q, wid, q/4);
+        const wid = 3.5*u
+        this.ctx.fillRect(4.5*u, y+2*q, wid, q/2);
         this.ctx.fillStyle = "rgb(30, 30, 200)"
-        this.ctx.fillRect(7*u, y+2.5*q,wid*game.player.lvlProgress, q/4);
+        this.ctx.fillRect(4.5*u, y+2*q,wid*game.player.lvlProgress, q/2);
 
         if(game.objective) {
             const xDiff = game.objective.center.x - game.player.center.x ;

@@ -77,7 +77,7 @@ export class Player extends SimpleHumanoid {
     set xp(v: number) {
         this._xp = v;
         // FIXME: thresholds for LVLS
-        this.xpTexture = new TextTexture([this.xp + "xp"],2, 1,"#0000");
+        this.xpTexture = new TextTexture([this.xp + "xp"],4, 1,"#0000");
         
         let lowerT = lvlToXp(this.lvl);
         let upperT = lvlToXp(this.lvl+1);

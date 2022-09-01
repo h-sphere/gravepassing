@@ -66,6 +66,13 @@ sourceFiles.forEach(sourceFile => {
 
         console.log('-- Static methods');
         renameAll(i.getStaticMethods());
+        
+        console.log("--- Renaming method parameters too");
+        // rename method params
+        i.getStaticMethods().forEach(m => {
+          console.log(m.getName());
+          renameAll(m.getParameters());
+        })
 
         console.log('-- Static Props');
         renameAll(i.getStaticProperties());

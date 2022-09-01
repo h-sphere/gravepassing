@@ -81,15 +81,15 @@ export class CombinedEmoji implements NewTexture {
 
     private globalCanvasPosition = -1;
     renderOnGlobalCanvas() {
-        if (this.doNotRenderOnGlobalCanvas) {
-            return;
-        }
-        if (this.globalCanvasPosition < 0) { 
-            this.globalCanvasPosition = CombinedEmoji.getGlobalCanvasPos(SIZE*this.scale);
-        }
-        const globalCanvas = document.querySelector<HTMLCanvasElement>('#emojiMap');
-        const ctx = globalCanvas!.getContext('2d')!;
-        ctx.drawImage(this.canvas, this.globalCanvasPosition, 0);
+        // if (this.doNotRenderOnGlobalCanvas) {
+        //     return;
+        // }
+        // if (this.globalCanvasPosition < 0) { 
+        //     this.globalCanvasPosition = CombinedEmoji.getGlobalCanvasPos(SIZE*this.scale);
+        // }
+        // const globalCanvas = document.querySelector<HTMLCanvasElement>('#emojiMap');
+        // const ctx = globalCanvas!.getContext('2d')!;
+        // ctx.drawImage(this.canvas, this.globalCanvasPosition, 0);
         
     }
 
