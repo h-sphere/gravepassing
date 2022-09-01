@@ -27,7 +27,6 @@ export class Item extends GameObjectGroup {
         if (!players.length) {
             return; // not collected
         }
-
         const player = players[0];
         this.onAdd(player as unknown as Player);
         AudioManager.get().collect.play();
@@ -62,8 +61,6 @@ export class BombCollectableItem extends Item {
 export class Factory extends Item {
     constructor(p: Point) {
         const point = new Point(Math.random(), Math.random()).normalize().mul(60, 100);
-
-        // random position here
         super(p.addVec(point), E.factory, 3);
     }
 
@@ -75,8 +72,6 @@ export class Factory extends Item {
 export class HellPortal extends Item {
     constructor(p: Point) {
         const point = new Point(Math.random(), Math.random()).normalize().mul(60, 100);
-
-        // random position here
         super(p.addVec(point), E.portal, 3);
     }
 
@@ -88,8 +83,6 @@ export class HellPortal extends Item {
 export class SwitchItem extends Item {
     constructor(p: Point) {
         const point = new Point(Math.random(), Math.random()).normalize().mul(60, 100);
-
-        // random position here
         super(p.addVec(point), E.switch, 3);
     }
 

@@ -195,10 +195,14 @@ export class Dither implements NewTexture {
     static generateDithers(steps: number = D_STEP, color: number[] = [44, 100, 94]) {
         const dithers: Dither[] = [];
         for(let i=0;i<=steps;i++) {
-            const d = new Dither(i / steps, steps, color);
+            const d = this.gD(steps, i, color);
             dithers.push(d);
         }
         return (n: number) => dithers[c(n, steps)];
+    }
+
+    static gD(s: number, l: number, col: number[]) {
+        return new Dither(l/s,s,col);
     }
 
     ctx: CanvasRenderingContext2D;
@@ -224,8 +228,6 @@ export class Dither implements NewTexture {
     protected generate(): void {
         this.ctx.clearRect(0, 0, SIZE, SIZE);
         this.ctx.fillStyle = 'rgb('+this.c.join(',') + ', ' + (1-this.l/1.2-0.2) + ')';
-        this.ctx.fillRect(0,0, 2, 2);
-        this.generateBmp();
         if (this.l > 0.95) {
             return;
         }
@@ -236,6 +238,7 @@ export class Dither implements NewTexture {
                 }
             }
         }
+        this.generateBmp();
     }
 }
 

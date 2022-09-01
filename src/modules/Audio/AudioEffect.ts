@@ -67,3 +67,21 @@ export class EnemyKilledAudioEffect extends AudioEffect {
         // this.osc.frequency.setValueAtTime(0, t + 0.8);
     }
 }
+
+export class IntroAudioEffect extends AudioEffect {
+    play() {
+        this.osc.type = 'sine';
+        const t = this.ctx.currentTime;
+        this.osc.frequency.setValueAtTime(220, t);
+        this.osc.frequency.setValueAtTime(0, t+0.15);
+        this.osc.frequency.setValueAtTime(440, t+0.2);
+        this.osc.frequency.setValueAtTime(880, t + 0.35);
+        // this.osc.frequency.linearRampToValueAtTime(500, t+0.4);
+        this.osc.frequency.setValueAtTime(0, t + 0.5);
+        // setTimeout(() => {
+        //     this.osc.disconnect();
+        // }, 500);
+        // this.osc.frequency.linearRampToValueAtTime(800, t + 0.7);
+        // this.osc.frequency.setValueAtTime(0, t + 0.8);
+    }
+}

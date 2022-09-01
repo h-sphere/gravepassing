@@ -9,14 +9,8 @@ interface SynthConfig {
     }
 }
 export class AudioTrack {
-    private interacted: boolean = false;
     private isStoped: boolean = true;
     constructor(public bpm: number, public duration: number, public definition: string, public synth: SynthConfig) {
-        const fn = () => {
-            this.interacted = true;
-            document.removeEventListener('keydown', fn);
-        }
-        document.addEventListener('keydown', fn);
     }
 
     private osc!: OscillatorNode;
@@ -26,18 +20,7 @@ export class AudioTrack {
 
     public start(ctx: AudioContext) {
         this.ctx = ctx;
-        if (this.interacted) {
-            this.makeSynth()
-        } else {
-            const fn = (e: KeyboardEvent) => {
-                if (e.key !== ' ') {
-                    return;
-                }
-                this.makeSynth();
-                document.removeEventListener('keydown', fn);
-            }
-            document.addEventListener('keydown', fn);
-        }
+        this.makeSynth();
     }
 
     gains: GainNode[] = [];

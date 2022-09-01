@@ -34,6 +34,12 @@ export class Game {
 
     currentScene?: Scene;
 
+    width: number = 0;
+    height: number = 0;
+
+
+    isIntro = true;
+
     constructor(private canvas: HTMLCanvasElement, private w: number, h: number) {
 
         const fn = () => {
@@ -41,15 +47,15 @@ export class Game {
             const windowHeight = window.innerHeight;
             this.MULTIPLIER = Math.floor(Math.min(windowWidth, windowHeight) / (w * SIZE));
             this.UNIT_SIZE = SIZE * this.MULTIPLIER
-            this.canvas.width = SIZE * w * this.MULTIPLIER;
-            this.canvas.height = SIZE * h * this.MULTIPLIER;
+            this.width = this.canvas.width = SIZE * w * this.MULTIPLIER;
+            this.height = this.canvas.height = SIZE * h * this.MULTIPLIER;
             this.ctx = canvas.getContext('2d')!;
+            this.ctx.imageSmoothingEnabled = false;
         };
         fn();
-        // window.onresize = fn;
+        window.onresize = fn;
 
         this.restart();
-        this.loadScene(new CementeryScene());
         try {
             this.settings = JSON.parse(window.localStorage.getItem('hsph_set') || '');
         } catch (e) {
@@ -90,7 +96,7 @@ export class Game {
     restart() {
         this.camera = new Camera(this.ctx);
         this.gameObjects = new QuadTreeContainer();
-        this.renderer = new Renderer2d(this.ctx, this.canvas.width, this.canvas.height, this);
+        this.renderer = new Renderer2d(this.ctx, this);
 
         this.player = new Player();
         this.player.setGame(this); // FIXME: do it properly maybe?
@@ -102,33 +108,40 @@ export class Game {
 
     render() {
 
-        const stgI = this.currentStage;
-        if (stgI < this.sceneSettings.stages.length) {
-
-            const stg = this.sceneSettings.stages[stgI];
-            if (stg.lvl <= this.player.lvl) {
-                this.currentStage++;
-                stg.res(this);
-            }
-        }
-        
         const tDiff = Date.now() - this.lastRenderTime;
         this.lastRenderTime = Date.now();
-        // THIS WAS STUPID.
-        this.interruptorManager.update(this.player.controller, this);
-        if (this.interruptorManager.isRunning) {
-            this.interruptorManager.updateInter(tDiff);
-            this.gameObjects.update();
-            this.renderer.render(this.camera, this.gameObjects, tDiff, this);
-            this.renderer.renderInterruptorManager(this.interruptorManager);
-        } else {
-            this.gameObjects.getAll().forEach(g => {
-                g.update(tDiff, this.gameObjects);
-            });
-    
-            this.gameObjects.update();
-    
-            this.renderer.render(this.camera, this.gameObjects, tDiff, this);
+
+        if (this.isIntro) {
+            this.isIntro = this.renderer.renderIntro(tDiff);
+            if (!this.isIntro) {
+                // LOAD SCENE
+                this.loadScene(new CementeryScene(), true, true);
+            }
+        } else { 
+            const stgI = this.currentStage;
+            if (stgI < this.sceneSettings.stages.length) {
+
+                const stg = this.sceneSettings.stages[stgI];
+                if (stg.lvl <= this.player.lvl) {
+                    this.currentStage++;
+                    stg.res(this);
+                }
+            }
+            this.interruptorManager.update(this.player.controller, this);
+            if (this.interruptorManager.isRunning) {
+                this.interruptorManager.updateInter(tDiff);
+                this.gameObjects.update();
+                this.renderer.render(this.camera, this.gameObjects, tDiff, this);
+                this.renderer.renderInterruptorManager(this.interruptorManager);
+            } else {
+                this.gameObjects.getAll().forEach(g => {
+                    g.update(tDiff, this.gameObjects);
+                });
+        
+                this.gameObjects.update();
+        
+                this.renderer.render(this.camera, this.gameObjects, tDiff, this);
+            }
         }
         
 

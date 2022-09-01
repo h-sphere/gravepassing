@@ -96,7 +96,7 @@ export class Player extends SimpleHumanoid {
             }
         }
         this.lvlProgress = (this._xp - lowerT) / (upperT - lowerT);
-        this.lvlTexture = new TextTexture(["LVL "+this.lvl], 2, 1, "#0000");
+        this.lvlTexture = new TextTexture(["LVL "+this.lvl], 3, 1, "#0000");
     }
 
     public items: InventoryItem[] = [];

@@ -1,11 +1,14 @@
 import { lightIntensityAtPoint } from "../../utils/lightIntesity";
 import { getLinesIntersection } from "../../utils/math";
 import { E } from "../Assets/Emojis";
+import { AudioManager } from "../Audio/AudioManager";
 import { Camera } from "../Camera";
+import { Dither } from "../Color/Sprite";
 import { TAG } from "../constants/tags";
 import { Game } from "../Game";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
 import { Light } from "../GameObjects/Light";
+import { TextGameObject } from "../GameObjects/TextModule";
 import { Interruptor } from "../Interruptor/Interruptor";
 import { Line, Point, Rectangle } from "../Primitives";
 import { SceneSettings } from "../Scene/Scene";
@@ -14,8 +17,14 @@ import { Renderer } from "./Renderer";
 export class Renderer2d implements Renderer {
     private bb!: Rectangle;
     private center!: Point;
-    constructor(private ctx: CanvasRenderingContext2D, private width: number, private height: number, private game: Game) {
-        ctx.imageSmoothingEnabled = false;
+    constructor(private ctx: CanvasRenderingContext2D, private game: Game) {}
+
+    get width() {
+        return this.game.width;
+    }
+
+    get height() {
+        return this.game.height;
     }
 
     getSizePerPixel() {
@@ -153,6 +162,49 @@ export class Renderer2d implements Renderer {
         this.renderPostEffects();
     }
 
+
+    introTime = 0;
+    playedIntroMusic = false;
+    introText = new TextGameObject(["GRAVEPASSING"], new Point(2, 0), 8, 2, false, "","#FFF", 20);
+    author = new TextGameObject(["by Kacper Kula", "", "with the help of Rae Lee"], new Point(10, 0), 8, 3, false, "","#FFF", 10);
+    pressAnyKey = new TextGameObject(["Press [Space]"], new Point(3, 8), 8, 3, false, "", "#FFF", 10);
+    keyPressed = false;
+    dit = Dither.gD(48, 20, [2,19,13]);
+    renderIntro(dt: number) {
+        this.dit = Dither.gD(120, Math.min(70, Math.floor(20 + this.introTime / 50)),[2,19,13]);
+        this.ctx.fillStyle = '#053021';
+        this.ctx.fillRect(0, 0, this.width, this.height);
+        for(let i=0;i<10;i++) {
+            for(let j=0;j<10;j++) {
+                this.dit.render(this.ctx, i*this.getUnitSize(), j*this.getUnitSize(), this.getUnitSize(), this.getUnitSize());
+            }
+        }
+
+        if (!this.keyPressed) {
+            this.pressAnyKey.render(this.ctx, this.getBoundingBox(), (p) => this.getPositionOnScreen(p));
+            this.keyPressed = !!this.game.player.controller.v.f;
+            return true;
+        }
+        this.introTime += dt;
+
+        this.introText.render(this.ctx, this.getBoundingBox(), (p) => this.getPositionOnScreen(p));
+        const p = new Point(2, Math.min(3, this.introTime / 300));
+        this.introText.rectangle.moveTo(p);
+        if (p.y >= 3) {
+            if (!this.playedIntroMusic) {
+                AudioManager.get().intro.play();
+                this.playedIntroMusic = true;
+            }
+            const r = new Point(2, Math.max(8, 10-(this.introTime-800)/200));
+            this.author.rectangle.moveTo(r);
+            this.author.render(this.ctx, this.getBoundingBox(), (p) => this.getPositionOnScreen(p));
+        }
+        if (this.introTime > 3500) {
+            return false;
+        }
+        return true;
+    }
+
     renderHUD(game: Game) {
         // FIXME: should it be separate GO?
         const u = this.getUnitSize();
@@ -199,7 +251,7 @@ export class Renderer2d implements Renderer {
         const text = game.player.xpTexture;
         const lvlText = game.player.lvlTexture;
         text.render(this.ctx, 3*u, y+q, 2*u, u/2);
-        lvlText.render(this.ctx, 8.5*u-u/4, y+q, u, u/2);
+        lvlText.render(this.ctx, 8.5*u-u/4, y+q, 1.5*u, u/2);
 
         this.ctx.fillStyle = "rgba(0,0,0,0.5)";
         const wid = 3.5*u

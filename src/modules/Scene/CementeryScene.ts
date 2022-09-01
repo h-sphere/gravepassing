@@ -49,29 +49,12 @@ export class CementeryScene extends Scene {
     ]);;
     addObjects(game: Game): void {
         game.gameObjects.add(new AmbientLight(0.23));
-
-
-        const textBlock = Point.ORIGIN.add(0.5, 0.5);
-
-        // game.interruptorManager.add(new TextGameObject([
-        //     "", "GRAVEPASSING"," "," "," "," ","game by Kacper Kula"
-        // ],textBlock, 9, 7, false, "#000A", "#AAA", 16))
-
-
-        game.interruptorManager.add(new TextModal([
-            "Gravepassing",
-            " ",
-            " ",
-            "Game by Kacper Kula",
-            "press [space] to continue"
-        ]));
-
-
         game.interruptorManager.add(new TextModal([
             "You wake up in a cemetery.",
             "The noises bring to mind yesterday's horrors.",
-            "",
             "Time to fight for your life.",
+            "",
+            "Press [Space]"
         ]));
         game.interruptorManager.add(new TextModal([
             "Move = arrow keys",
@@ -79,8 +62,6 @@ export class CementeryScene extends Scene {
             "Toggle items = [Q]/[W]",
             "Pause = [ESC]"
         ]));
-        
-        
     }
 
     stopMusic(): void {

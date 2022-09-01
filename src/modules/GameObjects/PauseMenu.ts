@@ -28,9 +28,12 @@ export class PauseMenu extends withTags(EmptyClass) implements GameObject, Inter
         new TextTexture(["Resume"], 10, 1, TRANSPARENT),
         new TextTexture([diffText(2)], 10, 1, TRANSPARENT),
         new TextTexture([], 10, 1, TRANSPARENT),
+        new TextTexture(["Fullscreen"], 10, 1, TRANSPARENT),
     ]
     current = 0;
+    private ctx?: CanvasRenderingContext2D;
     render(ctx: CanvasRenderingContext2D, bb: Rectangle, fn: GetPosFn) {
+        this.ctx = ctx;
         ctx.fillStyle = "#000A";
         const width = fn(bb.p2)[0];
         const u = width / 10;
@@ -79,6 +82,9 @@ export class PauseMenu extends withTags(EmptyClass) implements GameObject, Inter
                     break;
                 case 2:
                     set.post = !set.post;
+                    break;
+                case 3:
+                    this.ctx?.canvas.requestFullscreen();
                     break;
             }
             this.saveSettings()

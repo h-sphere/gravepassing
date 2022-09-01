@@ -1,4 +1,4 @@
-import { BombAudioEffect, CollectedAudioEffect, EnemyKilledAudioEffect, ShotAudioEffect } from "./AudioEffect";
+import { BombAudioEffect, CollectedAudioEffect, EnemyKilledAudioEffect, IntroAudioEffect, ShotAudioEffect } from "./AudioEffect";
 
 export class AudioManager {
     static instance?: AudioManager
@@ -12,4 +12,5 @@ export class AudioManager {
     bomb = new BombAudioEffect();
     collect = new CollectedAudioEffect();
     killed = new EnemyKilledAudioEffect();
+    intro = new IntroAudioEffect();
 }
