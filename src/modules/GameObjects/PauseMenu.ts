@@ -25,9 +25,9 @@ const post = "Post-processing";
 export class PauseMenu extends withTags(EmptyClass) implements GameObject, Interruptable {
     pauseText = new TextTexture(["PAUSED"], 3, 1, TRANSPARENT);
     options = [
-        new TextTexture(["Resume"], 4, 1, TRANSPARENT),
+        new TextTexture(["Resume"], 10, 1, TRANSPARENT),
         new TextTexture([diffText(2)], 10, 1, TRANSPARENT),
-        new TextTexture([], 10, 1, "rgba(0,0,0,0)"),
+        new TextTexture([], 10, 1, TRANSPARENT),
     ]
     current = 0;
     render(ctx: CanvasRenderingContext2D, bb: Rectangle, fn: GetPosFn) {
@@ -41,7 +41,7 @@ export class PauseMenu extends withTags(EmptyClass) implements GameObject, Inter
                 ctx.fillStyle = "rgba(30, 100, 40, 0.7)";
                 ctx.fillRect(u, (2+i/2)*u, u*opt.w/2, u*opt.h/2);
             }
-            opt.render(ctx, u, (2.1+i/2)*u, u*opt.w/2, u*opt.h/2);
+            opt.render(ctx, u, (2+i/2)*u, u*opt.w/2, u*opt.h/2);
         })
     }
     isHidden: boolean = false;

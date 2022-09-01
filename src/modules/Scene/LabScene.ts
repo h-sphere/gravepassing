@@ -13,8 +13,8 @@ import { Scene, SceneSettings } from "./Scene";
 const bpm = 60;
 
 const T = {
-    NOTE: () => new TextModal(["You find evidence the scientist tried to open portal to hell. You think you've heard this somewhere before."]),
-    NOTE_2: () => new TextModal(["Location of the rift to hell."]),
+    NOTE: () => new TextModal(["Looks like some scientist opened a portal to hell.","","Sounds familiar."]),
+    NOTE_2: () => new TextModal(["The gate to hell is near."]),
 }
 
 export class LabScene extends Scene {
@@ -46,9 +46,10 @@ export class LabScene extends Scene {
         const textBlock = Point.ORIGIN.add(0.5, 5.5);
         this.gameObjects.add(new AmbientLight(0.3));
         game.interruptorManager.add(new TextModal([
-            "You enter dark corridors of endless office space",
-            "You see all employees being deformed by unknown force",
-            "You need to continue the fight",
+            "Endless dark corridors of offices.",
+            "An invisible force corrupts these souls.",
+            "",
+            "You're fighting for them.",
         ]))
     }
 

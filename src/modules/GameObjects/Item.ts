@@ -22,8 +22,6 @@ export class Item extends GameObjectGroup {
     }
 
     update(dt: number, container: GameObjectsContainer): void {
-        // super.update(dt, container);
-
         // For now assuming only player can collect
         const players = container.getObjectsInArea(this.getBoundingBox(), TAG.PLAYER);
         if (!players.length) {
@@ -96,6 +94,6 @@ export class SwitchItem extends Item {
     }
 
     onAdd(player: Player): void {
-        player.game.interruptorManager.add(new TextModal(["You saved the world.", "But you are trapped in hell.", "No-one will know of your heroism.", "You can continue fighting hordes in hell until eternity."]))
+        player.game.interruptorManager.add(new TextModal(["You've saved humanity.", "But no one will know since you're trapped here.", "", "Nothing left but to fight hell's hordes for eternity."]))
     }
 }

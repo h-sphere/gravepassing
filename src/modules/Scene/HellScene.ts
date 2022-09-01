@@ -12,8 +12,8 @@ import { Scene, SceneSettings } from "./Scene";
 
 
 const TXT = {
-    NOTE: () => new TextModal(["To save humanity, find clue to where's master switch"]),
-    NOTE_2: () => new TextModal(["You find location to switch"]),
+    NOTE: () => new TextModal(["The master switch will save us all.", "Where is it though?"]),
+    NOTE_2: () => new TextModal(["A dying zombie directs you to the master switch."]),
 }
 
 const bpm = 60;

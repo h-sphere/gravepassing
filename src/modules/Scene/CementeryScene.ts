@@ -11,8 +11,8 @@ import { Point } from "../Primitives";
 import { Scene, SceneSettings } from "./Scene";
 
 const T = {
-    NOTE: () => new TextModal(["You find a note.", "Fight zombies to learn where they came from."]),
-    NOTE_2: () => new TextModal(["You find the location of the factory zombies came from."]),
+    NOTE: () => new TextModal(["A note:", " 'Fight the zombies, find their source.'"]),
+    NOTE_2: () => new TextModal(["Zombie factories – great."]),
 }
 
 
@@ -68,15 +68,16 @@ export class CementeryScene extends Scene {
 
 
         game.interruptorManager.add(new TextModal([
-            "You wake up on cemetery surrounded by zombies",
-            "You hear noises.",
-            "You remember the horror of yesterday.",
-            "all you can do now is to fight for your life.",
+            "You wake up in a cemetery.",
+            "The noises bring to mind yesterday's horrors.",
+            "",
+            "Time to fight for your life.",
         ]));
         game.interruptorManager.add(new TextModal([
-            "Use arrows to move",
-            "Use [space] to fire",
-            "use [Q] and [W] to toggle items"
+            "Move = arrow keys",
+            "Shoot/use = [space]",
+            "Toggle items = [Q]/[W]",
+            "Pause = [ESC]"
         ]));
         
         
