@@ -42,7 +42,6 @@ export class Enemy extends SimpleHumanoid {
     }
 
     exclamation: RectangleObject;
-    pointsObj;
 
     lastFired = -1;
     inventory = new BulletInventoryItem()

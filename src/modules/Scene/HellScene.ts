@@ -90,6 +90,7 @@ export class HellScene extends Scene {
             getDither: Dither.generateDithers(10, [200, 34, 24]),
             pCenter: Point.ORIGIN,
             stages: [],
+            enemies: [],
         };
     }
 }

@@ -1,8 +1,13 @@
 import { alt, tux, win } from "../Assets/EmojiAlternatives";
 import { EmojiSet } from "./Sprite";
 
-let emojiCanvas;
-let emojiCtx;
+let emojiCanvas: HTMLCanvasElement;
+let emojiCtx: CanvasRenderingContext2D;
+
+const isKeyOf = <T extends string>(k: string, r: Record<T, any>): k is T => {
+    return k in r;
+}
+
 export const isEmojiRendering = (emoji: string) => {
     if (!emojiCanvas) {
         emojiCanvas = document.createElement('canvas');
@@ -20,8 +25,8 @@ export const isEmojiRendering = (emoji: string) => {
 }
 
 export const convertEmoji = (e: EmojiSet) => {
-    if (e.emoji in alt && !isEmojiRendering(e.emoji)) {
-        console.log(`USING ALTERNATIVE FOR ${e.emoji} -> ${alt[e.emoji].emoji}`);
+    if (isKeyOf(e.emoji, alt) && !isEmojiRendering(e.emoji)) {
+        // console.log(`USING ALTERNATIVE FOR ${e.emoji} -> ${alt[e.emoji].emoji}`);
         e = {
             emoji: alt[e.emoji].emoji,
             pos: alt[e.emoji].pos || e.pos,
@@ -29,16 +34,16 @@ export const convertEmoji = (e: EmojiSet) => {
         }
     }
     // FIXME: system overrides here:
-    if (navigator.platform.startsWith("Win") && e.emoji in win) {
-        console.log(`Using alternative for windows ${e.emoji} -> ${win[e.emoji].emoji}`);
+    if (navigator.platform.startsWith("Win") && isKeyOf(e.emoji,win)) {
+        // console.log(`Using alternative for windows ${e.emoji} -> ${win[e.emoji].emoji}`);
         e = {
             emoji: win[e.emoji].emoji,
             pos: win[e.emoji].pos || e.pos,
             size: (win[e.emoji].size || 1) * e.size,
         }
     }
-    if (navigator.platform.indexOf('Linux') >= 0) {
-        console.log(`Using alternative for linux ${e.emoji} -> ${tux[e.emoji].emoji}`);
+    if (navigator.platform.indexOf('Linux') >= 0 && isKeyOf(e.emoji, tux)) {
+        // console.log(`Using alternative for linux ${e.emoji} -> ${tux[e.emoji].emoji}`);
         e = {
             emoji: tux[e.emoji].emoji,
             pos: tux[e.emoji].pos || e.pos,

@@ -10,6 +10,7 @@ interface Stage {
     res: (game: Game) => void;
 }
 
+// This can be removed probably?
 export interface SceneSettings {
     backgroundColor: string;
     ground: Ground;
@@ -44,6 +45,7 @@ export abstract class Scene {
             getDither: Dither.generateDithers(32),
             pCenter: Point.ORIGIN,
             stages: [],
+            enemies: [],
         }
     }
 
