@@ -29,7 +29,10 @@ export class AudioTrack {
         if (this.interacted) {
             this.makeSynth()
         } else {
-            const fn = () => {
+            const fn = (e: KeyboardEvent) => {
+                if (e.key !== ' ') {
+                    return;
+                }
                 this.makeSynth();
                 document.removeEventListener('keydown', fn);
             }

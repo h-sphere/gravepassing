@@ -54,7 +54,7 @@ class BombInventoryItem extends InventoryItem {
     }
 }
 
-const lvlToXp = (lvl: number) => (lvl-1)*(lvl-1)*100;
+const lvlToXp = (lvl: number) => lvl <= 1 ? 0 : (lvl-1)*(lvl-1)*50;
 
 
 export class Player extends SimpleHumanoid {
@@ -77,7 +77,7 @@ export class Player extends SimpleHumanoid {
     set xp(v: number) {
         this._xp = v;
         // FIXME: thresholds for LVLS
-        this.xpTexture = new TextTexture([this.xp + "xp"],2, 1,"rgba(0,0,0,0)");
+        this.xpTexture = new TextTexture([this.xp + "xp"],2, 1,"#0000");
         
         let lowerT = lvlToXp(this.lvl);
         let upperT = lvlToXp(this.lvl+1);
@@ -96,7 +96,7 @@ export class Player extends SimpleHumanoid {
             }
         }
         this.lvlProgress = (this._xp - lowerT) / (upperT - lowerT);
-        this.lvlTexture = new TextTexture(["LVL "+this.lvl], 2, 1, "rgba(0,0,0,0)");
+        this.lvlTexture = new TextTexture(["LVL "+this.lvl], 2, 1, "#0000");
     }
 
     public items: InventoryItem[] = [];
@@ -142,7 +142,7 @@ export class Player extends SimpleHumanoid {
 
     die(container: GameObjectsContainer) {
 
-        const youDie = new TextGameObject(["You died"], new Point(1, 4), 8, 1.5, false);
+        const youDie = new TextGameObject(["You died"], new Point(3, 3), 4, 1, false, "#000","#AAA", 20);
         this.game.interruptorManager.add(youDie);
         youDie.onResolution(() => {
             this.game.loadScene(new CementeryScene, true);

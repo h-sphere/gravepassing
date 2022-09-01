@@ -71,8 +71,8 @@ export class LabScene extends Scene {
             getDither: Dither.generateDithers(30, [100, 70, 130]),
             pCenter: new Point(0, -20),
             stages: [
-                { lvl: 1, res: g => g.interruptorManager.add(T.NOTE())},
-                { lvl: 1, res: g => {
+                { lvl: 7, res: g => g.interruptorManager.add(T.NOTE())},
+                { lvl: 10, res: g => {
                     g.interruptorManager.add(T.NOTE_2());
                     const f = new HellPortal(g.player.center);
                     g.gameObjects.add(f);

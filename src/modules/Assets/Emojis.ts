@@ -26,17 +26,17 @@ const renderLegs = (s: number, steps: number, c: HTMLCanvasElement) => {
     }
 }
 
-const createDirectional = (head?: string, body?: string, pants?: string, shirtShift = 0, pantShift = 0): Directional => {
+const createDirectional = (head?: string, body?: string, pants?: string, shirtShift = 0, pantShift = 0, scale: number = 1): Directional => {
     const base = [
-        { emoji: pants || "👖", pos: [4, 10], size: 5, hueShift: pantShift},
-        { emoji: body || "🧧", pos: [4, 5], size: 5, hueShift: shirtShift },
-        { emoji: head || "👱", pos: [4, 0], size: 5 }
+        { emoji: pants || "👖", pos: [scale*4, scale*10], size: scale*5, hueShift: pantShift},
+        { emoji: body || "🧧", pos: [scale*4, scale*5], size: scale*5, hueShift: shirtShift },
+        { emoji: head || "👱", pos: [scale*4, 0], size: scale*5 }
     ];
     return {
-        "up": new AnimatedEmoji(base, 1, "white", 10, renderLegs),
-        "down": new AnimatedEmoji([...base, glasses], 1, 'white', 10, renderLegs),
-        "left": new AnimatedEmoji([...base, singleGlass], 1, 'white', 10, renderLegs),
-        "right": new AnimatedEmoji([...base, singleRightGlass], 1, 'white', 10, renderLegs),
+        "up": new AnimatedEmoji(base, scale, "white", 10, renderLegs),
+        "down": new AnimatedEmoji([...base, glasses], scale, 'white', 10, renderLegs),
+        "left": new AnimatedEmoji([...base, singleGlass], scale, 'white', 10, renderLegs),
+        "right": new AnimatedEmoji([...base, singleRightGlass], scale, 'white', 10, renderLegs),
     }
 }
 
@@ -47,6 +47,9 @@ export const E = {
         { emoji: "✨", size: 15, pos: [5, 35]},
         { emoji: "🌀", size: 30, pos: [0, 15], hueShift: 50},
     ], 3),
+    switch: new CombinedEmoji([
+        { emoji: "🔌", size: 30, pos: [0, 15], hueShift: 0},
+    ], 3),
     factory: new CombinedEmoji([
         { emoji: "🏢", size: 30, pos: [0, 15]},
         { emoji: "☢️", size: 8, pos: [10, 24]},
@@ -56,14 +59,16 @@ export const E = {
     ], 3),
     playerDir: createDirectional(),
 
-    pigMan: createDirectional("🐷"),
-    frogMan: createDirectional("🦋"),
+    pigMan: createDirectional("🐷", void 0, void 0, 180, 40),
+    frogMan: createDirectional("🦋", void 0, void 0, 170, 200),
     cowMan: createDirectional("🐮", "👔", "👖", 180, 100),
 
     robotMan: createDirectional("🤖", "👔", "⛓"),
     zombieWoman: createDirectional("👩", "👚", "👖", 0, 30),
     zombie: createDirectional("🐵", "🎽", "🦿"),
     rabbit: createDirectional("🐰", "🔺", "👖", 100, 50),
+
+    devil: createDirectional("👹", "👔", "",200,0,2),
 
     health: new Emoji("❤️", 6, 1, 0, 5),
     healthOff: new Emoji("❤️", 6, 1, 0, 5, "", 0, 20),
@@ -84,10 +89,10 @@ export const E = {
         { emoji: "⬛️", size: 8, pos: [0, 2]}
     ], 1, 'rgba(255,0,0,0.5)'),
     goal: {
-        top: new Emoji("⬆", 16, 1, 0, 4, '#FFF'),
-        down: new Emoji("⬇", 16, 1, 0, 4, '#FFF'),
-        left: new Emoji("⬅", 10, 1, 0, 6, '#FFF'),
-        right: new Emoji("➡", 10, 1, 0, 6, '#FFF')
+        top: new Emoji("⬆️", 10, 1, 0, 6, '#FFF', 260, 120),
+        down: new Emoji("⬇️", 10, 1, 0, 5, '#FFF', 260, 120),
+        left: new Emoji("⬅️", 10, 1, 0, 6, '#FFF', 260, 120),
+        right: new Emoji("➡️", 10, 1, 0, 6, '#FFF', 260, 120)
 
     },
 }

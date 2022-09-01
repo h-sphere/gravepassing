@@ -8,6 +8,7 @@ import { LabScene } from "../Scene/LabScene";
 import { GameObjectGroup } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { Player } from "./Player";
+import { TextModal } from "./TextModule";
 
 export class Item extends GameObjectGroup {
     isHidden = false;
@@ -83,5 +84,18 @@ export class HellPortal extends Item {
 
     onAdd(player: Player): void {
         player.game.loadScene(new HellScene(), false, true);
+    }
+}
+
+export class SwitchItem extends Item {
+    constructor(p: Point) {
+        const point = new Point(Math.random(), Math.random()).normalize().mul(60, 100);
+
+        // random position here
+        super(p.addVec(point), E.switch, 3);
+    }
+
+    onAdd(player: Player): void {
+        player.game.interruptorManager.add(new TextModal(["You saved the world.", "But you are trapped in hell.", "No-one will know of your heroism.", "You can continue fighting hordes in hell until eternity."]))
     }
 }

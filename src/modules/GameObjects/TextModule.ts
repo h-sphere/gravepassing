@@ -10,7 +10,7 @@ import { RectangleObject } from "./Rectangle";
 
 export class TextTexture implements NewTexture {
     canvas!: HTMLCanvasElement;
-    constructor(protected text: string[], public w: number , public h: number, private bg?: string , private txtcol: string = '#FFF') {
+    constructor(protected text: string[], public w: number , public h: number, private bg?: string , private txtcol: string = '#FFF', private size = 7) {
         this.generate();
     }
 
@@ -31,11 +31,17 @@ export class TextTexture implements NewTexture {
         ctx.fillRect(0, 0, w, h);
         ctx.fillStyle = this.txtcol;
         ctx.textAlign = "start";
-        ctx.font = "7px 'papyrus'";
+        ctx.font = `${this.size}px 'Verdana'`;
         ctx.textBaseline = "top"
         ctx.imageSmoothingEnabled = false;
+        if (this.bg !== "#0000") {
+            console.log(this.bg, this.text);
+            ctx.strokeStyle = "#FFFA";
+            ctx.lineWidth = 1;
+            ctx.strokeRect(0, 0, w, h);
+        }
         this.text.forEach((text, i) => {
-            ctx.fillText(text.toUpperCase().split('').join(String.fromCharCode(8202)), 2, 2+i*9);
+            ctx.fillText(text.toUpperCase().split('').join(String.fromCharCode(8202)), 8, 6+i*(2+this.size));
         });
         // HACK HERE.
         // OMFG, why does this help?
@@ -64,8 +70,8 @@ export class TextGameObject extends RectangleObject implements Interruptable {
 
     res?: () => void;
 
-    constructor(text: string[], p: Point, private w: number, private h: number, private autoremove: boolean = false, bg: string = "black", textcolor: string = 'white') {
-        super(p, new TextTexture(text, 2*w, 2*h, bg, textcolor));
+    constructor(text: string[], p: Point, private w: number, private h: number, private autoremove: boolean = false, bg: string = "black", textcolor: string = 'white', size = 7) {
+        super(p, new TextTexture(text, 2*w, 2*h, bg, textcolor, size));
         this.rectangle = new Rectangle(p, p.add(w, h));
     }
     onResolution(fn: () => void): void {
@@ -108,7 +114,7 @@ export class TextGameObject extends RectangleObject implements Interruptable {
 
 export class InGameTextGO extends TextGameObject {
     constructor(text: string, p: Point, w: number, h: number, color: string, private animationMultiplier: number = 1) {
-        super([text], p, w, h, true, "rgba(0,0,0,0)", color);
+        super([text], p, w, h, true, "#0000", color);
     }
     isGlobal: boolean = false;
     autoHide = 1000;
@@ -121,6 +127,6 @@ export class InGameTextGO extends TextGameObject {
 export class TextModal extends TextGameObject {
     constructor(t: string[]) {
         const textBlock = Point.ORIGIN.add(0.5, 5.5);
-        super(t, textBlock, 9 ,2)
+        super(t, textBlock, 9 ,2, false, "#0f0f26", "#cbcbd4", 8)
     }
 }

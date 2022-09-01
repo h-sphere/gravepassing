@@ -27,7 +27,7 @@ export class Game {
 
     public settings = {
         difficulty: 2,
-        post: false,
+        post: true,
     }
 
     public interruptorManager: Interruptor = new Interruptor();
@@ -49,7 +49,7 @@ export class Game {
         // window.onresize = fn;
 
         this.restart();
-        this.loadScene(new HellScene());
+        this.loadScene(new CementeryScene());
         try {
             this.settings = JSON.parse(window.localStorage.getItem('hsph_set') || '');
         } catch (e) {
@@ -75,6 +75,7 @@ export class Game {
         this.currentScene = scene;
         this.player.center = this.sceneSettings.pCenter;
         this.objective = undefined;
+        this.currentStage = 0;
     }
 
     objective?: Item;

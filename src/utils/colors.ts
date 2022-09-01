@@ -1,1 +1,1 @@
-export const TRANSPARENT = 'rgba(0,0,0,0)'
+export const TRANSPARENT = '#0000'

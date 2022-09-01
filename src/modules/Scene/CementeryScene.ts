@@ -6,18 +6,18 @@ import { Game } from "../Game";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
 import { Factory } from "../GameObjects/Item";
 import { AmbientLight } from "../GameObjects/Light";
-import { TextModal } from "../GameObjects/TextModule";
+import { TextGameObject, TextModal } from "../GameObjects/TextModule";
 import { Point } from "../Primitives";
 import { Scene, SceneSettings } from "./Scene";
 
 const T = {
-    NOTE: () => new TextModal(["You find a note. Fight zombies to learn where they came from."]),
+    NOTE: () => new TextModal(["You find a note.", "Fight zombies to learn where they came from."]),
     NOTE_2: () => new TextModal(["You find the location of the factory zombies came from."]),
 }
 
 
 
-const delay = { time: 0.1, gain: 0.1 };
+const delay = { time: .1, gain: 0.1 };
 
 const sil = "xxxxxxxx";
 
@@ -41,28 +41,42 @@ const V2 = var1+var1+var1+var2;
 
 export class CementeryScene extends Scene {
     song = new Song([
-        new AudioTrack(65 * 4, 1, V, { type: "square", cutoff: 400, delay }),
-        new AudioTrack(65 * 8, 0.5, V2, { type: "sawtooth", cutoff: 230, delay }),
+        new AudioTrack(65 * 4, 1, V, { type: "square", cutoff: 400, delay, cutoffOpenRatio: 10, cutoffOpenDelay: 0.75 }),
+        new AudioTrack(65 * 8, 0.5, V2, { type: "sawtooth", cutoff: 230, delay, cutoffOpenRatio: 5, cutoffOpenDelay: 0.50 }),
         // new AudioTrack(65, 1, "444x333x111x", { type: "square", cutoff: 100 }),
-        // new AudioTrack(65, 1, ":::x:::x666x", { type: "square", cutoff: 100 })
+        // new AudioTrack(65 / 2, 1, ":::x:::x666x", { type: "triangle", cutoff: 300 })
     
     ]);;
     addObjects(game: Game): void {
         game.gameObjects.add(new AmbientLight(0.23));
 
 
+        const textBlock = Point.ORIGIN.add(0.5, 0.5);
+
+        // game.interruptorManager.add(new TextGameObject([
+        //     "", "GRAVEPASSING"," "," "," "," ","game by Kacper Kula"
+        // ],textBlock, 9, 7, false, "#000A", "#AAA", 16))
+
+
         game.interruptorManager.add(new TextModal([
-            "You wake up",
-            "You hear noises.",
-            "You remember the horror of yesterday",
-            "all you can do now is to fight for your life.",
-            "",
+            "Gravepassing",
+            " ",
+            " ",
+            "Game by Kacper Kula",
             "press [space] to continue"
+        ]));
+
+
+        game.interruptorManager.add(new TextModal([
+            "You wake up on cemetery surrounded by zombies",
+            "You hear noises.",
+            "You remember the horror of yesterday.",
+            "all you can do now is to fight for your life.",
         ]));
         game.interruptorManager.add(new TextModal([
             "Use arrows to move",
             "Use [space] to fire",
-            "use [Q] and [W] to toggle through your items"
+            "use [Q] and [W] to toggle items"
         ]));
         
         

@@ -57,7 +57,7 @@ export interface EmojiSet {
 }
 
 export class CombinedEmoji implements NewTexture {
-    constructor(private emojis: EmojiSet[], private scale: number = 1, private color = 'white') {
+    constructor(private emojis: EmojiSet[], public scale: number = 1, private color = 'white') {
         this.generate()
     }
     canvas!: HTMLCanvasElement;

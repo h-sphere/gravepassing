@@ -1,11 +1,20 @@
+import { E } from "../Assets/Emojis";
 import { AudioTrack } from "../Audio/AudioTrack";
 import { Song } from "../Audio/Song";
 import { Dither, Emoji, Ground } from "../Color/Sprite";
 import { Game } from "../Game";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
+import { SwitchItem } from "../GameObjects/Item";
 import { AmbientLight } from "../GameObjects/Light";
+import { TextModal } from "../GameObjects/TextModule";
 import { Point } from "../Primitives";
 import { Scene, SceneSettings } from "./Scene";
+
+
+const TXT = {
+    NOTE: () => new TextModal(["To save humanity, find clue to where's master switch"]),
+    NOTE_2: () => new TextModal(["You find location to switch"]),
+}
 
 const bpm = 60;
 const x = [60, 72, 72, 1000, 60, 75, 75, 1000].map(x => x-12)
@@ -55,7 +64,7 @@ export class HellScene extends Scene {
     ]);
 
     stopMusic(): void {
-        
+        this.song.stop();
     }
 
     // playMusic() {
@@ -81,16 +90,24 @@ export class HellScene extends Scene {
             ground: new Ground([
                 { emoji: new Emoji("💀", 12, 1), range: [0.999, 1] },
                 { emoji: new Emoji("🍖", 8, 1, 0, 4), range: [0.5, 0.51] },
-                { emoji: new Emoji("🪨", 10, 1, 0, 5), range: [0.2, 0.21]},
-                { emoji: new Emoji("🗿", 12, 1, 0, 2), range: [0.6, 0.61]},
-                { emoji: new Emoji("🦴", 12, 1, 0, 2), range: [0.9, 0.92]}
+                { emoji: new Emoji("🪨", 10, 1, 0, 5), range: [0.2, 0.35], asGameObject: true},
+                { emoji: new Emoji("🗿", 12, 1, 0, 2), range: [0.6, 0.61], asGameObject: true},
+                { emoji: new Emoji("🦴", 12, 1, 0, 2), range: [0.9, 0.92]},
             ], 12.4334),
             hudBackground: '#470100',
             backgroundColor: "rgba(100, 10, 10)",
             getDither: Dither.generateDithers(10, [200, 34, 24]),
             pCenter: Point.ORIGIN,
-            stages: [],
-            enemies: [],
+            stages: [
+                { lvl: 12, res: (g => g.interruptorManager.add(TXT.NOTE())), },
+                { lvl: 15, res: g => {
+                    g.interruptorManager.add(TXT.NOTE_2());
+                    const f = new SwitchItem(g.player.center);
+                    g.gameObjects.add(f);
+                    g.setObjective(f);
+                }},
+            ],
+            enemies: [E.robotMan, E.zombie, E.zombieWoman, E.rabbit, E.devil],
         };
     }
 }
