@@ -14,7 +14,8 @@ import { SimpleHumanoid } from "./Humanoid";
 import { PauseMenu } from "./PauseMenu";
 import { InGameTextGO, TextGameObject, TextTexture } from "./TextModule";
 
-const MOVEMENT_VELOCITY = 0.005;
+const MAX_SPEED = 6.5;
+const BOMB_LIMIT = 9;
 
 class InventoryItem {
     public amount: number = 0;
@@ -57,6 +58,8 @@ export class Player extends SimpleHumanoid {
     public xpTexture!: NewTexture  ;
     public lvlTexture!: NewTexture;
     container!: GameObjectsContainer;
+    speed = 3;
+    maxBomb = 3;
 
     get xp() {
         return this._xp;
@@ -81,6 +84,18 @@ export class Player extends SimpleHumanoid {
                 const txt2 = new InGameTextGO("⬆ SHOT RATE UP", this.center.add(0.5, -0.1), 4, 1, "#FA0", 1.5);
                 this.container.add(txt2);
                 this.baseCooldown = Math.max(MIN_COOLDOWN, 0.9*this.baseCooldown);
+            }
+
+            if (this.lvl % 3 === 0 && this.speed < MAX_SPEED) {
+                this.speed = Math.min(MAX_SPEED, this.speed * 1.2);
+                const txt2 = new InGameTextGO("⬆ SPEED UP", this.center.add(0.2, -0.15), 4, 1, "#FA0", 1.3);
+                this.container.add(txt2);
+            }
+
+            if (this.lvl % 4 === 1) {
+                this.maxBomb = Math.min(BOMB_LIMIT, this.maxBomb + 1);
+                const txt2 = new InGameTextGO("⬆ MORE BOMBS", this.center.add(0.4, -0.1), 4, 1, "#0A0", 1.3);
+                this.container.add(txt2);
             }
         }
         this.lvlProgress = (this._xp - lowerT) / (upperT - lowerT);
@@ -107,7 +122,7 @@ export class Player extends SimpleHumanoid {
     addItem(type: string) {
         if (this.items.length < 8) {
             if (type === 'bomb') {
-                this.items[1].amount = Math.min(5, this.items[1].amount+1);
+                this.items[1].amount = Math.min(this.maxBomb, this.items[1].amount+1);
             }
         }
     }
@@ -125,6 +140,7 @@ export class Player extends SimpleHumanoid {
 
     getHit(container: GameObjectsContainer) {
         super.getHit(container);
+        this.controller.vibrate();
     }
 
     die(container: GameObjectsContainer) {
@@ -176,7 +192,7 @@ export class Player extends SimpleHumanoid {
             })
         }
 
-        this.move(dt, p, MOVEMENT_VELOCITY, container);
+        this.move(dt, p, (this.speed+(1-this.game.settings.difficulty/2))/1000, container);
 
         // this.rotation += dt * ROTATION_VELOCITY * this.controller.rotation / 1000;
         

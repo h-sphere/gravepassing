@@ -56,7 +56,7 @@ export class PauseMenu extends withTags(EmptyClass) implements GameObject, Inter
         if (this.cooloff > 0) {
             return;
         }
-        if (this.controller?.v.e) {
+        if (this.controller?.v.e || this.controller?.v.b) {
             this.hasEnded = true;
         }
         if (this.controller!.y > 0) {

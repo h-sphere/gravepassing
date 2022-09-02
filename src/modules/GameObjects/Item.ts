@@ -65,6 +65,7 @@ export class Factory extends Item {
     }
 
     onAdd(player: Player) {
+        player.controller.vibrate(1, .5, 500);
         player.game.loadScene(new LabScene, false, true);
     }
 }
@@ -76,6 +77,7 @@ export class HellPortal extends Item {
     }
 
     onAdd(player: Player): void {
+        player.controller.vibrate(1, .5, 500);
         player.game.loadScene(new HellScene(), false, true);
     }
 }

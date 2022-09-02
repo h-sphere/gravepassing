@@ -62,6 +62,18 @@ export class KeyboardController {
         });
     }
 
+    vibrate(s = 0.5, w = 0.3, d = 100) {
+        if (this.gamepad) {
+            try {
+            (this.gamepad as any).vibrationActuator.playEffect('dual-rumble', {
+                duration: d,
+                strongMagnitude: s,
+                weakMagnitude: w
+              })
+            } catch (e) { }
+        }
+    }
+
     get x() {
         return this.v.r ? 1 : this.v.l ? -1 : 0;
     }
