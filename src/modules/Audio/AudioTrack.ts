@@ -1,3 +1,5 @@
+import { sR, sV } from "./helper";
+
 interface SynthConfig {
     type: OscillatorType;
     cutoff?: number;
@@ -10,7 +12,7 @@ interface SynthConfig {
 }
 export class AudioTrack {
     private isStoped: boolean = true;
-    constructor(public bpm: number, public duration: number, public definition: string, public synth: SynthConfig) {
+    constructor(public bpm: number, public duration: number, public d: string/* definition*/, public synth: SynthConfig) {
     }
 
     private osc!: OscillatorNode;
@@ -28,7 +30,7 @@ export class AudioTrack {
     stop() {
         // FIXME: ramp music.
         this.isStoped = true;
-        this.gains.forEach(g => g.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 1.5));
+        this.gains.forEach(g => sR(g.gain, 0, this.ctx.currentTime + 1.5));
     }
 
     private makeSynth() {
@@ -46,7 +48,7 @@ export class AudioTrack {
         gain.gain.setValueAtTime(0.1, t);
 
         fil.type = 'lowpass';
-        fil.frequency.setValueAtTime(this.synth.cutoff || 40000, t);
+        sV(fil.frequency,this.synth.cutoff || 40000, t);
         fil.connect(gain);
         gain.connect(ctx.destination);
         
@@ -55,12 +57,12 @@ export class AudioTrack {
 
         if (this.synth.delay) {
             const del = ctx.createDelay()
-            del.delayTime.setValueAtTime(this.synth.delay.time, t);
+            sV(del.delayTime,this.synth.delay.time, t);
             fil.connect(del);
             const delAten = ctx.createGain();
             del.connect(delAten);
             delAten.connect(ctx.destination);
-            delAten.gain.setValueAtTime(this.synth.delay.gain, t);
+            sV(delAten.gain, this.synth.delay.gain, t);
             this.gains.push(delAten);
         }
 
@@ -86,22 +88,21 @@ export class AudioTrack {
             const c = this.synth.cutoff;
             const m = this.synth.cutoffOpenRatio || 1;
             const d = this.synth.cutoffOpenDelay || 0;
-            const len = this.definition.length*l;
+            const len = this.d.length*l;
             this.filter.frequency.cancelScheduledValues(s);
-            this.filter.frequency.setValueAtTime(this.synth.cutoff, s);
+            sV(this.filter.frequency, this.synth.cutoff, s);
             this.filter.frequency.setTargetAtTime(c*m, s + d * len, len);
-            // this.filter.frequency.setValueCurveAtTime([c, c*m], s, s+this.definition.length*l);
         }
-        for(let i = 0; i < this.definition.length; i++) {
-            const m = this.definition.charCodeAt(i);
+        for(let i = 0; i < this.d.length; i++) {
+            const m = this.d.charCodeAt(i);
             let hz = Math.pow(2, (m-69)/12)*440;
             if (hz > 5000) {
                 hz = 0;
             }
-            this.osc.frequency.setValueAtTime(hz, s+l*i);
-            this.duration < 1 && this.osc.frequency.setValueAtTime(0, s+l*i+l*this.duration);
+            sV(this.osc.frequency, hz, s+l*i);
+            this.duration < 1 && sV(this.osc.frequency, 0, s+l*i+l*this.duration);
         }
-        this.nextStartTime = s + this.definition.length * l;
-        setTimeout(() => this.schedule(), l * this.definition.length * 0.9 * 1000);
+        this.nextStartTime = s + this.d.length * l;
+        setTimeout(() => this.schedule(), l * this.d.length * 0.9 * 1000);
     }
 }
