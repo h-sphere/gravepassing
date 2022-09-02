@@ -44,7 +44,7 @@ export class DirectionableTexture implements NewTexture {
 }
 
 export interface EmojiSet {
-    emoji: string;
+    e: string;
     size: number;
     pos: number[];
     hueShift?: number;
@@ -77,7 +77,7 @@ export class CombinedEmoji implements NewTexture {
             ct.fillStyle = e.color || this.color;
             ct.textBaseline = "top";
             ct.filter = `hue-rotate(${e.hueShift||0}deg) brightness(${e.brightness||100}%)`;
-            ct.fillText(e.emoji, e.pos[0], e.pos[1]);
+            ct.fillText(e.e, e.pos[0], e.pos[1]);
             ct.filter = '';
         });
         this.canvas = c;
@@ -160,7 +160,7 @@ export class AnimatedEmoji extends CombinedEmoji {
 
 export class Emoji extends CombinedEmoji {
     constructor(e: string, size: number, scale: number, x = 0, y = 0, color: string = 'white', hueShift: number = 0, brightness: number = 100) {
-        super([{emoji: e, size: size, pos: [x, y], hueShift, brightness}], scale, color);
+        super([{e: e, size: size, pos: [x, y], hueShift, brightness}], scale, color);
         this.generate();
     }
 }
@@ -225,7 +225,7 @@ export class Dither implements NewTexture {
 const FN = (x: number, y: number, S: number) => (Math.sin(432.432*S + x * y - 3*y+Math.cos(x-y))+1)/2;
 
 export interface EmojiList {
-    emoji: Emoji,
+    e: Emoji,
     range: [number, number],
     asGameObject?: boolean,
 }
@@ -248,10 +248,10 @@ export class Ground {
             this.emojis.forEach(e => {
                 if (p > e.range[0] && p < e.range[1]) {
                     if (!e.asGameObject) {
-                        e.emoji.render(ctx, oX *m, oY *m, m, m);
+                        e.e.render(ctx, oX *m, oY *m, m, m);
                     } else {
                         if (!areGenerated) {
-                            const obj = new RectangleObject(new Point(x, y), e.emoji, [TAG.GENERATED, TAG.OBSTACLE]);
+                            const obj = new RectangleObject(new Point(x, y), e.e, [TAG.GENERATED, TAG.OBSTACLE]);
                             game.gameObjects.add(obj);           
                             generatedAnything = true;                 
                         }

@@ -1,9 +1,9 @@
 import { AnimatedEmoji, CombinedEmoji, Emoji, EmojiSet } from "../Color/Sprite";
 
 const S = 1;
-const glasses: EmojiSet = {emoji: "🕶", pos: [S * 4 + 1, S - 1], size: S * 4, color: "black"};
-const singleGlass: EmojiSet = { emoji: "⬛️", pos: [S * 5, S * 1], size: S * 1};
-const singleRightGlass: EmojiSet = { emoji: "⬛️", pos: [8, 1], size: S * 1};
+const glasses: EmojiSet = {e: "🕶", pos: [S * 4 + 1, S - 1], size: S * 4, color: "black"};
+const singleGlass: EmojiSet = { e: "⬛️", pos: [S * 5, S * 1], size: S * 1};
+const singleRightGlass: EmojiSet = { e: "⬛️", pos: [8, 1], size: S * 1};
 
 export interface Directional {
     u: CombinedEmoji;
@@ -27,9 +27,9 @@ const renderLegs = (s: number, steps: number, c: HTMLCanvasElement) => {
 
 const createDirectional = (head?: string, body?: string, pants?: string, shirtShift = 0, pantShift = 0, scale: number = 1): Directional => {
     const base: EmojiSet[] = [
-        { emoji: pants || "👖", pos: [scale*4, scale*10], size: scale*5, hueShift: pantShift},
-        { emoji: body || "🧧", pos: [scale*4, scale*5], size: scale*5, hueShift: shirtShift },
-        { emoji: head || "👱", pos: [scale*4, 0], size: scale*5 }
+        { e: pants || "👖", pos: [scale*4, scale*10], size: scale*5, hueShift: pantShift},
+        { e: body || "🧧", pos: [scale*4, scale*5], size: scale*5, hueShift: shirtShift },
+        { e: head || "👱", pos: [scale*4, 0], size: scale*5 }
     ];
     return {
         "u": new AnimatedEmoji(base, scale, "white", 10, renderLegs),
@@ -41,20 +41,20 @@ const createDirectional = (head?: string, body?: string, pants?: string, shirtSh
 
 export const E = {
     portal: new CombinedEmoji([
-        { emoji: "✨", size: 15, pos: [0, 5]},
-        { emoji: "✨", size: 15, pos: [15, 15]},
-        { emoji: "✨", size: 15, pos: [5, 35]},
-        { emoji: "🌀", size: 30, pos: [0, 15], hueShift: 50},
+        { e: "✨", size: 15, pos: [0, 5]},
+        { e: "✨", size: 15, pos: [15, 15]},
+        { e: "✨", size: 15, pos: [5, 35]},
+        { e: "🌀", size: 30, pos: [0, 15], hueShift: 50},
     ], 3),
     switch: new CombinedEmoji([
-        { emoji: "🔌", size: 30, pos: [0, 15], hueShift: 0},
+        { e: "🔌", size: 30, pos: [0, 15], hueShift: 0},
     ], 3),
     factory: new CombinedEmoji([
-        { emoji: "🏢", size: 30, pos: [0, 15]},
-        { emoji: "☢️", size: 8, pos: [10, 24]},
-        { emoji: "🦴", size: 8, pos: [2, 40]},
-        { emoji: "💀", size: 8, pos: [20, 40]},
-        { emoji: "📡", size: 10, pos: [16, 6]}
+        { e: "🏢", size: 30, pos: [0, 15]},
+        { e: "☢️", size: 8, pos: [10, 24]},
+        { e: "🦴", size: 8, pos: [2, 40]},
+        { e: "💀", size: 8, pos: [20, 40]},
+        { e: "📡", size: 10, pos: [16, 6]}
     ], 3),
     playerDir: createDirectional(),
 
@@ -75,16 +75,16 @@ export const E = {
     bullet: new Emoji("🔅", 4, 1, 6, 6),
     explamation: new Emoji("❗️", 6, 1),
     item: new CombinedEmoji([
-        { emoji: "💣", size: 6, pos: [1, 3]},
+        { e: "💣", size: 6, pos: [1, 3]},
     ]),
     item2: new CombinedEmoji([
-        { emoji: "🔥", size: 6, pos: [0, 2]},
+        { e: "🔥", size: 6, pos: [0, 2]},
     ]),
     itemBg: new CombinedEmoji([
-        { emoji: "🟩", size: 8, pos: [0, 2]}
+        { e: "🟩", size: 8, pos: [0, 2]}
     ], 1, "#FFFA"),
     itemBgOff:new CombinedEmoji([
-        { emoji: "⬛️", size: 8, pos: [0, 2]}
+        { e: "⬛️", size: 8, pos: [0, 2]}
     ], 1, "#FFFA"),
     goal: {
         u: new Emoji("⬆️", 10, 1, 0, 6, '#FFF', 260, 120),

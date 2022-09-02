@@ -1,6 +1,6 @@
 interface OptionalEmojiSet {
     // EMOJI
-    emoji?: string;
+    e?: string;
     // POS
     pos?: [number, number];
     // SIZE
@@ -8,11 +8,11 @@ interface OptionalEmojiSet {
 }
 
 export const alt: Record<string, OptionalEmojiSet> = {
-    "🪦": { emoji: "⚰️", pos: [0, 4], size: .9},
-    "⛓": { emoji: "👖" },
-    "🪨": { emoji: "💀" },
-    "🪵": { emoji: "🌳" },
-    "🦴": { emoji: "💀" }
+    "🪦": { e: "⚰️", pos: [0, 4], size: .9},
+    "⛓": { e: "👖" },
+    "🪨": { e: "💀" },
+    "🪵": { e: "🌳" },
+    "🦴": { e: "💀" }
 }
 
 
@@ -36,5 +36,5 @@ export const win: Record<string, OptionalEmojiSet> = {
 }
 
 export const tux: Record<string, OptionalEmojiSet> = {
-    "🧧": { emoji: "👔" }
+    "🧧": { e: "👔" }
 }

@@ -22,30 +22,30 @@ export const isEmojiRendering = (emoji: string) => {
 }
 
 export const convertEmoji = (e: EmojiSet) => {
-    if (isKeyOf(e.emoji, alt) && !isEmojiRendering(e.emoji)) {
-        const pos = alt[e.emoji].pos || [0,0];
+    if (isKeyOf(e.e, alt) && !isEmojiRendering(e.e)) {
+        const pos = alt[e.e].pos || [0,0];
         e = {
             ...e,
-            emoji: alt[e.emoji].emoji || e.emoji,
+            e: alt[e.e].e || e.e,
             pos: [e.pos[0] + pos[0], e.pos[1]+ pos[1]],
-            size: (alt[e.emoji].size || 1) * e.size
+            size: (alt[e.e].size || 1) * e.size
         }
     }
-    if (navigator.platform.startsWith("Win") && isKeyOf(e.emoji,win)) {
-        const pos = win[e.emoji].pos || [0,0];
+    if (navigator.platform.startsWith("Win") && isKeyOf(e.e,win)) {
+        const pos = win[e.e].pos || [0,0];
         e = {
             ...e,
-            emoji: win[e.emoji].emoji || e.emoji,
+            e: win[e.e].e || e.e,
             pos: [e.pos[0] + pos[0], e.pos[1]+ pos[1]],
-            size: (win[e.emoji].size || 1) * e.size,
+            size: (win[e.e].size || 1) * e.size,
         }
     }
-    if (navigator.platform.indexOf('Linux') >= 0 && isKeyOf(e.emoji, tux)) {
+    if (navigator.platform.indexOf('Linux') >= 0 && isKeyOf(e.e, tux)) {
         e = {
             ...e,
-            emoji: tux[e.emoji].emoji || e.emoji,
-            pos: tux[e.emoji].pos || e.pos,
-            size: (tux[e.emoji].size || 1) * e.size,
+            e: tux[e.e].e || e.e,
+            pos: tux[e.e].pos || e.pos,
+            size: (tux[e.e].size || 1) * e.size,
         }
     }
     return e;

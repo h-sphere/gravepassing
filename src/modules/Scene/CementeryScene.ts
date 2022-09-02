@@ -73,50 +73,50 @@ export class CementeryScene extends Scene {
         this.song.play();
 
         const cross = new CombinedEmoji([
-            { emoji: "✝", size: 16, pos: [0, 0] },
-            { emoji: "🌱 🌱", size: 4, pos: [0, 10], hueShift: -70 },
+            { e: "✝", size: 16, pos: [0, 0] },
+            { e: "🌱 🌱", size: 4, pos: [0, 10], hueShift: -70 },
         ], 1);
 
         const stone = new CombinedEmoji([
-            { emoji: "🪨", size: 10, pos: [0, 10] },
-            { emoji: "🌱 🌱", size: 4, pos: [0, 14], hueShift: -70 },
+            { e: "🪨", size: 10, pos: [0, 10] },
+            { e: "🌱 🌱", size: 4, pos: [0, 14], hueShift: -70 },
         ], 1);
 
         const leaf = new CombinedEmoji([
-            { emoji: "🍃", size: 6, pos: [0, 0], hueShift: -30 },
-            { emoji: "🍃", size: 6, pos: [10, 0], hueShift: -50 },
-            { emoji: "🍃", size: 6, pos: [0, 10], hueShift: -70 },
-            { emoji: "🍃", size: 6, pos: [15, 0], hueShift: -30 },
-            { emoji: "🍃", size: 6, pos: [2, 10], hueShift: -20 },
+            { e: "🍃", size: 6, pos: [0, 0], hueShift: -30 },
+            { e: "🍃", size: 6, pos: [10, 0], hueShift: -50 },
+            { e: "🍃", size: 6, pos: [0, 10], hueShift: -70 },
+            { e: "🍃", size: 6, pos: [15, 0], hueShift: -30 },
+            { e: "🍃", size: 6, pos: [2, 10], hueShift: -20 },
         ]);
 
         const wall = new CombinedEmoji([
-            { emoji: "🪵", size: 14, pos: [0, 0] }
+            { e: "🪵", size: 14, pos: [0, 0] }
         ])
 
         const ground: EmojiList[] = [
-            // { emoji: grave, range: [0.999, 1] },
-            { emoji: new Emoji("🌱", 4, 1, 0, 0, '', -30), range: [0.5, 0.6] },
-            { emoji: cross, range: [0.2, 0.21] },
-            { emoji: stone, range: [0.6, 0.61] },
-            { emoji: leaf, range: [0.2, 0.3] },
-            { emoji: wall, range: [0.35, 0.37], asGameObject: true }
+            // { e: grave, range: [0.999, 1] },
+            { e: new Emoji("🌱", 4, 1, 0, 0, '', -30), range: [0.5, 0.6] },
+            { e: cross, range: [0.2, 0.21] },
+            { e: stone, range: [0.6, 0.61] },
+            { e: leaf, range: [0.2, 0.3] },
+            { e: wall, range: [0.35, 0.37], asGameObject: true }
         ];
 
         let range = 0.3;
         let progress = 0.005;
         for(let i=0;i<10;i++) {
-            const em: EmojiSet[] = [{ emoji: "🪦", size: 12 + i % 3, pos: [0, 0] }];
+            const em: EmojiSet[] = [{ e: "🪦", size: 12 + i % 3, pos: [0, 0] }];
             if (i % 2 == 0) {
-                em.push({emoji: "🌱", size: 6, pos: [0, 10], hueShift: -30 })
+                em.push({e: "🌱", size: 6, pos: [0, 10], hueShift: -30 })
             }
             if (i%4 == 0) {
-                em.push({emoji: "🌱", size: 4, pos: [10, 10], hueShift: -50 })
+                em.push({e: "🌱", size: 4, pos: [10, 10], hueShift: -50 })
             }
             if (i% 3 == 0) {
-                em.push({ emoji: "🌱🌱🌱", size: 4, pos: [5, 10], hueShift: -20 });
+                em.push({ e: "🌱🌱🌱", size: 4, pos: [5, 10], hueShift: -20 });
             }
-            ground.push({ emoji: new CombinedEmoji(em), range: [range, range+progress], asGameObject: true});
+            ground.push({ e: new CombinedEmoji(em), range: [range, range+progress], asGameObject: true});
             range+=progress;
         }
 

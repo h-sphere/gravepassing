@@ -60,12 +60,12 @@ export class LabScene extends Scene {
 
         return {
             ground: new Ground([
-                { emoji: new Emoji("🔬", 12, 1), range: [0.999, 1] },
-                { emoji: new Emoji("🔋", 8, 1, 0, 4), range: [0.5, 0.51] },
-                { emoji: new Emoji("📚", 10, 1, 0, 5), range: [0.2, 0.21]},
-                { emoji: new Emoji("🧪", 8, 1, 0, 2), range: [0.6, 0.61]},
-                { emoji: new Emoji("📠", 12, 1, 0, 2), range: [0.83, 0.85], asGameObject: true},
-                { emoji: new Emoji("🖥", 12, 1, 0, 2), range: [0.9, 0.92], asGameObject: true},
+                { e: new Emoji("🔬", 12, 1), range: [0.999, 1] },
+                { e: new Emoji("🔋", 8, 1, 0, 4), range: [0.5, 0.51] },
+                { e: new Emoji("📚", 10, 1, 0, 5), range: [0.2, 0.21]},
+                { e: new Emoji("🧪", 8, 1, 0, 2), range: [0.6, 0.61]},
+                { e: new Emoji("📠", 12, 1, 0, 2), range: [0.83, 0.85], asGameObject: true},
+                { e: new Emoji("🖥", 12, 1, 0, 2), range: [0.9, 0.92], asGameObject: true},
             ], 5234),
             hudBackground: 'rgb(30, 20, 50)',
             backgroundColor: "rgba(110, 110, 160)",

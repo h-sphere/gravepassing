@@ -61,11 +61,11 @@ export class HellScene extends Scene {
         this.song.play();
         return {
             ground: new Ground([
-                { emoji: new Emoji("💀", 12, 1), range: [0.999, 1] },
-                { emoji: new Emoji("🍖", 8, 1, 0, 4), range: [0.5, 0.51] },
-                { emoji: new Emoji("🪨", 10, 1, 0, 5), range: [0.2, 0.35], asGameObject: true},
-                { emoji: new Emoji("🗿", 12, 1, 0, 2), range: [0.6, 0.61], asGameObject: true},
-                { emoji: new Emoji("🦴", 12, 1, 0, 2), range: [0.9, 0.92]},
+                { e: new Emoji("💀", 12, 1), range: [0.999, 1] },
+                { e: new Emoji("🍖", 8, 1, 0, 4), range: [0.5, 0.51] },
+                { e: new Emoji("🪨", 10, 1, 0, 5), range: [0.2, 0.35], asGameObject: true},
+                { e: new Emoji("🗿", 12, 1, 0, 2), range: [0.6, 0.61], asGameObject: true},
+                { e: new Emoji("🦴", 12, 1, 0, 2), range: [0.9, 0.92]},
             ], 12.4334),
             hudBackground: '#400',
             backgroundColor: "rgba(100, 10, 10)",
