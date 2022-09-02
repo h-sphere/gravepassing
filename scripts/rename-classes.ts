@@ -46,13 +46,13 @@ sourceFiles.forEach(sourceFile => {
 
 
   // INTERFACES: let's change the props only
-  sourceFile.getInterfaces().forEach(i => {
-    console.log(`${i.getName()}`);
-    console.log('RENAME PROP');
-    renameAll(i.getProperties());
-    // console.log('RENAME METHODS');
-    // renameAll(i.getMethods());
-  })
+  // sourceFile.getInterfaces().forEach(i => {
+  //   console.log(`${i.getName()}`);
+  //   console.log('RENAME PROP');
+  //   renameAll(i.getProperties());
+  //   // console.log('RENAME METHODS');
+  //   // renameAll(i.getMethods());
+  // })
 
   // Get all interfaces in a file
   const classes = [...sourceFile.getClasses(), /*...sourceFile.getInterfaces()*/];

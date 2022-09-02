@@ -48,8 +48,8 @@ export class LifeCollectableItem extends Item {
 export class BombCollectableItem extends Item {
     constructor(p: Point) {
         super(p.add(0, 1), new CombinedEmoji([
-            { emoji: "💣", size: 6, pos: [4, 8] },
-            { emoji: "+", size: 6, pos: [9, 12] },
+            { e: "💣", size: 6, pos: [4, 8] },
+            { e: "+", size: 6, pos: [9, 12] },
         ]));
     }
 
