@@ -6,9 +6,8 @@ const keys = {
     'ArrowDown': "d",
     'ArrowLeft': "l",
     'ArrowRight': "r",
-    'q': 'q',
-    'w': 'w',
-    ' ': 'f',
+    ' ': 'a',
+    'x': 'b',
     'Escape': 'e'
  } as const;
 
@@ -33,16 +32,14 @@ export class KeyboardController {
             const a = this.gamepad.axes;
             console.log(a);
             const v = {
-                f: b[0].pressed,
+                a: b[0].pressed,
+                b: b[1].pressed,
                 e: b[9].pressed,
-                q: b[4].pressed,
-                w: b[5].pressed,
                 u: a[1] < -0.2 ? -1 : 0,
                 d: a[1] > 0.2 ? 1 : 0,
                 l: a[0] < -0.2 ? -1 : 0,
                 r: a[0] > 0.2 ? 1 : 0,
             }
-            console.log(v);
             return v;
         }
         return this._v;
@@ -63,11 +60,6 @@ export class KeyboardController {
                 e.preventDefault();
             }
         });
-
-        // window.addEventListener('gamepadconnected', e=> {
-        //     this.gamepad = e.gamepad;
-        //     console.log("CONN");
-        // });
     }
 
     get x() {
@@ -76,9 +68,5 @@ export class KeyboardController {
 
     get y() {
         return this.v.u ? -1 : this.v.d ? 1 : 0;
-    }
-
-    get s() {
-        return this.v.q ? -1 : this.v.w ? 1 : 0;
     }
 }

@@ -58,8 +58,8 @@ export class CementeryScene extends Scene {
         ]));
         game.interruptorManager.add(new TextModal([
             "Move = arrow keys",
-            "Shoot/use = [space]",
-            "Toggle items = [Q]/[W]",
+            "Shoot = [space]",
+            "Bomb = [X]",
             "Pause = [ESC]"
         ]));
     }

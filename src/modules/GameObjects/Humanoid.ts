@@ -9,14 +9,10 @@ import { RectangleObject } from "./Rectangle";
 
 class SimpleHumanoidPref extends GameObjectGroup {
     center: Point;
-    selected = 0;
-
     protected sprite: RectangleObject;
     protected light: Light;
 
     // public xp: number = 0;
-
-    protected isSelectionDirty = false;
     protected fireCooldown: number = 0;
     constructor(d: Directional, distance: number = 4, intensity = 0.5) {
         super();

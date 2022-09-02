@@ -8,7 +8,7 @@ import { TAG } from "../constants/tags";
 import { Game } from "../Game";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
 import { Light } from "../GameObjects/Light";
-import { TextGameObject } from "../GameObjects/TextModule";
+import { TextGameObject, TextTexture } from "../GameObjects/TextModule";
 import { Interruptor } from "../Interruptor/Interruptor";
 import { Line, Point, Rectangle } from "../Primitives";
 import { SceneSettings } from "../Scene/Scene";
@@ -182,7 +182,7 @@ export class Renderer2d implements Renderer {
 
         if (!this.keyPressed) {
             this.pressAnyKey.render(this.ctx, this.getBoundingBox(), (p) => this.getPositionOnScreen(p));
-            this.keyPressed = !!this.game.player.controller.v.f;
+            this.keyPressed = !!this.game.player.controller.v.a;
             return true;
         }
         this.introTime += dt;
@@ -228,22 +228,10 @@ export class Renderer2d implements Renderer {
             e.render(c, x + q + i*u/2, y + q/2, u, u);
         }
 
-        const items = game.player.items;
-        const current = game.player.selected;
-
-        // item slots
-        for(let i=0;i<8;i++) {
-            c.fillStyle = "#000A";
-            if (i===current) {
-                c.fillStyle = '#090F';
-            }
-            c.lineWidth = 5;
-            c.fillRect(x + q + i * u/2+4*i, y + q / 2 + u, u/2, u/2);
-
-            if (items.length > i) {
-                items[i].icon.render(c, x + q + i * u/2+4*i, y + q / 2 + u, u, u);
-            }
-        }
+        // FIXME: we can remove bomb icon from item.
+        const bomb = game.player.items[1];
+        (new TextTexture([bomb.amount + ' x'], 2, 1, "#0000")).render(c, x, y + q / 2 + u, u, u/2)
+        E.bomb.render(c, x + q + u/2+4, y + q / 2 + u, u, u);
 
         this.ctx.font = "16px";
         this.ctx.fillStyle = "white";

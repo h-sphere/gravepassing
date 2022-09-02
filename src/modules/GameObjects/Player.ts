@@ -17,23 +17,14 @@ import { InGameTextGO, TextGameObject, TextTexture } from "./TextModule";
 const MOVEMENT_VELOCITY = 0.005;
 
 class InventoryItem {
-    isDisposable: boolean = true;
     public amount: number = 0;
     public cooldown = 300;
-    icon: Emoji = E.item2; // FIXME: naming
-
     use(user: Player, container: GameObjectsContainer, tag: TAG): UsableItem[] {
         return [];
-    }
-
-    shouldBeDeleted() {
-        return this.isDisposable && this.amount <= 0;
     }
 }
 
 export class BulletInventoryItem extends InventoryItem {
-    isDisposable: boolean = false;
-    icon = E.item2;
     use(user: SimpleHumanoid, container: GameObjectsContainer, tag = TAG.ENEMY) {
         return [
             new Bullet(user.center, new Point(user.lastX, user.lastY), 300, tag)
@@ -42,10 +33,11 @@ export class BulletInventoryItem extends InventoryItem {
 }
 
 class BombInventoryItem extends InventoryItem {
-    isDisposable = true;
     amount = 1;
-    icon = E.item;
     use(user: Player) {
+        if (this.amount <= 0) {
+            return [];
+        }
         this.amount--;
         return [
             new Bomb(user.center, 1000, TAG.ENEMY)
@@ -115,7 +107,7 @@ export class Player extends SimpleHumanoid {
     addItem(type: string) {
         if (this.items.length < 8) {
             if (type === 'bomb') {
-                this.items.push(new BombInventoryItem());
+                this.items[1].amount = Math.min(5, this.items[1].amount+1);
             }
         }
     }
@@ -164,25 +156,13 @@ export class Player extends SimpleHumanoid {
 
         this.fireCooldown -= dt;
 
-        if (!this.controller.s) {
-            this.isSelectionDirty = false;
-        } else if (!this.isSelectionDirty) {
-            this.selected = this.selected + this.controller.s;
-            if (this.selected < 0) {
-                this.selected = this.items.length - 1;
-            }
-            this.isSelectionDirty = true;
-        }
 
-        if (this.controller.v.f && this.fireCooldown <= 0) {
+        const {a,b} = this.controller.v;
+
+        if ((a||b) && this.fireCooldown <= 0) {
             this.fireCooldown = this.baseCooldown;
-            const inventory = this.items[this.selected];
+            const inventory = this.items[a ? 0 : 1];
             const go = inventory.use(this, container, TAG.ENEMY);
-
-            // FIXME: disposing of used items.
-            if (inventory.shouldBeDeleted()) {
-                this.items = this.items.filter(i => i !== inventory);
-            }
 
             go.forEach(g => {
                 container.add(g);
@@ -197,8 +177,6 @@ export class Player extends SimpleHumanoid {
         }
 
         this.move(dt, p, MOVEMENT_VELOCITY, container);
-
-        this.selected = Math.max(0, this.selected % this.items.length);
 
         // this.rotation += dt * ROTATION_VELOCITY * this.controller.rotation / 1000;
         

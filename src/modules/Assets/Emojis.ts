@@ -76,18 +76,9 @@ export const E = {
     explamation: new Emoji("❗️", 6, 1),
     keyboard: new Emoji("⌨️", 10, 1),
     controller: new Emoji("🎮", 10, 1),
-    item: new CombinedEmoji([
+    bomb: new CombinedEmoji([
         { e: "💣", size: 6, pos: [1, 3]},
     ]),
-    item2: new CombinedEmoji([
-        { e: "🔥", size: 6, pos: [0, 2]},
-    ]),
-    itemBg: new CombinedEmoji([
-        { e: "🟩", size: 8, pos: [0, 2]}
-    ], 1, "#FFFA"),
-    itemBgOff:new CombinedEmoji([
-        { e: "⬛️", size: 8, pos: [0, 2]}
-    ], 1, "#FFFA"),
     goal: {
         u: new Emoji("⬆️", 10, 1, 0, 6, '#FFF', 260, 120),
         d: new Emoji("⬇️", 10, 1, 0, 5, '#FFF', 260, 120),

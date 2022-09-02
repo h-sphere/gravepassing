@@ -70,7 +70,7 @@ export class PauseMenu extends withTags(EmptyClass) implements GameObject, Inter
             return;
         }
 
-        if (this.controller?.v.f) {
+        if (this.controller?.v.a) {
             this.cooloff = 250;
             const set = this.game.settings;
             switch (this.current) {

@@ -85,7 +85,7 @@ export class TextGameObject extends RectangleObject implements Interruptable {
     update(dt: number, container: GameObjectsContainer): void {
         if (this.isStartedAsInterrutable) {
             this.cooloff -= dt;
-            if (this.controller.v.f && this.cooloff < 0) {
+            if (this.controller.v.a && this.cooloff < 0) {
                 this.hasEnded = true;
                 this.res && this.res();
             }

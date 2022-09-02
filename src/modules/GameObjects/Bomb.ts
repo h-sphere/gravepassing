@@ -1,4 +1,3 @@
-import { BombAudioEffect } from "../Audio/AudioEffect";
 import { AudioManager } from "../Audio/AudioManager";
 import { Emoji } from "../Color/Sprite";
 import { Point } from "../Primitives";
@@ -38,7 +37,8 @@ export class Bomb extends UsableItem {
                 0.3,
                 3,
                 "#FF0")
-            // Add light
+            // Add light and remove bomb sprite.
+            container.remove(this.o);
             this.add(l);
             container.add(l);
 
@@ -53,8 +53,6 @@ export class Bomb extends UsableItem {
                     }
                 }
             })
-
-            // container.remove(this);
         }
         if (this.lifeSpan + this.explosionTime <= 0) {
             container.remove(this);
