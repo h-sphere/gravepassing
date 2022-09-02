@@ -6,10 +6,10 @@ const singleGlass = { emoji: "⬛️", pos: [S * 5, S * 1], size: S * 1};
 const singleRightGlass = { emoji: "⬛️", pos: [8, 1], size: S * 1};
 
 export interface Directional {
-    up: CombinedEmoji;
-    down: CombinedEmoji;
-    left: CombinedEmoji;
-    right: CombinedEmoji;
+    u: CombinedEmoji;
+    d: CombinedEmoji;
+    l: CombinedEmoji;
+    r: CombinedEmoji;
 }
 
 const renderLegs = (s: number, steps: number, c: HTMLCanvasElement) => {
@@ -32,10 +32,10 @@ const createDirectional = (head?: string, body?: string, pants?: string, shirtSh
         { emoji: head || "👱", pos: [scale*4, 0], size: scale*5 }
     ];
     return {
-        "up": new AnimatedEmoji(base, scale, "white", 10, renderLegs),
-        "down": new AnimatedEmoji([...base, glasses], scale, 'white', 10, renderLegs),
-        "left": new AnimatedEmoji([...base, singleGlass], scale, 'white', 10, renderLegs),
-        "right": new AnimatedEmoji([...base, singleRightGlass], scale, 'white', 10, renderLegs),
+        "u": new AnimatedEmoji(base, scale, "white", 10, renderLegs),
+        "d": new AnimatedEmoji([...base, glasses], scale, 'white', 10, renderLegs),
+        "l": new AnimatedEmoji([...base, singleGlass], scale, 'white', 10, renderLegs),
+        "r": new AnimatedEmoji([...base, singleRightGlass], scale, 'white', 10, renderLegs),
     }
 }
 
@@ -87,10 +87,10 @@ export const E = {
         { emoji: "⬛️", size: 8, pos: [0, 2]}
     ], 1, "#FFFA"),
     goal: {
-        top: new Emoji("⬆️", 10, 1, 0, 6, '#FFF', 260, 120),
-        down: new Emoji("⬇️", 10, 1, 0, 5, '#FFF', 260, 120),
-        left: new Emoji("⬅️", 10, 1, 0, 6, '#FFF', 260, 120),
-        right: new Emoji("➡️", 10, 1, 0, 6, '#FFF', 260, 120)
+        u: new Emoji("⬆️", 10, 1, 0, 6, '#FFF', 260, 120),
+        d: new Emoji("⬇️", 10, 1, 0, 5, '#FFF', 260, 120),
+        l: new Emoji("⬅️", 10, 1, 0, 6, '#FFF', 260, 120),
+        r: new Emoji("➡️", 10, 1, 0, 6, '#FFF', 260, 120)
 
     },
 }

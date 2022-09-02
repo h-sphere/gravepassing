@@ -18,10 +18,10 @@ export class DirectionableTexture implements NewTexture {
 
     getEmoji() {
         switch (this.direction) {
-            case 'right': return this.dir.right;
-            case 'down': return this.dir.down;
-            case 'up': return this.dir.up;
-            default: return this.dir.left;
+            case 'right': return this.dir.r;
+            case 'down': return this.dir.d;
+            case 'up': return this.dir.u;
+            default: return this.dir.l;
         }
     }
 

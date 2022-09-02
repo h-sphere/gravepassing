@@ -17,6 +17,6 @@ rm -fr dist/*.bak
 echo "remove old zip"
 rm game.zip
 echo "packing"
-zip -vr game.zip dist -x "*.DS_Store"
+zip -vrj game.zip dist -x "*.DS_Store"
 echo "size"
 du -sh game.zip

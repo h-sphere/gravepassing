@@ -41,7 +41,7 @@ sourceFiles.forEach(sourceFile => {
   console.log('👉', sourceFile.getBaseName());
 
   // Get all interfaces in a file
-  const classes = [...sourceFile.getClasses(), ...sourceFile.getInterfaces()];
+  const classes = [...sourceFile.getClasses(), /*...sourceFile.getInterfaces()*/];
 
   classes.forEach(i => {
     try {

@@ -22,7 +22,7 @@ class SimpleHumanoidPref extends GameObjectGroup {
         super();
         this.center = new Point(0, 0);
 
-        this.sprite = new RectangleObject(this.center, new DirectionableTexture(d), [], d.left.scale);
+        this.sprite = new RectangleObject(this.center, new DirectionableTexture(d), [], d.l.scale);
 
 
         this.light = new Light(
