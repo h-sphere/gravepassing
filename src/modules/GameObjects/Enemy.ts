@@ -1,9 +1,6 @@
 import { getLinesIntersection, rnd } from "../../utils/math";
 import { Directional, E } from "../Assets/Emojis";
-import { AnimatedEmoji, Emoji, EmojiSet } from "../Color/Sprite";
-import { TAG } from "../constants/tags";
 import { Line, Point } from "../Primitives";
-import { GameObject } from "./GameObject";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { SimpleHumanoid } from "./Humanoid";
 import { BombCollectableItem, LifeCollectableItem } from "./Item";
@@ -19,7 +16,7 @@ export class Enemy extends SimpleHumanoid {
     constructor(d: Directional, public value: number = 100, p: Point = Point.ORIGIN, public life: number = 3) {
         super(d, 3, 0.5);
         this.center = p;
-        this.addTag(TAG.ENEMY);
+        this.addTag("e");
         // FIXME: combine into single emo.
         for(let i=0;i<this.life;i++) {
             const el = E.enemyH.toGameObject(Point.ORIGIN);
@@ -81,14 +78,14 @@ export class Enemy extends SimpleHumanoid {
 
         // TARGETTING PLAYER.
         const bb = this.getBoundingBox().expand(4);
-        const player = container.getObjectsInArea(bb, TAG.PLAYER);
+        const player = container.getObjectsInArea(bb, "p");
         let playerSpotted = false;
         if (player.length) {
             const line = new Line(player[0].getBoundingBox().center, this.center);
             if (line.length <= 2) {
                 playerSpotted = true;
             } else {
-                const obst = container.getObjectsInArea(bb.expand(3), TAG.OBSTACLE);
+                const obst = container.getObjectsInArea(bb.expand(3), "o");
                 const bareer = obst.map(o => o.getBoundingBox().toLines()).flat().find(o => !!getLinesIntersection(o, line));
                 playerSpotted = !bareer;
             }
@@ -154,7 +151,7 @@ export class Enemy extends SimpleHumanoid {
         // FIRE?
         if (this.lastFired + 1000 < Date.now() && playerSpotted) {
             // FIRE
-            const go = this.inventory.use(this, container, TAG.PLAYER);
+            const go = this.inventory.use(this, container, "p");
             go.forEach(g => {
                 container.add(g);
                 g.onHit(t => {
@@ -178,11 +175,7 @@ export class Enemy extends SimpleHumanoid {
             } else {
                 this.p = Point.UNIT_RIGHT;
             }
-            this.changeTimedown = 2000 + 1000 * rnd(); // 2s?
+            this.changeTimedown = 2000 + 1000 * rnd();
         }
-
-        // FIXME: obstacles
-
-        // this.rectangle.moveTo(p);
     }
 }

@@ -3,7 +3,6 @@ import { Point, Rectangle } from "../Primitives";
 import { Directional, E } from "../Assets/Emojis";
 import { SceneSettings } from "../Scene/Scene";
 import { Game } from "../Game";
-import { TAG } from "../constants/tags";
 import { RectangleObject } from "../GameObjects/Rectangle";
 import { Enemy } from "../GameObjects/Enemy";
 import { SIZE } from "./Image";
@@ -231,7 +230,7 @@ export class Ground {
     }
     render(ctx: CanvasRenderingContext2D, bb: Rectangle, s: SceneSettings, game: Game): void {
         // Check if there are already generated obstacles in the area.
-        const areGenerated = !!game.gameObjects.getObjectsInArea(bb, TAG.GENERATED).length;
+        const areGenerated = !!game.gameObjects.getObjectsInArea(bb, "g").length;
 
         let generatedAnything = false;
         const m = SIZE * game.MULTIPLIER;
@@ -246,7 +245,7 @@ export class Ground {
                         e.e.render(ctx, oX *m, oY *m, m, m);
                     } else {
                         if (!areGenerated) {
-                            const obj = new RectangleObject(new Point(x, y), e.e, [TAG.GENERATED, TAG.OBSTACLE]);
+                            const obj = new RectangleObject(new Point(x, y), e.e, ["g","o"]); // Tag: generated + obstacle
                             game.gameObjects.add(obj);           
                             generatedAnything = true;                 
                         }

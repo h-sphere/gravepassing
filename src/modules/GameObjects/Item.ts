@@ -2,7 +2,6 @@ import { rnd } from "../../utils/math";
 import { E } from "../Assets/Emojis";
 import { AudioManager } from "../Audio/AudioManager";
 import { CombinedEmoji, Emoji } from "../Color/Sprite";
-import { TAG } from "../constants/tags";
 import { Point } from "../Primitives";
 import { HellScene } from "../Scene/HellScene";
 import { LabScene } from "../Scene/LabScene";
@@ -24,7 +23,7 @@ export class Item extends GameObjectGroup {
 
     update(dt: number, container: GameObjectsContainer): void {
         // For now assuming only player can collect
-        const players = container.getObjectsInArea(this.getBoundingBox(), TAG.PLAYER);
+        const players = container.getObjectsInArea(this.getBoundingBox(), "p");
         if (!players.length) {
             return; // not collected
         }

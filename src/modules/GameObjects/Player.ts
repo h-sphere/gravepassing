@@ -1,8 +1,6 @@
 import { E } from "../Assets/Emojis";
 import { AudioManager } from "../Audio/AudioManager";
-import { Emoji } from "../Color/Sprite";
 import { NewTexture } from "../Color/Texture";
-import { TAG } from "../constants/tags";
 import { KeyboardController } from "../Controller/KeyboardController";
 import { Game } from "../Game";
 import { Point } from "../Primitives";
@@ -20,13 +18,13 @@ const BOMB_LIMIT = 9;
 class InventoryItem {
     public amount: number = 0;
     public cooldown = 300;
-    use(user: Player, container: GameObjectsContainer, tag: TAG): UsableItem[] {
+    use(user: Player, container: GameObjectsContainer, tag: string): UsableItem[] {
         return [];
     }
 }
 
 export class BulletInventoryItem extends InventoryItem {
-    use(user: SimpleHumanoid, container: GameObjectsContainer, tag = TAG.ENEMY) {
+    use(user: SimpleHumanoid, container: GameObjectsContainer, tag: string = "e") {
         return [
             new Bullet(user.center, new Point(user.lastX, user.lastY), 300, tag)
         ];
@@ -41,7 +39,7 @@ class BombInventoryItem extends InventoryItem {
         }
         this.amount--;
         return [
-            new Bomb(user.center, 1000, TAG.ENEMY)
+            new Bomb(user.center, 1000, "e")
         ];
         
     }
@@ -109,7 +107,7 @@ export class Player extends SimpleHumanoid {
         super(E.playerDir);
         this.xp = 0;
         this.center = new Point(0, -20);
-        this.addTag(TAG.PLAYER);
+        this.addTag("p");
         this.items.push(new BulletInventoryItem());
         this.items.push(new BombInventoryItem());
     }
@@ -178,7 +176,7 @@ export class Player extends SimpleHumanoid {
         if ((a||b) && this.fireCooldown <= 0) {
             this.fireCooldown = this.baseCooldown;
             const inventory = this.items[a ? 0 : 1];
-            const go = inventory.use(this, container, TAG.ENEMY);
+            const go = inventory.use(this, container, "e");
 
             go.forEach(g => {
                 container.add(g);

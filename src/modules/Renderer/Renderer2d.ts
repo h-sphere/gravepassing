@@ -4,7 +4,6 @@ import { E } from "../Assets/Emojis";
 import { AudioManager } from "../Audio/AudioManager";
 import { Camera } from "../Camera";
 import { Dither } from "../Color/Sprite";
-import { TAG } from "../constants/tags";
 import { Game } from "../Game";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
 import { Light } from "../GameObjects/Light";
@@ -148,7 +147,7 @@ export class Renderer2d implements Renderer {
             }
             return a.getBoundingBox().center.y-b.getBoundingBox().center.y
          });
-        const obstructions = gameObjects.getObjectsInArea(this.bb, TAG.OBSTACLE).map(o => o.getBoundingBox().toLines()).flat();
+        const obstructions = gameObjects.getObjectsInArea(this.bb, "o").map(o => o.getBoundingBox().toLines()).flat();
         const lights = objects.filter(o => o instanceof Light) as Light[];
         this.renderDitheredLight(lights, obstructions); 
         for (const obj of objects) {

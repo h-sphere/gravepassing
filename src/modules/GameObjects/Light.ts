@@ -1,5 +1,4 @@
 import { distance } from "../../utils/math";
-import { TAG } from "../constants/tags";
 import { Point, Rectangle } from "../Primitives";
 import { GameObject, Renderable } from "./GameObject";
 import { EmptyClass, WithCenter, withTags } from "./mixins";
@@ -19,7 +18,7 @@ export class Light extends withTags(EmptyClass) implements GameObject, WithCente
     constructor(center: Point, public intensity: number, public distance: number, public color: string = "#FFF") {
         super();
         this._center = center;
-        this._tags.push(TAG.LIGHT);
+        this._tags.push("l");
     }
     render(ctx: CanvasRenderingContext2D, gameBB: Rectangle): void {
         // empty.
