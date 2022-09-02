@@ -259,6 +259,13 @@ export class Renderer2d implements Renderer {
         this.ctx.fillStyle = "rgb(30, 30, 200)"
         this.ctx.fillRect(4.5*u, y+2*q,wid*game.player.lvlProgress, q/2);
 
+
+        if (this.game.controller.gamepad) {
+            E.controller.render(this.ctx, 9*u, 9*u, u/2, u/2)
+        } else {
+            E.keyboard.render(this.ctx, 9*u, 9*u, u/2, u/2)
+        }
+
         if(game.objective) {
             const xDiff = game.objective.center.x - game.player.center.x ;
             const yDiff =  game.objective.center.y - game.player.center.y;

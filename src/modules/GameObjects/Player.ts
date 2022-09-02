@@ -58,16 +58,12 @@ const lvlToXp = (lvl: number) => lvl <= 1 ? 0 : (lvl-1)*(lvl-1)*50;
 
 
 export class Player extends SimpleHumanoid {
-    // public light: Light;
-    public controller: KeyboardController;
     isHidden = false;
-
     private _xp: number = 0;
     public lvl: number = 1;
     public lvlProgress: number = 0;
     public xpTexture!: NewTexture  ;
     public lvlTexture!: NewTexture;
-
     container!: GameObjectsContainer;
 
     get xp() {
@@ -102,12 +98,11 @@ export class Player extends SimpleHumanoid {
     public items: InventoryItem[] = [];
 
 
-    constructor() {
+    constructor(public controller: KeyboardController) {
         super(E.playerDir);
         this.xp = 0;
         this.center = new Point(0, -20);
         this.addTag(TAG.PLAYER);
-        this.controller = new KeyboardController();
         this.items.push(new BulletInventoryItem());
         this.items.push(new BombInventoryItem());
     }

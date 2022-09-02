@@ -10,6 +10,7 @@ import { InterGO, Interruptor } from "../Interruptor/Interruptor";
 import { Item } from "../GameObjects/Item";
 import { HellScene } from "../Scene/HellScene";
 import { LabScene } from "../Scene/LabScene";
+import { KeyboardController } from "../Controller/KeyboardController";
 
 const ZOOM_SPEED = 1;
 
@@ -37,6 +38,8 @@ export class Game {
     width: number = 0;
     height: number = 0;
 
+    controller: KeyboardController;
+
 
     isIntro = true;
 
@@ -54,6 +57,7 @@ export class Game {
         };
         fn();
         window.onresize = fn;
+        this.controller = new KeyboardController();
 
         this.restart();
         try {
@@ -98,7 +102,7 @@ export class Game {
         this.gameObjects = new QuadTreeContainer();
         this.renderer = new Renderer2d(this.ctx, this);
 
-        this.player = new Player();
+        this.player = new Player(this.controller);
         this.player.setGame(this); // FIXME: do it properly maybe?
         this.gameObjects.add(this.player);
         this.camera.follow(this.player);

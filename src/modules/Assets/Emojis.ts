@@ -74,6 +74,8 @@ export const E = {
     enemyHOff: new Emoji("❤️", 4, 1, 0, 0, "", 0, 20),
     bullet: new Emoji("🔅", 4, 1, 6, 6),
     explamation: new Emoji("❗️", 6, 1),
+    keyboard: new Emoji("⌨️", 10, 1),
+    controller: new Emoji("🎮", 10, 1),
     item: new CombinedEmoji([
         { e: "💣", size: 6, pos: [1, 3]},
     ]),
