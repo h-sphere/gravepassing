@@ -9,11 +9,11 @@ import { Enemy } from "../GameObjects/Enemy";
 import { SIZE } from "./Image";
 import { convertEmoji } from "./EmojiUtils";
 
-export class DirectionableTexture implements NewTexture {
+export class DirectionableTexture extends NewTexture {
     private direction ='left';
 
     constructor(public dir: Directional) {
-
+        super();
     }
 
     getEmoji() {
@@ -52,12 +52,12 @@ export interface EmojiSet {
     color?: string;
 }
 
-export class CombinedEmoji implements NewTexture {
+export class CombinedEmoji extends NewTexture {
     constructor(private emojis: EmojiSet[], public scale: number = 1, private color = 'white') {
+        super();
         this.generate()
     }
     canvas!: HTMLCanvasElement;
-    bmp!: ImageBitmap;
     _boundingBox!: Rectangle;
     toGameObject(p: Point, scale: number = 1): RectangleObject {
         return new RectangleObject(p, this, [], scale);
@@ -81,10 +81,7 @@ export class CombinedEmoji implements NewTexture {
             ct.filter = '';
         });
         this.canvas = c;
-
-        // OMFG, why does this help?
-        createImageBitmap(ct.getImageData(0, 0, c.width, c.height))
-        .then(b => this.bmp = b);
+        this.optimise(ct);
     }
 
     render(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
@@ -120,8 +117,7 @@ export class AnimatedEmoji extends CombinedEmoji {
             ctx.drawImage(this.canvas, 0, 0, canvas.width, canvas.height);
             this.stepFn(i, steps, canvas);
             this.canvases.push(canvas);
-            createImageBitmap(ctx.getImageData(0, 0, canvas.width, canvas.height))
-            .then(b => this.bmp = b);
+            this.optimise(ctx);
         }
     }
     private isStarted = false;
@@ -170,7 +166,7 @@ export class Emoji extends CombinedEmoji {
 const D_STEP = 11;
 
 const c = (n: number, steps: number) => Math.round(n * (steps - 1))
-export class Dither implements NewTexture {
+export class Dither extends NewTexture {
 
     static generateDithers(steps: number = D_STEP, color: number[] = [44, 100, 94]) {
         const dithers: Dither[] = [];
@@ -189,12 +185,12 @@ export class Dither implements NewTexture {
     canvas: HTMLCanvasElement;
 
     private constructor(private l: number, private s: number, private c: number[]) {
+        super();
         this.canvas = document.createElement('canvas');
         this.canvas.width = SIZE;
         this.canvas.height = SIZE;
         this.ctx = this.canvas.getContext('2d')!;
         this.generate();
-        // document.body.appendChild(this.canvas);
     }
     render(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number): void {
         try {
@@ -202,23 +198,21 @@ export class Dither implements NewTexture {
         } catch (e) {
         }
     }
-    protected generateBmp() {
-        createImageBitmap(this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height))
-    }
     protected generate(): void {
-        this.ctx.clearRect(0, 0, SIZE, SIZE);
-        this.ctx.fillStyle = 'rgb('+this.c.join(',') + ', ' + (1-this.l/1.2-0.2) + ')';
+        const ct = this.ctx;
+        ct.clearRect(0, 0, SIZE, SIZE);
+        ct.fillStyle = 'rgb('+this.c.join(',') + ', ' + (1-this.l/1.2-0.2) + ')';
         if (this.l > 0.95) {
             return;
         }
         for(let i=0;i<SIZE;i++) { 
             for(let j=0;j<SIZE;j++) {
                 if ((c(Math.abs(i*i + j*j), this.s) % (this.s)) >= c(this.l, this.s)) {
-                    this.ctx.fillRect(i, j, 1, 1);
+                    ct.fillRect(i, j, 1, 1);
                 }
             }
         }
-        this.generateBmp();
+        this.optimise(ct);
     }
 }
 

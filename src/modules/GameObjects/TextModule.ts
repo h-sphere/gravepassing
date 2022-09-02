@@ -8,9 +8,10 @@ import { GameObjectsContainer } from "./GameObjectsContainer";
 import { RectangleObject } from "./Rectangle";
 
 
-export class TextTexture implements NewTexture {
+export class TextTexture extends NewTexture {
     canvas!: HTMLCanvasElement;
     constructor(protected text: string[], public w: number , public h: number, private bg?: string , private txtcol: string = '#FFF', private size = 7) {
+        super();
         this.generate();
     }
 
@@ -37,11 +38,7 @@ export class TextTexture implements NewTexture {
         this.text.forEach((text, i) => {
             ctx.fillText(text.toUpperCase().split('').join(String.fromCharCode(8202)), 8, 6+i*(2+this.size));
         });
-        // HACK HERE.
-        // OMFG, why does this help?
-        createImageBitmap(ctx.getImageData(0, 0, this.canvas.width, this.canvas.height))
-        // .then(b => this.bmp = b);
-
+        this.optimise(ctx);
     }
     render(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
         // FIXME: move bg drawing here so it's easier to change in menu items.
