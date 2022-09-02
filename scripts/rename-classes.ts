@@ -19,6 +19,10 @@ let pId = 0;
 const renameAll = (entries: any[]) => {
   entries.forEach(info => {
     const mName = info.getName();
+    if (mName.length < 3) {
+      console.log(`I THINK I ALREADY RENAMED THAT: ${mName}`);
+      return;
+    }
     const newName = nameString();
     generateNextName();
     console.log(`  ${mName} -> ${newName}`);
@@ -39,6 +43,16 @@ const sourceFiles = project.getSourceFiles();
 
 sourceFiles.forEach(sourceFile => {
   console.log('👉', sourceFile.getBaseName());
+
+
+  // INTERFACES: let's change the props only
+  // sourceFile.getInterfaces().forEach(i => {
+  //   console.log(`${i.getName()}`);
+  //   console.log('RENAME PROP');
+  //   renameAll(i.getProperties());
+  //   // console.log('RENAME METHODS');
+  //   // renameAll(i.getMethods());
+  // })
 
   // Get all interfaces in a file
   const classes = [...sourceFile.getClasses(), /*...sourceFile.getInterfaces()*/];

@@ -1,6 +1,9 @@
 interface OptionalEmojiSet {
+    // EMOJI
     emoji?: string;
+    // POS
     pos?: [number, number];
+    // SIZE
     size?: number;
 }
 

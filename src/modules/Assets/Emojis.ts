@@ -1,9 +1,9 @@
 import { AnimatedEmoji, CombinedEmoji, Emoji, EmojiSet } from "../Color/Sprite";
 
 const S = 1;
-const glasses = {emoji: "🕶", pos: [S * 4 + 1, S - 1], size: S * 4, color: "black"};
-const singleGlass = { emoji: "⬛️", pos: [S * 5, S * 1], size: S * 1};
-const singleRightGlass = { emoji: "⬛️", pos: [8, 1], size: S * 1};
+const glasses: EmojiSet = {emoji: "🕶", pos: [S * 4 + 1, S - 1], size: S * 4, color: "black"};
+const singleGlass: EmojiSet = { emoji: "⬛️", pos: [S * 5, S * 1], size: S * 1};
+const singleRightGlass: EmojiSet = { emoji: "⬛️", pos: [8, 1], size: S * 1};
 
 export interface Directional {
     u: CombinedEmoji;
