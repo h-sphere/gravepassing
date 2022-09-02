@@ -1,3 +1,5 @@
+import { sR, sV } from "./helper";
+
 export class AudioEffect {
     ctx: AudioContext;
     osc: OscillatorNode;
@@ -9,79 +11,81 @@ export class AudioEffect {
     }
 
     setup() {
-        this.osc.type = 'triangle';
-        this.osc.frequency.setValueAtTime(0, 0);
-        this.osc.start();
+        const {o,f} = this;
+        o.type = 'triangle';
+        sV(f, 0, 0);
+        o.start();
     }
 
     play(...params: any[]) {
+    }
+
+    get f() {
+        return this.o.frequency;
+    }
+    get o() {
+        return this.osc;
+    }
+
+    get t() {
+        return this.ctx.currentTime;
     }
 }
 
 export class ShotAudioEffect extends AudioEffect {
     play(): void {
-        this.osc.frequency.setValueAtTime(200, this.ctx.currentTime)
-        this.osc.frequency.setValueAtTime(400, this.ctx.currentTime + 0.05)
-        this.osc.frequency.linearRampToValueAtTime(500, this.ctx.currentTime + 0.06);
-        this.osc.frequency.setValueAtTime(0, this.ctx.currentTime + 0.1);
+        const {f, t} = this;
+        sV(f, 200, t);
+        sV(f, 400, t+.05);
+        sR(f, 500, t+.06);
+        sV(f, 0, t+.1);
     }
 }
 
 export class BombAudioEffect extends AudioEffect {
     play(explode: boolean) {
-        this.osc.type = 'triangle';
-        this.osc.frequency.setValueAtTime(150, this.ctx.currentTime);
-        this.osc.frequency.linearRampToValueAtTime(100, this.ctx.currentTime + 0.13);
+        const { f, o, t} = this;
+        o.type = 'triangle'
+        sV(f, 150,t)
+        sR(f, 100,t+.13);
         if (explode) {
-            this.osc.frequency.linearRampToValueAtTime(20, this.ctx.currentTime + 0.4);
-            this.osc.frequency.setValueAtTime(0, this.ctx.currentTime + 0.5);
+            sR(f, 20, t+.4);
+            sV(f, 0,t+.5);
         } else {
-            this.osc.frequency.linearRampToValueAtTime(0, this.ctx.currentTime + 0.131);
-        } 
+            sR(f, 0,t+.131)
+        }
     }
 }
 
 export class CollectedAudioEffect extends AudioEffect {
     play() {
-        this.osc.type = 'square';
-        const t = this.ctx.currentTime;
-        this.osc.frequency.setValueAtTime(880, t);
-        this.osc.frequency.setValueAtTime(2*880, t + 0.1);
-        // this.osc.frequency.linearRampToValueAtTime(700, t+0.09);
-        this.osc.frequency.setValueAtTime(0, t + 0.2);
-        // this.osc.frequency.setValueAtTime(800, t + 0.7);
-        // this.osc.frequency.setValueAtTime(0, t + 0.8);
+        const {t,o,f} = this;
+        o.type = 'square';
+        sV(f, 880, t);
+        sV(f, 1760, t+.1);
+        sV(f, 0, t+.2);
     }
 }
 
 export class EnemyKilledAudioEffect extends AudioEffect {
     play() {
-        this.osc.type = 'square';
-        const t = this.ctx.currentTime;
-        this.osc.frequency.setValueAtTime(700, t);
-        this.osc.frequency.setValueAtTime(400, t + 0.05);
-        this.osc.frequency.setValueAtTime(700, t + 0.1);
-        // this.osc.frequency.linearRampToValueAtTime(700, t+0.09);
-        this.osc.frequency.setValueAtTime(0, t + 0.2);
-        // this.osc.frequency.setValueAtTime(800, t + 0.7);
-        // this.osc.frequency.setValueAtTime(0, t + 0.8);
+        const {t,o,f} = this;
+        o.type = 'square';
+        sV(f, 700, t);
+        sV(f, 400, t+.05);
+        sV(f, 700, t+.1);
+        sV(f, 0, t+.2);
     }
 }
 
 export class IntroAudioEffect extends AudioEffect {
     play() {
-        this.osc.type = 'sine';
-        const t = this.ctx.currentTime;
-        this.osc.frequency.setValueAtTime(220, t);
-        this.osc.frequency.setValueAtTime(0, t+0.15);
-        this.osc.frequency.setValueAtTime(440, t+0.2);
-        this.osc.frequency.setValueAtTime(880, t + 0.35);
-        // this.osc.frequency.linearRampToValueAtTime(500, t+0.4);
-        this.osc.frequency.setValueAtTime(0, t + 0.5);
-        // setTimeout(() => {
-        //     this.osc.disconnect();
-        // }, 500);
-        // this.osc.frequency.linearRampToValueAtTime(800, t + 0.7);
-        // this.osc.frequency.setValueAtTime(0, t + 0.8);
+        const {t,o,f} = this;
+        o.type = 'sine';
+        sV(f,220,t);
+        sV(f, 0,t+.15);
+        sV(f, 440,t+.2);
+        sV(f, 880, t+0.35);
+        sV(f, 0, t+.5);
     }
 }
