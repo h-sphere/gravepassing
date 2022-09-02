@@ -26,7 +26,7 @@ const renderLegs = (s: number, steps: number, c: HTMLCanvasElement) => {
 }
 
 const createDirectional = (head?: string, body?: string, pants?: string, shirtShift = 0, pantShift = 0, scale: number = 1): Directional => {
-    const base = [
+    const base: EmojiSet[] = [
         { emoji: pants || "👖", pos: [scale*4, scale*10], size: scale*5, hueShift: pantShift},
         { emoji: body || "🧧", pos: [scale*4, scale*5], size: scale*5, hueShift: shirtShift },
         { emoji: head || "👱", pos: [scale*4, 0], size: scale*5 }
