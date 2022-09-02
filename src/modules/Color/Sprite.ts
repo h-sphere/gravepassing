@@ -8,6 +8,7 @@ import { RectangleObject } from "../GameObjects/Rectangle";
 import { Enemy } from "../GameObjects/Enemy";
 import { SIZE } from "./Image";
 import { convertEmoji } from "./EmojiUtils";
+import { rnd } from "../../utils/math";
 
 export class DirectionableTexture extends NewTexture {
     private direction ='left';
@@ -264,16 +265,16 @@ export class Ground {
                 // Base on difficulty
                 const value = s.difficulty * 50+50;
                 let lifes = s.difficulty + 1;
-                if (Math.random() < s.difficulty * 0.1) {
+                if (rnd() < s.difficulty * 0.1) {
                     lifes++;
                 }
 
-                if(game.player.lvl > 10 && Math.random() < s.difficulty * 0.1) {
+                if(game.player.lvl > 10 && rnd() < s.difficulty * 0.1) {
                     lifes++;
                 }
 
-                const p = bb.p1.add(Math.random()*bb.width, Math.random()*bb.height);
-                const sprite = game.sceneSettings.enemies[Math.floor(Math.random()*game.sceneSettings.enemies.length)];
+                const p = bb.p1.add(rnd()*bb.width, rnd()*bb.height);
+                const sprite = game.sceneSettings.enemies[Math.floor(rnd()*game.sceneSettings.enemies.length)];
                 game.gameObjects.add(new Enemy(
                     sprite,
                     value, p, lifes));

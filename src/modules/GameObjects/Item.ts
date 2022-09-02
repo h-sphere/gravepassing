@@ -1,3 +1,4 @@
+import { rnd } from "../../utils/math";
 import { E } from "../Assets/Emojis";
 import { AudioManager } from "../Audio/AudioManager";
 import { CombinedEmoji, Emoji } from "../Color/Sprite";
@@ -60,7 +61,7 @@ export class BombCollectableItem extends Item {
 
 export class Factory extends Item {
     constructor(p: Point) {
-        const point = new Point(Math.random(), Math.random()).normalize().mul(60, 100);
+        const point = new Point(rnd(), rnd()).normalize().mul(60, 100);
         super(p.addVec(point), E.factory, 3);
     }
 
@@ -72,7 +73,7 @@ export class Factory extends Item {
 
 export class HellPortal extends Item {
     constructor(p: Point) {
-        const point = new Point(Math.random(), Math.random()).normalize().mul(60, 100);
+        const point = new Point(rnd(), rnd()).normalize().mul(60, 100);
         super(p.addVec(point), E.portal, 3);
     }
 
@@ -84,7 +85,7 @@ export class HellPortal extends Item {
 
 export class SwitchItem extends Item {
     constructor(p: Point) {
-        const point = new Point(Math.random(), Math.random()).normalize().mul(60, 100);
+        const point = new Point(rnd(), rnd()).normalize().mul(60, 100);
         super(p.addVec(point), E.switch, 3);
     }
 

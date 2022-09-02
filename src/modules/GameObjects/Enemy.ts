@@ -1,4 +1,4 @@
-import { getLinesIntersection } from "../../utils/math";
+import { getLinesIntersection, rnd } from "../../utils/math";
 import { Directional, E } from "../Assets/Emojis";
 import { AnimatedEmoji, Emoji, EmojiSet } from "../Color/Sprite";
 import { TAG } from "../constants/tags";
@@ -35,7 +35,7 @@ export class Enemy extends SimpleHumanoid {
         this.exclamation = obj2;
         this.exclamation.isHidden = true;
 
-        if(Math.random() > 0.5) {
+        if(rnd() > 0.5) {
             this.directionMoveFirst = 'y';
         }
 
@@ -61,9 +61,9 @@ export class Enemy extends SimpleHumanoid {
 
     die() {
         // Spawning items
-        if (Math.random() < 0.5) {
+        if (rnd() < 0.5) {
             this.container?.add(new LifeCollectableItem(this.center));
-        } else if (Math.random() < 0.4) {
+        } else if (rnd() < 0.4) {
             this.container?.add(new BombCollectableItem(this.center));
         }
     }
@@ -98,8 +98,6 @@ export class Enemy extends SimpleHumanoid {
         let dir = this.p;
 
         let speed = SPEED;
-        let doNotSecondMove = false;
-
         let xDiff = 0;
         let yDiff = 0;
 
@@ -108,7 +106,6 @@ export class Enemy extends SimpleHumanoid {
             if (line.length <= 1) {
                 // stop
                 dir = Point.ORIGIN;
-                doNotSecondMove = true;
             } else {
                 xDiff = player[0].getBoundingBox().center.x - this.center.x - 0.5
                 yDiff = player[0].getBoundingBox().center.y - this.center.y - 0.5
@@ -167,23 +164,21 @@ export class Enemy extends SimpleHumanoid {
             this.lastFired = Date.now();
         }
 
-        if (!moved) {
-            this.changeTimedown = 0;
-        }
+        !moved && (this.changeTimedown = 0);
 
 
         if (this.changeTimedown <= 0) {
-            const rand = Math.random();
-            if (rand < 0.25) {
+            const r = rnd();
+            if (r < 0.25) {
                 this.p = Point.UNIT_UP;
-            } else if (rand < 0.5) {
+            } else if (r < 0.5) {
                 this.p = Point.UNIT_DOWN;
-            } else if (rand < 0.75) {
+            } else if (r < 0.75) {
                 this.p = Point.UNIT_LEFT;
             } else {
                 this.p = Point.UNIT_RIGHT;
             }
-            this.changeTimedown = 2000 + 1000 * Math.random(); // 2s?
+            this.changeTimedown = 2000 + 1000 * rnd(); // 2s?
         }
 
         // FIXME: obstacles

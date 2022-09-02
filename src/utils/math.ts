@@ -2,6 +2,8 @@ import { Line, Point } from "../modules/Primitives"
 
 export const ELIPSON = 0.0001;
 
+export const rnd = Math.random
+
 export const distance = (p1: Point, p2: Point): number => {
     return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
 }
