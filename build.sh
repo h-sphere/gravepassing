@@ -18,5 +18,5 @@ echo "remove old zip"
 rm game.zip
 echo "packing"
 zip -vrj game.zip dist -x "*.DS_Store"
-echo "size"
-du -sh game.zip
+echo "Recompressing using advzip"
+advzip -z game.zip
