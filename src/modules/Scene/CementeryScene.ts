@@ -1,12 +1,13 @@
 import { E } from "../Assets/Emojis";
 import { AudioTrack } from "../Audio/AudioTrack";
 import { Song } from "../Audio/Song";
-import { CombinedEmoji, Dither, Emoji, EmojiList, EmojiSet, Ground } from "../Color/Sprite";
+import { EmojiList, Ground } from "../Color/Ground";
+import { CombinedEmoji, Dither, Emoji, EmojiSet } from "../Color/Sprite";
 import { Game } from "../Game";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
 import { Factory } from "../GameObjects/Item";
 import { AmbientLight } from "../GameObjects/Light";
-import { TextGameObject, TextModal } from "../GameObjects/TextModule";
+import { TextModal } from "../GameObjects/TextModule";
 import { Point } from "../Primitives";
 import { Scene, SceneSettings } from "./Scene";
 

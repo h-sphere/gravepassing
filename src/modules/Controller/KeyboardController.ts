@@ -17,20 +17,15 @@ export class KeyboardController {
     _v: T = Object.values(keys).reduce((a,b) => ({...a, [b]: 0}), {}) as unknown as T;
 
     get v() {
-        console.log(this.gamepad);
-
         const gp = navigator.getGamepads();
-        console.log(gp);
         if (gp && gp.length > 0) {
             this.gamepad = gp[0]!;
         } else {
             this.gamepad = undefined;
         }
         if (this.gamepad && this.gamepad.connected) {
-            // console.log(this.gamepad.buttons);
             const b = this.gamepad.buttons;
             const a = this.gamepad.axes;
-            console.log(a);
             const v = {
                 a: b[0].pressed,
                 b: b[1].pressed,

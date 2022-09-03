@@ -1,5 +1,6 @@
 import { Directional } from "../Assets/Emojis";
-import { Dither, Ground } from "../Color/Sprite";
+import { Ground } from "../Color/Ground";
+import { Dither } from "../Color/Sprite";
 import { Game } from "../Game";
 import { GameObject } from "../GameObjects/GameObject";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";

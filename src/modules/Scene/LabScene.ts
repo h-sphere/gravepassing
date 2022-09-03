@@ -1,7 +1,8 @@
 import { E } from "../Assets/Emojis";
 import { AudioTrack } from "../Audio/AudioTrack";
 import { Song } from "../Audio/Song";
-import { Dither, Emoji, Ground } from "../Color/Sprite";
+import { Ground } from "../Color/Ground";
+import { Dither, Emoji } from "../Color/Sprite";
 import { Game } from "../Game";
 import { GameObjectsContainer } from "../GameObjects/GameObjectsContainer";
 import { HellPortal } from "../GameObjects/Item";

@@ -1,4 +1,5 @@
 import { distance } from "../../utils/math";
+import { SIZE } from "../Color/Image";
 
 export class Point {
 
@@ -25,6 +26,10 @@ export class Point {
 
     neg() {
         return new Point(-this.x, -this.y);
+    }
+
+    snapToGrid() {
+        return new Point(Math.round(this.x*SIZE)/SIZE, Math.round(this.y*SIZE)/SIZE);
     }
 
     normalize(): Point {
@@ -140,11 +145,19 @@ export class Rectangle extends Line {
     }
 
     forEachCell(fn: (x: number, y: number, oX: number, oY: number) => void): void {
-        for(let i=this.p1.x;i<this.p2.x;i++) {
-            for(let j=this.p1.y;j<this.p2.y;j++) {
+        // Experimental
+
+        for(let i=Math.floor(this.p1.x);i<Math.ceil(this.p2.x);i++) {
+            for(let j=Math.floor(this.p1.y);j<Math.ceil(this.p2.y);j++) {
                 fn(i,j, (i-this.p1.x), (j-this.p1.y));
             }
         }
+
+        // for(let i=this.p1.x;i<this.p2.x;i++) {
+        //     for(let j=this.p1.y;j<this.p2.y;j++) {
+        //         fn(i,j, (i-this.p1.x), (j-this.p1.y));
+        //     }
+        // }
     }
 
     scale(x: number, y: number) {

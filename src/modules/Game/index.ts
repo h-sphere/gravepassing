@@ -16,7 +16,7 @@ const ZOOM_SPEED = 1;
 
 export class Game {
     private ctx!: CanvasRenderingContext2D;
-    private camera!: Camera;
+    public camera!: Camera;
     public gameObject!: GameObjectsContainer;
     private renderer!: Renderer2d;
     private lastRenderTime: number = 0;
@@ -84,6 +84,7 @@ export class Game {
         this.sceneSettings = scene.register(this.gameObjects, this);
         this.currentScene = scene;
         this.player.center = this.sceneSettings.pCenter;
+        this.camera.prevCamera = this.player.center;
         this.objective = undefined;
         this.currentStage = 0;
     }

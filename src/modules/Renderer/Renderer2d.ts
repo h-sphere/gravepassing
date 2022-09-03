@@ -40,14 +40,37 @@ export class Renderer2d implements Renderer {
 
     private getBoundingBox(): Rectangle {
         const s = this.getSizePerPixel();
+        // FIXME: probably can use generator from Rectangle class?
+        const c = this.center;
+
+        const w = this.width;
+        const h = this.height;
         return new Rectangle(
             new Point(
-                this.center.x - (this.width / 2) * s,
-                this.center.y - (this.height / 2) * s
+                c.x - (w / 2) * s,
+                c.y - (h / 2) * s
             ),
             new Point(
-                this.center.x + (this.width / 2) * s,
-                this.center.y + (this.width / 2) * s,
+                c.x + (w / 2) * s,
+                c.y + (h / 2) * s,
+            )
+        );
+    }
+
+    private getRawBB() {
+        const s = this.getSizePerPixel();
+        const c = this.game.camera.rawCenter;
+
+        const w = this.width;
+        const h = this.height;
+        return new Rectangle(
+            new Point(
+                c.x - (w / 2) * s,
+                c.y - (h / 2) * s
+            ),
+            new Point(
+                c.x + (w / 2) * s,
+                c.y + (h / 2) * s,
             )
         );
     }
@@ -70,7 +93,7 @@ export class Renderer2d implements Renderer {
 
         const point = this.getPositionOnScreen(new Point(Math.floor(this.bb.p1.x), Math.floor(this.bb.p1.y)));
         const unitSize = 1 / this.getSizePerPixel();
-        settings.ground.render(this.ctx, this.getBoundingBox(), settings, this.game);
+        settings.ground.render(this.ctx, this.getBoundingBox(), this.getRawBB(), settings, this.game);
     }
 
     renderDitheredLight(lights: Light[], obstructions: Line[]) {

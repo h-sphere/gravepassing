@@ -83,8 +83,7 @@ export function withMovement<T extends Constructable<WithCenter & GameObject>>(c
                     shortened = true;
                 }
             }
-            // move slightly from the end
-            this.center = this.center.addVec(line.getMidpoint(shortened ? 0 : 1).diffVec(line.p1));
+            this.center = this.center.addVec(line.getMidpoint(shortened ? 0 : 1).diffVec(line.p1)).snapToGrid();
             return true;
         }
 

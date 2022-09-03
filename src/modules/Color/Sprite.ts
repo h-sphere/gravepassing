@@ -1,13 +1,9 @@
-import { NewTexture } from "./Texture";
-import { Point, Rectangle } from "../Primitives";
-import { Directional, E } from "../Assets/Emojis";
-import { SceneSettings } from "../Scene/Scene";
-import { Game } from "../Game";
+import { Directional } from "../Assets/Emojis";
 import { RectangleObject } from "../GameObjects/Rectangle";
-import { Enemy } from "../GameObjects/Enemy";
-import { SIZE } from "./Image";
+import { Point, Rectangle } from "../Primitives";
 import { convertEmoji } from "./EmojiUtils";
-import { rnd } from "../../utils/math";
+import { SIZE } from "./Image";
+import { NewTexture } from "./Texture";
 
 export class DirectionableTexture extends NewTexture {
     private direction ='left';
@@ -213,71 +209,5 @@ export class Dither extends NewTexture {
             }
         }
         this.optimise(ct);
-    }
-}
-
-const FN = (x: number, y: number, S: number) => (Math.sin(432.432*S + x * y - 3*y+Math.cos(x-y))+1)/2;
-
-export interface EmojiList {
-    e: Emoji,
-    range: [number, number],
-    asGameObject?: boolean,
-}
-
-export class Ground {
-    private color = "#49A79C";
-    constructor(private emojis: EmojiList[] = [], private seed: number) {
-    }
-    render(ctx: CanvasRenderingContext2D, bb: Rectangle, s: SceneSettings, game: Game): void {
-        // Check if there are already generated obstacles in the area.
-        const areGenerated = !!game.gameObjects.getObjectsInArea(bb, "g").length;
-
-        let generatedAnything = false;
-        const m = SIZE * game.MULTIPLIER;
-        bb.forEachCell((x, y, oX, oY) => {
-            const p = FN(x,y, this.seed || 231);
-            ctx.fillStyle = s.backgroundColor || this.color;
-            ctx.fillRect(oX*m, oY*m, m, m);
-
-            this.emojis.forEach(e => {
-                if (p > e.range[0] && p < e.range[1]) {
-                    if (!e.asGameObject) {
-                        e.e.render(ctx, oX *m, oY *m, m, m);
-                    } else {
-                        if (!areGenerated) {
-                            const obj = new RectangleObject(new Point(x, y), e.e, ["g","o"]); // Tag: generated + obstacle
-                            game.gameObjects.add(obj);           
-                            generatedAnything = true;                 
-                        }
-                    }
-                }
-            });
-        });
-
-        // GENERATE GAME OBJECTS IF NEEDED.
-        if (generatedAnything) { // making sure we don't generate infinitly enemies on empty patches.
-            const g = FN(bb.p1.x+0.424, bb.p1.y+0.2, this.seed+4324);
-            const generatingNr = Math.round(g * 5);
-            for(let i=0;i<generatingNr;i++) {
-                const s = game.settings;
-                
-                // Base on difficulty
-                const value = s.difficulty * 50+50;
-                let lifes = s.difficulty + 1;
-                if (rnd() < s.difficulty * 0.1) {
-                    lifes++;
-                }
-
-                if(game.player.lvl > 10 && rnd() < s.difficulty * 0.1) {
-                    lifes++;
-                }
-
-                const p = bb.p1.add(rnd()*bb.width, rnd()*bb.height);
-                const sprite = game.sceneSettings.enemies[Math.floor(rnd()*game.sceneSettings.enemies.length)];
-                game.gameObjects.add(new Enemy(
-                    sprite,
-                    value, p, lifes));
-            }
-        }
     }
 }
