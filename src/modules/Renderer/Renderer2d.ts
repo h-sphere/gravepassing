@@ -188,7 +188,7 @@ export class Renderer2d implements Renderer {
     introTime = 0;
     playedIntroMusic = false;
     introText = new TextGameObject(["GRAVEPASSING"], new Point(2, 0), 8, 2, false, "","#FFF", 20);
-    author = new TextGameObject(["by Kacper Kula", "", "with the help of Rae Lee"], new Point(10, 0), 8, 3, false, "","#FFF", 10);
+    author = new TextGameObject(["by Kacper Kula", "", "with the help of Rae"], new Point(10, 0), 8, 3, false, "","#FFF", 10);
     pressAnyKey = new TextGameObject(["Press [Space]"], new Point(3, 8), 8, 3, false, "", "#FFF", 10);
     keyPressed = false;
     dit = Dither.gD(48, 20, [2,19,13]);

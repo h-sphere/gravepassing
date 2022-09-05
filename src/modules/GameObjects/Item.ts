@@ -62,6 +62,7 @@ export class Factory extends Item {
     constructor(p: Point) {
         const point = new Point(rnd(), rnd()).normalize().mul(60, 100);
         super(p.addVec(point), E.factory, 3);
+        this.addTag("g"); // THIS MAKES IT NOT GENERATE ENEMIES AND OTHER THINGS AROUND IT.
     }
 
     onAdd(player: Player) {
@@ -86,6 +87,7 @@ export class SwitchItem extends Item {
     constructor(p: Point) {
         const point = new Point(rnd(), rnd()).normalize().mul(60, 100);
         super(p.addVec(point), E.switch, 3);
+        this.addTag("g"); // THIS MAKES IT NOT GENERATE ENEMIES AND OTHER THINGS AROUND IT.
     }
 
     onAdd(player: Player): void {
