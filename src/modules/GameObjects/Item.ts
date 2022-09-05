@@ -91,7 +91,7 @@ export class SwitchItem extends Item {
     }
 
     onAdd(player: Player): void {
-        player.game.interruptorManager.add(new TextModal(["You've saved humanity.", "But no one will know since you're trapped here.", "", "Nothing left but to fight hell's hordes for eternity."]));
+        player.game.interruptorManager.add(new TextModal(["You've saved humanity.", "But no one will know since you're trapped here.", "", "Nothing left but to fight hell's hordes forever."]));
         player.game.objective = undefined;
     }
 }

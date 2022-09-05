@@ -77,7 +77,7 @@ export class Ground {
                 const sprite = game.sceneSettings.enemies[Math.floor(rnd()*game.sceneSettings.enemies.length)];
                 game.gameObjects.add(new Enemy(
                     sprite,
-                    value, p, lifes + (sprite.u.scale > 1 ? 2 : 0)));
+                    value, p, lifes + (sprite.u.scale > 1 ? 2 : 0), 1500 - game.settings.difficulty * 550));
             }
         }
     }

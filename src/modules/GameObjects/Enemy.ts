@@ -13,7 +13,7 @@ export class Enemy extends SimpleHumanoid {
 
     private p = Point.UNIT_DOWN;
     private changeTimedown = 0;
-    constructor(d: Directional, public value: number = 100, p: Point = Point.ORIGIN, public life: number = 3) {
+    constructor(d: Directional, public value: number = 100, p: Point = Point.ORIGIN, public life: number = 3, private initialCooldown = 1000) {
         super(d, 3, 0.5);
         this.center = p;
         this.addTag("e");
@@ -73,6 +73,8 @@ export class Enemy extends SimpleHumanoid {
 
     private lives: RectangleObject[] = [];
 
+    previouslySpotted = false;
+    fireCooldown = 0;
 
     update(dt: number, container: GameObjectsContainer): void {
         this.container = container;
@@ -84,13 +86,9 @@ export class Enemy extends SimpleHumanoid {
         let playerSpotted = false;
         if (player.length) {
             const line = new Line(player[0].getBoundingBox().center, this.center);
-            if (line.length <= 2) {
-                playerSpotted = true;
-            } else {
                 const obst = container.getObjectsInArea(bb.expand(3), "o");
                 const bareer = obst.map(o => o.getBoundingBox().toLines()).flat().find(o => !!getLinesIntersection(o, line));
                 playerSpotted = !bareer;
-            }
         }
         this.exclamation.isHidden = !playerSpotted;
 
@@ -99,6 +97,12 @@ export class Enemy extends SimpleHumanoid {
         let speed = SPEED;
         let xDiff = 0;
         let yDiff = 0;
+
+        if (playerSpotted && !this.previouslySpotted) {
+            this.lastFired = Date.now();
+            this.fireCooldown = this.initialCooldown;
+        }
+        this.previouslySpotted = playerSpotted;
 
         if (playerSpotted) {
             const line = new Line(player[0].getBoundingBox().center, this.center);
@@ -151,14 +155,15 @@ export class Enemy extends SimpleHumanoid {
         // const player = container.getObjectsInArea()
 
         // FIRE?
-        if (this.lastFired + 1000 < Date.now() && playerSpotted) {
+        this.fireCooldown -= dt;
+        if (this.fireCooldown <= 0 && playerSpotted) {
             // FIRE
             const go = this.inventory.use(this, container, "p");
             go.forEach(g => {
                 container.add(g);
                 
             });
-            this.lastFired = Date.now();
+            this.fireCooldown = 1000;
         }
 
         !moved && (this.changeTimedown = 0);

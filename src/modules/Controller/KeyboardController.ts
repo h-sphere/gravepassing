@@ -11,6 +11,8 @@ const keys = {
     'Escape': 'e'
  } as const;
 
+ const isFF = navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ? 1 : 0;
+
 type T = Record<ValueOf<typeof keys>, number>;
 
 export class KeyboardController {
@@ -27,9 +29,9 @@ export class KeyboardController {
             const b = this.gamepad.buttons;
             const a = this.gamepad.axes;
             const v = {
-                a: b[0].pressed,
-                b: b[1].pressed,
-                e: b[9].pressed,
+                a: b[0+isFF].pressed,
+                b: b[1+isFF].pressed,
+                e: b[9+isFF].pressed,
                 u: a[1] < -0.2 ? -1 : 0,
                 d: a[1] > 0.2 ? 1 : 0,
                 l: a[0] < -0.2 ? -1 : 0,

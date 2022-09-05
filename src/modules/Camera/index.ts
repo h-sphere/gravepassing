@@ -15,7 +15,7 @@ export class Camera {
         if (this.prevCamera) {
             p = this.prevCamera;
         }
-        let c = this.following.center.mul(1/10, 1/7).round().mul(10, 7).add(0, 2);
+        let c = this.following.center.mul(1/9, 1/7).round().mul(9, 7).add(0.5, 2);
 
         // Rounding camera to the grid
         const m =  (new Line(p, c)).getMidpoint(0.1).snapToGrid();
@@ -27,7 +27,7 @@ export class Camera {
         if (!this.following) {
             return Point.ORIGIN;
         }
-        return this.following.center.mul(1/10, 1/7).round().mul(10, 7).add(0, 2);
+        return this.following.center.mul(1/9, 1/7).round().mul(9, 7).add(0.5, 2);
     }
 
     follow(go: WithCenter) {

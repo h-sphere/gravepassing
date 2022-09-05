@@ -85,7 +85,7 @@ export class Player extends SimpleHumanoid {
             }
 
             if (this.lvl % 3 === 0 && this.speed < MAX_SPEED) {
-                this.speed = Math.min(MAX_SPEED, this.speed * 1.2);
+                this.speed = Math.min(MAX_SPEED, this.speed * 1.13);
                 const txt2 = new InGameTextGO("⬆ SPEED UP", this.center.add(0.2, -0.15), 4, 1, "#FA0", 1.3);
                 this.container.add(txt2);
             }
