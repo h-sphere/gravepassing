@@ -136,8 +136,9 @@ export class Game {
             if (this.interruptorManager.isRunning) {
                 this.interruptorManager.updateInter(tDiff);
                 this.gameObjects.update();
-                this.renderer.render(this.camera, this.gameObjects, tDiff, this);
+                this.renderer.render(this.camera, this.gameObjects, tDiff, this, false);
                 this.renderer.renderInterruptorManager(this.interruptorManager);
+                this.renderer.renderPostEffects();
             } else {
                 this.gameObjects.getAll().forEach(g => {
                     g.update(tDiff, this.gameObjects);

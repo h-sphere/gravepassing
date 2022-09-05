@@ -156,7 +156,7 @@ export class Renderer2d implements Renderer {
         this.bb = boundingBox;
     }
 
-    render(camera: Camera, gameObjects: GameObjectsContainer, dt: number, game: Game) {
+    render(camera: Camera, gameObjects: GameObjectsContainer, dt: number, game: Game, post: boolean = true) {
 
         this.prepareFrame();
         this.renderBackground(game.sceneSettings);
@@ -177,11 +177,11 @@ export class Renderer2d implements Renderer {
             obj.render(
                 this.ctx,
                 this.bb,
-                (p: Point) => this.getPositionOnScreen(p)
+                (p: Point) => this.getPositionOnScreen(p.snapToGrid())
             );
         }
         this.renderHUD(game);
-        this.renderPostEffects();
+        post && this.renderPostEffects();
     }
 
 
@@ -205,11 +205,12 @@ export class Renderer2d implements Renderer {
         if (!this.keyPressed) {
             this.pressAnyKey.render(this.ctx, this.getBoundingBox(), (p) => this.getPositionOnScreen(p));
             this.keyPressed = !!this.game.player.controller.v.a;
+            this.renderPostEffects();
             return true;
         }
         this.introTime += dt;
 
-        this.introText.render(this.ctx, this.getBoundingBox(), (p) => this.getPositionOnScreen(p));
+        this.introText.render(this.ctx, this.getBoundingBox(), (p) => this.getPositionOnScreen(p.snapToGrid()));
         const p = new Point(2, Math.min(3, this.introTime / 300));
         this.introText.rectangle.moveTo(p);
         if (p.y >= 3) {
@@ -219,8 +220,9 @@ export class Renderer2d implements Renderer {
             }
             const r = new Point(2, Math.max(8, 10-(this.introTime-800)/200));
             this.author.rectangle.moveTo(r);
-            this.author.render(this.ctx, this.getBoundingBox(), (p) => this.getPositionOnScreen(p));
+            this.author.render(this.ctx, this.getBoundingBox(), (p) => this.getPositionOnScreen(p.snapToGrid()));
         }
+        this.renderPostEffects();
         if (this.introTime > 3500) {
             return false;
         }
@@ -301,6 +303,7 @@ export class Renderer2d implements Renderer {
 
     postCanvas!: HTMLCanvasElement;
     pattern!: CanvasPattern;
+    p2!: CanvasPattern;
 
     renderInterruptorManager(man: Interruptor) {
         this.prepareFrame();
@@ -308,7 +311,7 @@ export class Renderer2d implements Renderer {
     }
     
     renderPostEffects() {
-        if (this.game.MULTIPLIER < 2) {
+        if (this.game.MULTIPLIER <3) {
             // NO SPACE FOR POST PROCESSING
             return;
         }
@@ -319,47 +322,30 @@ export class Renderer2d implements Renderer {
 
         if (!this.postCanvas) {
             this.postCanvas = document.createElement('canvas');
-            this.postCanvas.width = this.game.MULTIPLIER;
-            this.postCanvas.height = this.game.MULTIPLIER;
-            const ctx = this.postCanvas.getContext('2d')!;
             const m = this.game.MULTIPLIER;
+            this.postCanvas.width = this.postCanvas.height = m;
+            const ctx = this.postCanvas.getContext('2d')!;
+            ctx.filter = 'blur(1px)';
             ctx.fillStyle = "red";
-            ctx.fillRect(0, 0,  m / 3, m);
+            ctx.fillRect(m/2, 0,  m / 2, m/2);
             ctx.fillStyle = "green";
-            ctx.fillRect(m/3, 0, m/3, m);
+            ctx.fillRect(0, 0, m/2, m);
             ctx.fillStyle = "blue";
-            ctx.fillRect(2*m/3, 0, m/3, m);
-            // ctx.fillRect(0, 0, m / 2, m / 2);
-            // ctx.fillRect(m, m, -m/2, -m/2);
-            // RENDERING HERE
-
-            ctx.strokeStyle = "rgba(0,0,0,0.1)";
-            ctx.lineWidth = 1;
-            ctx.strokeRect(0, 0, m, m);
+            ctx.fillRect(m/2, m/2, m/2, m/2);
 
             this.pattern = ctx.createPattern(this.postCanvas, "repeat")!;
+
         }
-        this.ctx.globalAlpha = 0.1;
-        this.ctx.globalCompositeOperation = "xor";
-        this.ctx.fillStyle = this.pattern;
-        this.ctx.fillRect(0, 0, this.width, this.height);
 
 
 
-        this.ctx.globalAlpha = 0.1;
+        this.ctx.globalAlpha = 0.6;
         this.ctx.globalCompositeOperation = "color-burn";
         this.ctx.fillStyle = this.pattern;
         this.ctx.fillRect(0, 0, this.width, this.height);
 
-
-        // this.ctx.globalAlpha = 0.2;
-        // this.ctx.globalCompositeOperation = "luminosity";
-        // this.ctx.fillStyle = this.pattern;
-        // this.ctx.fillRect(0, 0, this.width, this.height);
-        
-
-
         this.ctx.globalCompositeOperation = "source-over";
         this.ctx.globalAlpha = 1;
+
     }
 }
