@@ -27,7 +27,7 @@ export class Game {
     public UNIT_SIZE = 1;
 
     public settings = {
-        difficulty: 2,
+        difficulty: 1,
         post: true,
     }
 

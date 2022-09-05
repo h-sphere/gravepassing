@@ -91,8 +91,8 @@ export class SimpleHumanoid extends withMovement(SimpleHumanoidPref) {
 
     life: number = 5;
 
-    getHit(container: GameObjectsContainer) {
-        this.life--;
+    getHit(container: GameObjectsContainer, amount: number = 1) {
+        this.life-=amount;
         if (this.life <= 0) {
             this.die(container);
         }

@@ -1,3 +1,4 @@
+import { SIZE } from "../Color/Image";
 import { AnimatedEmoji, CombinedEmoji, Emoji, EmojiSet } from "../Color/Sprite";
 
 const S = 1;
@@ -14,15 +15,14 @@ export interface Directional {
 
 const renderLegs = (s: number, steps: number, c: HTMLCanvasElement) => {
     const ctx = c.getContext('2d')!;
+    const w = c.width/2;
+    const h=c.height;
+    const sc=h/SIZE;
+    ctx.clearRect(w-sc, h, s/steps <= 0.5 ? -w : w, -h/4*(s/steps));
     if (!s) {
         return;
     }
-    ctx.fillStyle = "red";
-    if (s/steps <= 0.5) {
-        ctx.clearRect(4, 16, 3, -4*(2*s/steps))
-    } else {
-        ctx.clearRect(7, 16, 3, -4*(Math.abs(2*s/steps-1)))
-    }
+    // ctx.clearRect(w, h, s/steps <= 0.5 ? -w/3*2 : w, -h/4*(s/steps))
 }
 
 const createDirectional = (head?: string, body?: string, pants?: string, shirtShift = 0, pantShift = 0, scale: number = 1): Directional => {
@@ -31,11 +31,22 @@ const createDirectional = (head?: string, body?: string, pants?: string, shirtSh
         { e: body || "🧧", pos: [scale*4, scale*5], size: scale*5, hueShift: shirtShift },
         { e: head || "👱", pos: [scale*4, 0], size: scale*5 }
     ];
+
+    if (scale > 1) {
+        const a = new AnimatedEmoji(base, scale, '#fff',10, renderLegs);
+        return {
+            u:a,
+            d:a,
+            l:a,
+            r:a
+        }
+    }
+
     return {
-        "u": new AnimatedEmoji(base, scale, "white", 10, renderLegs),
-        "d": new AnimatedEmoji([...base, glasses], scale, 'white', 10, renderLegs),
-        "l": new AnimatedEmoji([...base, singleGlass], scale, 'white', 10, renderLegs),
-        "r": new AnimatedEmoji([...base, singleRightGlass], scale, 'white', 10, renderLegs),
+        u: new AnimatedEmoji(base, scale, "#fff", 10, renderLegs),
+        d: new AnimatedEmoji([...base, glasses], scale, '#fff', 10, renderLegs),
+        l: new AnimatedEmoji([...base, singleGlass], scale, '#fff', 10, renderLegs),
+        r: new AnimatedEmoji([...base, singleRightGlass], scale, '#fff', 10, renderLegs),
     }
 }
 

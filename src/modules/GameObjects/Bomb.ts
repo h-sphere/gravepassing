@@ -1,6 +1,7 @@
+import { getLinesIntersection } from "../../utils/math";
 import { AudioManager } from "../Audio/AudioManager";
 import { Emoji } from "../Color/Sprite";
-import { Point } from "../Primitives";
+import { Line, Point, Rectangle } from "../Primitives";
 import { UsableItem } from "./Bullet";
 import { GameObjectsContainer } from "./GameObjectsContainer";
 import { SimpleHumanoid } from "./Humanoid";
@@ -44,12 +45,17 @@ export class Bomb extends UsableItem {
 
             // KILLING HERE.
             const bb = l.getBoundingBox();
+            const obst = container.getObjectsInArea(bb,"o").map(o => o.getBoundingBox().toLines()).flat();
             container.getObjectsInArea(bb, this.targetTag).forEach(target => {
                 if (target instanceof SimpleHumanoid) {
-                    target.getHit(container);
-                    if (target.life <= 0) {
-                        container.remove(target);
-                        this.hit(target);
+                    // CHECK IF TARGET IS REACHABLE.
+                    const line = new Line(this.center, target.center);
+                    if (!obst.find(o => !!getLinesIntersection(o, line))) {
+                        target.getHit(container, 2);
+                        if (target.life <= 0) {
+                            container.remove(target);
+                            this.hit(target);
+                        }
                     }
                 }
             })

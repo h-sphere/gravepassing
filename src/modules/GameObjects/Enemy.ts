@@ -45,14 +45,16 @@ export class Enemy extends SimpleHumanoid {
     
     directionMoveFirst = 'x';
 
-    getHit(container: GameObjectsContainer) {
-        super.getHit(container);
+    getHit(container: GameObjectsContainer, amount: number = 1) {
+        super.getHit(container, amount);
         // update hit points above
         if (this.life === 0) {
             this.die();
         } else {
-            this.lives[this.life].texture = E.enemyHOff
-            this.lives.forEach(l => l.isHidden = false);
+            this.lives.forEach((l,i) => {
+                i >= this.life ? l.texture = E.enemyHOff: void 0
+                l.isHidden = false;
+            });
         }
     }
 
@@ -154,9 +156,7 @@ export class Enemy extends SimpleHumanoid {
             const go = this.inventory.use(this, container, "p");
             go.forEach(g => {
                 container.add(g);
-                g.onHit(t => {
-                    // this.xp += t.value;
-                })
+                
             });
             this.lastFired = Date.now();
         }

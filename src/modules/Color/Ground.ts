@@ -65,15 +65,19 @@ export class Ground {
                     lifes++;
                 }
 
-                if(game.player.lvl > 10 && rnd() < s.difficulty * 0.1) {
-                    lifes++;
+                let d=game.player.lvl;
+                while(d > 0) {
+                    if(rnd() < s.difficulty * 0.1) {
+                        lifes++;
+                    }
+                    d-=10;
                 }
 
                 const p = rawBB.p1.add(rnd()*rawBB.width, rnd()*rawBB.height);
                 const sprite = game.sceneSettings.enemies[Math.floor(rnd()*game.sceneSettings.enemies.length)];
                 game.gameObjects.add(new Enemy(
                     sprite,
-                    value, p, lifes));
+                    value, p, lifes + (sprite.u.scale > 1 ? 2 : 0)));
             }
         }
     }
