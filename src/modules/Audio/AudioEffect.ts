@@ -6,7 +6,10 @@ export class AudioEffect {
     constructor() {
         this.ctx = new window.AudioContext();
         this.osc = this.ctx.createOscillator();
-        this.osc.connect(this.ctx.destination);
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(0.2, 0);
+        this.osc.connect(gain);
+        gain.connect(this.ctx.destination);
         this.setup();
     }
 
