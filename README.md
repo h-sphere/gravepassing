@@ -1,8 +1,13 @@
-# Gravepassing
+# Gravepassing 🪦
 
 This is repository for Gravepassing - retro-style browser-based video game written in TypeScript for js13kgames 2022 competition.
 
-## Story
+## Build 🛠
+[Build available here](./game.zip).
+
+11628 / 13312 B = 87.35%
+
+## Story 📚
 You’re alone in a graveyard, hounded by armies of the undead. Can you escape death and rescue all of humanity?
 
 Set to 8-bit music, Gravepassing evokes Game Boy aesthetics with a 16x16 base tile grid, downscaled emojis and dithered ligthing for that overall retro vibe.  
@@ -27,7 +32,7 @@ The game should work on any operating system in Chrome / Firefox but it was prim
 
 Written in TypeScript.
 
-## Screenshots
+## Screenshots 🖼
 ### MacOS
 ![Game Screenshot](./docs/mac.png)
 ### Windows
@@ -35,7 +40,7 @@ Written in TypeScript.
 ### Ubuntu
 ![Game Screenshot](./docs/ubuntu.png)
 
-## Features
+## Features ✨
 - No assets - everything is built with Emojis! 🤪
 - 16x16 tile grid system
 - Evokes GameBoy Color / early handheld era vibe
@@ -47,9 +52,16 @@ Written in TypeScript.
 - 3 stages with unique vibe and soundtrack
 - "Exclusive" platform versions - game renders in native system emojis (big chunky outline on Windows, beautiful MacOS emojis and in-between version on Ubuntu)
 
-Tested on MacOS (looks the best), Windows 7 and Ubuntu
+Tested on MacOS (looks the best), Windows 7 and Ubuntu.
 
-## Authors and attributions
+## Build process 📦
+- Custom script to rename classes / methods / properties
+- Parcel production mode
+- Uglify
+- Roadroller (❤️)
+- advzip
+
+## Authors and attributions 🐙
 Made by [Kacper "kulak" Kula](https://twitter.com/kulak_at).
 
 Big thanks to Rae for ideas, brain storming, testing and improvements!
